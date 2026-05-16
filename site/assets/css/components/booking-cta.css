@@ -71,18 +71,19 @@
   fill: currentColor;
 }
 
-/* Основная кнопка — WhatsApp (фуксия) */
+/* Основная кнопка — WhatsApp (вторичная: белая с рамкой, фуксия при ховере)
+   Фуксия-удар зарезервирован за sticky-CTA в хедере — одна на экран. */
 
 .booking-cta__btn--primary {
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  box-shadow: var(--shadow-cta);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
 }
 
 .booking-cta__btn--primary:hover {
-  background: var(--color-primary-hover);
-  color: var(--color-text-inverse);
-  box-shadow: var(--shadow-cta-strong);
+  background: var(--color-accent);
+  color: var(--color-primary);
+  border-color: var(--color-primary-soft);
 }
 
 /* Вторичная кнопка — Telegram */

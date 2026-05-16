@@ -5,7 +5,7 @@
 
 .advantages {
   padding-block: var(--space-lg);
-  background: var(--color-bg-soft);
+  background: var(--color-bg);
 }
 
 .advantages__head {

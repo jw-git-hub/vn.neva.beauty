@@ -46,35 +46,31 @@
   will-change: transform;
 }
 
-/* На ≥1024px декоративные пятна не нужны — их роль берёт фото */
-@media (min-width: 1024px) {
-  .hero::before,
-  .hero::after {
-    display: none;
-  }
-}
+/* Декоративные пятна видны на всех брейкпоинтах — hero текстовый, без фото */
 
-/* ---- Сетка: mobile = column, desktop = 2 cols ---- */
+/* ---- Сетка: text-dominant, centered, без фото ---- */
 
 .hero__inner {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
-  max-width: 780px;
+  gap: var(--space-md);
+  max-width: 720px;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-block: calc(var(--space-xl) * 1.25) var(--space-xl);
+  }
 }
 
 @media (min-width: 1024px) {
   .hero {
-    padding-block: calc(var(--space-xl) * 1.25) var(--space-xl);
+    padding-block: calc(var(--space-xl) * 1.5) calc(var(--space-xl) * 1.25);
   }
 
   .hero__inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(40px, 5vw, 80px);
-    max-width: none;
-    align-items: center;
+    max-width: 800px;
   }
 }
 
@@ -173,56 +169,7 @@
   }
 }
 
-/* ---- Фото-колонка ---- */
-
-.hero__media {
-  order: -1; /* фото выше текста на мобилке */
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  line-height: 0;
-}
-
-@media (min-width: 1024px) {
-  .hero__media {
-    order: 0;
-    position: relative;
-  }
-}
-
-.hero__image {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: var(--radius-lg);
-  transition: transform var(--transition-image);
-}
-
-@media (hover: hover) {
-  .hero__media:hover .hero__image {
-    transform: scale(1.02);
-  }
-}
-
-/* Планшет — ограничить высоту фото */
-@media (min-width: 768px) {
-  .hero {
-    padding-block: calc(var(--space-xl) * 1) var(--space-xl);
-  }
-
-  .hero__image {
-    max-height: 480px;
-    object-fit: cover;
-    object-position: center top;
-  }
-}
-
-@media (min-width: 1024px) {
-  .hero__image {
-    max-height: none;
-    border-radius: var(--radius-lg);
-  }
-}
+/* .hero__media — колонка фото удалена (P0: hero текстовый) */
 
 /* ---- Фоновые анимации ---- */
 
@@ -249,14 +196,6 @@
   }
 
   .hero__cta:hover {
-    transform: none;
-  }
-
-  .hero__image {
-    transition: none;
-  }
-
-  .hero__media:hover .hero__image {
     transform: none;
   }
 }

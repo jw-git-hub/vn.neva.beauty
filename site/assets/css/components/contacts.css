@@ -283,7 +283,36 @@
   overflow: hidden;
   border: 1px solid var(--color-border-soft);
   box-shadow: var(--shadow-card);
-  background: var(--color-border-soft);
+  /* Graceful placeholder: мягкий брендовый фон с иконкой маркера */
+  background: var(--color-bg-soft);
+}
+
+/* Псевдо-иконка маркера карты до загрузки iframe */
+.contacts-map__frame-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 60% 30%, var(--color-primary-soft) 0%, transparent 55%),
+    radial-gradient(circle at 20% 70%, var(--color-accent) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.contacts-map__frame-wrap::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 1;
+  width: 40px;
+  height: 50px;
+  /* SVG map-pin inline как маска */
+  background: var(--color-primary);
+  clip-path: path('M20 0C9 0 0 9 0 20c0 15 20 30 20 30S40 35 40 20C40 9 31 0 20 0zM20 28a8 8 0 1 1 0-16 8 8 0 0 1 0 16z');
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .contacts-map__iframe {
@@ -292,6 +321,7 @@
   width: 100%;
   height: 100%;
   border: none;
+  z-index: 2; /* sits above the placeholder pseudo-elements */
 }
 
 .contacts-map__open-link {

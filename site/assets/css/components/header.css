@@ -258,13 +258,21 @@
   margin-left: auto;
 }
 
-/* CTA in header actions — hidden by default, shown only at desktop (≥1024px) */
+/* CTA in header actions — compact pill, visible at ALL breakpoints */
 .site-header__cta {
-  display: none;
-  font-size: var(--font-sm);
+  display: inline-flex;
+  font-size: var(--font-xs);
   padding: var(--space-xs) var(--space-md);
-  min-height: 36px;
+  min-height: 44px;
   border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+@media (min-width: 480px) {
+  .site-header__cta {
+    font-size: var(--font-sm);
+    padding: var(--space-xs) var(--space-md);
+  }
 }
 
 /* CTA inside drawer — shown as full-width block */
@@ -443,12 +451,11 @@
     display: none;
   }
 
-  /* CTA visible in actions bar */
+  /* CTA — larger at desktop */
   .site-header__cta {
-    display: inline-flex;
     font-size: var(--font-15);
     padding: var(--space-sm) var(--space-lg);
-    min-height: 40px;
+    min-height: 44px;
   }
 }
 

@@ -3,13 +3,17 @@
    BEM block: .procedure-hero
    ================================================================ */
 
-/* Обёртка хлебных крошек на страницах процедур */
+/* Обёртка хлебных крошек — объединена с героем в один мягкий блок */
 .procedure-breadcrumbs {
+  background: var(--color-bg-soft);
   padding-block: var(--space-md) 0;
+  border-bottom: none;
 }
 
 .procedure-hero {
-  padding-block: var(--space-lg);
+  padding-block: var(--space-md) var(--space-lg);
+  background: var(--color-bg-soft);
+  border-bottom: 1px solid var(--color-border-soft);
 }
 
 .procedure-hero__inner {
@@ -21,14 +25,9 @@
 
 /* Текстовая колонка */
 
+/* Eyebrow скрыт: его роль берут хлебные крошки (P1.6) */
 .procedure-hero__eyebrow {
-  display: inline-block;
-  font-size: var(--font-sm);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-primary);
-  margin-block-end: var(--space-sm);
+  display: none;
 }
 
 .procedure-hero__title {
