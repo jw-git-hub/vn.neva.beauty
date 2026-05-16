@@ -1,0 +1,336 @@
+/* ===================================================================
+   contacts.css — Страница контактов
+   BEM block: .contacts-page
+   Mobile-first. Только var(--…) токены; raw px только для соотношений.
+   =================================================================== */
+
+/* ── Hero-заголовок страницы ──────────────────────────────────── */
+
+.contacts-page__hero {
+  padding-block: var(--space-lg);
+  border-bottom: 1px solid var(--color-border-soft);
+  background: var(--color-bg-soft);
+}
+
+.contacts-page__eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-block-end: var(--space-sm);
+}
+
+.contacts-page__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  color: var(--color-text);
+  margin-block: 0 var(--space-sm);
+  line-height: 1.1;
+}
+
+.contacts-page__intro {
+  font-size: var(--font-md);
+  color: var(--color-text-muted);
+  max-width: 52ch;
+  margin-block: 0;
+  line-height: 1.65;
+}
+
+/* ── Основной раздел (инфо + карта) ──────────────────────────── */
+
+.contacts-page__body {
+  padding-block: var(--space-xl);
+}
+
+.contacts-page__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+@media (min-width: 1024px) {
+  .contacts-page__grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: calc(var(--space-xl) * 1.5);
+  }
+}
+
+/* ── Колонка информации ───────────────────────────────────────── */
+
+.contacts-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Карточка-деталь (адрес, режим) */
+
+.contacts-info__card {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.contacts-info__card-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-accent);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+}
+
+.contacts-info__card-icon svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.contacts-info__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.contacts-info__card-label {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.contacts-info__card-value {
+  font-size: var(--font-base);
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.5;
+  font-style: normal;
+}
+
+.contacts-info__card-value--accent {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Разделитель */
+
+.contacts-info__divider {
+  border: none;
+  border-top: 1px solid var(--color-border-soft);
+  margin: 0;
+}
+
+/* ── Блок мессенджеров ────────────────────────────────────────── */
+
+.contacts-messengers__heading {
+  font-family: var(--font-heading);
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--color-text);
+  margin-block: 0 var(--space-md);
+}
+
+.contacts-messengers__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Кнопка-мессенджер */
+
+.contacts-messengers__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-height: 56px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: var(--font-base);
+  font-weight: 600;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.contacts-messengers__btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.contacts-messengers__btn:hover {
+  transform: translateX(4px);
+}
+
+.contacts-messengers__btn-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+}
+
+.contacts-messengers__btn-icon svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.contacts-messengers__btn-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+}
+
+.contacts-messengers__btn-name {
+  line-height: 1.2;
+}
+
+.contacts-messengers__btn-sub {
+  font-size: var(--font-sm);
+  font-weight: 400;
+  opacity: 0.75;
+  line-height: 1.2;
+}
+
+/* WhatsApp — основная (фуксия) */
+
+.contacts-messengers__btn--whatsapp {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-cta);
+}
+
+.contacts-messengers__btn--whatsapp:hover {
+  background: var(--color-primary-hover);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-cta-strong);
+}
+
+.contacts-messengers__btn--whatsapp .contacts-messengers__btn-icon {
+  background: var(--color-on-primary-soft);
+  color: var(--color-text-inverse);
+}
+
+/* Telegram + Instagram — вторичные (одинаковые стили) */
+
+.contacts-messengers__btn--telegram,
+.contacts-messengers__btn--instagram {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+
+.contacts-messengers__btn--telegram:hover,
+.contacts-messengers__btn--instagram:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+  border-color: var(--color-primary-soft);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.contacts-messengers__btn--telegram .contacts-messengers__btn-icon,
+.contacts-messengers__btn--instagram .contacts-messengers__btn-icon {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+
+.contacts-messengers__btn--telegram:hover .contacts-messengers__btn-icon,
+.contacts-messengers__btn--instagram:hover .contacts-messengers__btn-icon {
+  background: var(--color-primary-soft);
+}
+
+/* ── Колонка карты ────────────────────────────────────────────── */
+
+.contacts-map {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.contacts-map__label {
+  font-family: var(--font-heading);
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.contacts-map__frame-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 62.5%; /* 16:10 — хорошо для карты */
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border-soft);
+  box-shadow: var(--shadow-card);
+  background: var(--color-border-soft);
+}
+
+.contacts-map__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.contacts-map__open-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  padding: var(--space-xs) 0;
+  transition: color var(--transition-fast);
+  min-height: 44px;
+}
+
+.contacts-map__open-link:hover {
+  color: var(--color-primary-hover);
+}
+
+.contacts-map__open-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+.contacts-map__open-link svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex-shrink: 0;
+}
+
+/* ── Reduced motion ───────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .contacts-messengers__btn {
+    transition: none;
+  }
+
+  .contacts-messengers__btn:hover {
+    transform: none;
+  }
+}
