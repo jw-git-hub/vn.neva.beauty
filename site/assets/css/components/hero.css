@@ -1,0 +1,262 @@
+/* ===================================================================
+   hero.css — первый экран главной страницы vn.neva.beauty
+   Салон красоты в Да Нанге: текст-доминанта + фото, одна CTA.
+   Mobile-first. Адаптив: 360 → 768 → 1024.
+   =================================================================== */
+
+/* ---- Блок ---- */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg);
+  isolation: isolate;
+  padding-block: calc(var(--space-xl) * 0.75) var(--space-lg);
+}
+
+/* Декоративные мягкие пятна фона (мобилка/планшет) */
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.hero::before {
+  width: clamp(300px, 40vw, 560px);
+  height: clamp(300px, 40vw, 560px);
+  top: -140px;
+  right: -100px;
+  background: radial-gradient(circle, var(--color-primary-soft) 0%, transparent 70%);
+  animation: hero-glow-a 28s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero::after {
+  width: clamp(220px, 30vw, 400px);
+  height: clamp(220px, 30vw, 400px);
+  bottom: -120px;
+  left: -80px;
+  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+  animation: hero-glow-b 38s ease-in-out 4s infinite;
+  will-change: transform;
+}
+
+/* На ≥1024px декоративные пятна не нужны — их роль берёт фото */
+@media (min-width: 1024px) {
+  .hero::before,
+  .hero::after {
+    display: none;
+  }
+}
+
+/* ---- Сетка: mobile = column, desktop = 2 cols ---- */
+
+.hero__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 780px;
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    padding-block: calc(var(--space-xl) * 1.25) var(--space-xl);
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 5vw, 80px);
+    max-width: none;
+    align-items: center;
+  }
+}
+
+/* ---- Текстовая колонка ---- */
+
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Маленькая плашка-eyebrow над заголовком */
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  align-self: flex-start;
+  padding: 5px var(--space-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary-soft);
+  border-radius: var(--radius-full);
+  font-size: var(--font-13);
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 0.03em;
+  box-shadow: var(--shadow-card);
+}
+
+.hero__eyebrow::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ---- Заголовок ---- */
+
+.hero__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 7vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.hero__title-line {
+  display: block;
+}
+
+.hero__accent {
+  color: var(--color-primary);
+}
+
+/* ---- Подзаголовок ---- */
+
+.hero__subtitle {
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  max-width: 52ch;
+  margin: 0;
+}
+
+/* ---- Действие ---- */
+
+.hero__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.hero__cta {
+  min-width: 200px;
+  min-height: 52px;
+  padding-inline: var(--space-lg);
+  font-size: var(--font-md);
+  box-shadow: var(--shadow-cta);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-base),
+    background var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .hero__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-cta-strong);
+  }
+}
+
+/* ---- Фото-колонка ---- */
+
+.hero__media {
+  order: -1; /* фото выше текста на мобилке */
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  line-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .hero__media {
+    order: 0;
+    position: relative;
+  }
+}
+
+.hero__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition-image);
+}
+
+@media (hover: hover) {
+  .hero__media:hover .hero__image {
+    transform: scale(1.02);
+  }
+}
+
+/* Планшет — ограничить высоту фото */
+@media (min-width: 768px) {
+  .hero {
+    padding-block: calc(var(--space-xl) * 1) var(--space-xl);
+  }
+
+  .hero__image {
+    max-height: 480px;
+    object-fit: cover;
+    object-position: center top;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero__image {
+    max-height: none;
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* ---- Фоновые анимации ---- */
+
+@keyframes hero-glow-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(-8px, 10px) scale(1.05); }
+}
+
+@keyframes hero-glow-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(10px, -8px) scale(1.04); }
+}
+
+/* ---- Reduced motion ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .hero::after {
+    animation: none;
+  }
+
+  .hero__cta {
+    transition: none;
+  }
+
+  .hero__cta:hover {
+    transform: none;
+  }
+
+  .hero__image {
+    transition: none;
+  }
+
+  .hero__media:hover .hero__image {
+    transform: none;
+  }
+}

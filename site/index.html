@@ -30,6 +30,10 @@
   <link rel="stylesheet" href="/assets/css/layout.css">
   <link rel="stylesheet" href="/assets/css/components/header.css">
   <link rel="stylesheet" href="/assets/css/components/footer.css">
+  <link rel="stylesheet" href="/assets/css/components/hero.css">
+  <link rel="stylesheet" href="/assets/css/components/proc-card.css">
+  <link rel="stylesheet" href="/assets/css/components/trust.css">
+  <link rel="stylesheet" href="/assets/css/components/contacts-teaser.css">
 
   <script type="application/ld+json">
   {
@@ -170,7 +174,519 @@
   </header>
 
   <main id="main-content" tabindex="-1">
-    <!-- Контент главной — Task 5 -->
+
+    <!-- ===== 1. Hero ===== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero__inner">
+
+          <!-- Медиа-колонка -->
+          <div class="hero__media">
+            <img
+              class="hero__image"
+              src="/assets/images/home-hero.webp"
+              alt="Специалист Neva Beauty проводит процедуру аппаратной косметологии"
+              width="1600"
+              height="1101"
+              loading="eager"
+            >
+          </div>
+
+          <!-- Текстовая колонка -->
+          <div class="hero__content">
+            <span class="hero__eyebrow">Да Нанг, Вьетнам</span>
+
+            <h1 class="hero__title" id="hero-title">
+              <span class="hero__title-line">Центр красоты</span>
+              <span class="hero__title-line">в <span class="hero__accent">Да Нанге</span></span>
+            </h1>
+
+            <p class="hero__subtitle">
+              Аппаратная косметология, лазерная эпиляция и эстетический уход —
+              современные технологии для видимого результата в тропическом климате.
+            </p>
+
+            <div class="hero__actions">
+              <a class="btn btn--primary hero__cta" href="/contacts">
+                Записаться на консультацию
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. Услуги ===== -->
+    <section class="services" aria-labelledby="services-title">
+      <div class="container">
+
+        <h2 class="visually-hidden" id="services-title">Наши услуги</h2>
+
+        <!-- Группа 1: Аппаратная косметология -->
+        <div class="services__section-head">
+          <h3 class="services__section-title">Аппаратная косметология</h3>
+          <p class="services__section-desc">
+            Передовые технологии для глубокого омоложения и коррекции несовершенств.
+            Высокая эффективность без длительного восстановления.
+          </p>
+        </div>
+
+        <div class="services__grid">
+
+          <!-- LPG-массаж -->
+          <a class="proc-card" href="/lpg-massazh">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/lpg-massage-hero.webp"
+                alt="LPG-массаж — вакуумно-роликовое моделирование"
+                width="1600"
+                height="900"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">LPG-массаж</h4>
+              <p class="proc-card__desc">
+                Вакуумно-роликовое моделирование тела: лимфодренаж, расщепление жировых отложений,
+                подтянутый силуэт и ощущение лёгкости.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- Эндосфера-терапия -->
+          <a class="proc-card" href="/endosfera-terapiya">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/endosphere-hero.webp"
+                alt="Эндосфера-терапия — аппаратный массаж"
+                width="1600"
+                height="1063"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Эндосфера-терапия</h4>
+              <p class="proc-card__desc">
+                Глубокая проработка тканей, устранение целлюлита и лишней жидкости.
+                Подтянутое тело и сияющее лицо.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- Кавитация -->
+          <a class="proc-card" href="/ultrazvukovaya-kavitaciya">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/cavitation-hero.webp"
+                alt="Ультразвуковая кавитация — коррекция фигуры"
+                width="1600"
+                height="1066"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Ультразвуковая кавитация</h4>
+              <p class="proc-card__desc">
+                Ультразвуковые волны разрушают жировые клетки и выводят их из организма.
+                Уменьшение объёмов без хирургии.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- SMAS-лифтинг -->
+          <a class="proc-card" href="/smas-lifting">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/smas-lifting-hero.webp"
+                alt="Ультразвуковой SMAS-лифтинг"
+                width="1600"
+                height="1066"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">SMAS-лифтинг</h4>
+              <p class="proc-card__desc">
+                Воздействие на глубокий мышечно-апоневротический слой.
+                Подтянутый овал лица и выразительные скулы на долгий срок.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- Удаление татуировок -->
+          <a class="proc-card" href="/udalenie-tatuirovok-lazerom">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/tattoo-removal-hero.webp"
+                alt="Лазерное удаление татуировок"
+                width="1600"
+                height="900"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Удаление татуировок</h4>
+              <p class="proc-card__desc">
+                Лазерное разрушение красителя — бережно, без шрамов.
+                Возвращаем коже естественный и здоровый вид.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- Удаление перм. макияжа -->
+          <a class="proc-card" href="/udalenye-permanentnogo-makiyazha">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/permanent-removal-hero.webp"
+                alt="Удаление перманентного макияжа лазером"
+                width="1600"
+                height="857"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Удаление перманентного макияжа</h4>
+              <p class="proc-card__desc">
+                Эффективное расщепление пигмента любого цвета.
+                Чистая кожа, готовая к обновлению.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- Morpheus 8 -->
+          <a class="proc-card" href="/morpheus-8-rf-lifting">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/morpheus8-hero.webp"
+                alt="Morpheus 8 — RF-лифтинг с микроиглами"
+                width="1600"
+                height="820"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Morpheus 8</h4>
+              <p class="proc-card__desc">
+                Микроигольчатое воздействие и радиочастотная энергия — чёткие контуры лица
+                и тела, сияющая подтянутая кожа.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <!-- Фотоомоложение M22 -->
+          <a class="proc-card" href="/fotoomolozhenie-m22">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/photon-m22-hero.webp"
+                alt="Фотоомоложение M22 — световая фототерапия"
+                width="1600"
+                height="691"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Фотоомоложение M22</h4>
+              <p class="proc-card__desc">
+                Мультимодульная платформа M22 — мировой лидер фототерапии.
+                Ровный тон и свежий вид без длительной реабилитации.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+        </div><!-- /.services__grid -->
+
+        <hr class="section-divider">
+
+        <!-- Группа 2: Эпиляция -->
+        <div class="services__section-head services__section-head--spaced">
+          <h3 class="services__section-title">Эпиляция</h3>
+          <p class="services__section-desc">
+            Забудьте о ежедневном бритье и раздражении. Долгосрочный результат и
+            максимальный комфорт в любом климате.
+          </p>
+        </div>
+
+        <div class="services__grid">
+
+          <!-- Лазерная эпиляция -->
+          <a class="proc-card" href="/lazernaya-epilyaciya">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/laser-epilation-hero.webp"
+                alt="Лазерная эпиляция — долгосрочное удаление волос"
+                width="1600"
+                height="1064"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Лазерная эпиляция</h4>
+              <p class="proc-card__desc">
+                Идеальное решение для Да Нанга: высокая влажность и активный образ жизни
+                — а кожа остаётся гладкой и ухоженной без ежедневных усилий.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+        </div><!-- /.services__grid -->
+
+        <hr class="section-divider">
+
+        <!-- Группа 3: Уходовые процедуры -->
+        <div class="services__section-head services__section-head--spaced">
+          <h3 class="services__section-title">Уходовые процедуры</h3>
+          <p class="services__section-desc">
+            Бережные ритуалы для поддержания идеального состояния кожи.
+            Индивидуально подобранные программы питания, очищения и глубокого увлажнения.
+          </p>
+        </div>
+
+        <div class="services__grid">
+
+          <!-- Эстетическая косметология -->
+          <a class="proc-card" href="/esteticheskaya-kosmetologiya-i-uhod">
+            <div class="proc-card__media">
+              <img
+                class="proc-card__image"
+                src="/assets/images/cosmetology-hero.webp"
+                alt="Эстетическая косметология и профессиональный уход"
+                width="1600"
+                height="1065"
+                loading="lazy"
+              >
+            </div>
+            <div class="proc-card__body">
+              <h4 class="proc-card__title">Эстетическая косметология</h4>
+              <p class="proc-card__desc">
+                Комплексные программы: глубокие чистки, ревитализирующие пилинги,
+                карбокситерапия. Идеально гладкая, матовая и сияющая кожа.
+              </p>
+            </div>
+            <div class="proc-card__footer">
+              <span class="proc-card__link" aria-hidden="true">
+                Подробнее
+                <svg class="proc-card__link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+        </div><!-- /.services__grid -->
+
+      </div><!-- /.container -->
+    </section>
+
+    <!-- ===== 3. Блок доверия «Почему Neva Beauty» ===== -->
+    <section class="trust" aria-labelledby="trust-title">
+      <div class="container">
+
+        <div class="trust__head">
+          <h2 class="trust__title" id="trust-title">Почему Neva Beauty</h2>
+          <p class="trust__subtitle">
+            Мы создали пространство, где передовые технологии сочетаются с вниманием
+            к каждому клиенту и пониманием особенностей тропического климата.
+          </p>
+        </div>
+
+        <div class="trust__grid">
+
+          <!-- Пункт 1: Современное оборудование -->
+          <div class="trust__item">
+            <div class="trust__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"></path>
+              </svg>
+            </div>
+            <h3 class="trust__item-title">Современные аппараты</h3>
+            <p class="trust__item-text">
+              Работаем только на сертифицированном оборудовании: LPG Alliance, Endosphere,
+              Lumenis M22, Morpheus 8. Без компромиссов в технологиях.
+            </p>
+          </div>
+
+          <!-- Пункт 2: Индивидуальный подход -->
+          <div class="trust__item">
+            <div class="trust__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h3 class="trust__item-title">Индивидуальный подход</h3>
+            <p class="trust__item-text">
+              Каждая программа составляется под ваш тип кожи, задачи и образ жизни.
+              Консультация перед первой процедурой — всегда.
+            </p>
+          </div>
+
+          <!-- Пункт 3: Видимый результат -->
+          <div class="trust__item">
+            <div class="trust__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+            <h3 class="trust__item-title">Видимый результат</h3>
+            <p class="trust__item-text">
+              Аппаратные методики дают измеримый эффект: уменьшение объёмов, подтяжка
+              контуров, выравнивание тона — без длительного восстановления.
+            </p>
+          </div>
+
+          <!-- Пункт 4: Комфорт в тропическом климате -->
+          <div class="trust__item">
+            <div class="trust__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
+              </svg>
+            </div>
+            <h3 class="trust__item-title">Комфорт в тропиках</h3>
+            <p class="trust__item-text">
+              Понимаем специфику Да Нанга: высокая влажность, активный солнечный режим.
+              Подбираем процедуры и уход, которые работают именно здесь.
+            </p>
+          </div>
+
+        </div><!-- /.trust__grid -->
+
+      </div>
+    </section>
+
+    <!-- ===== 4. Тизер контактов ===== -->
+    <section class="contacts-teaser" aria-labelledby="contacts-teaser-title">
+      <div class="container">
+        <div class="contacts-teaser__inner">
+
+          <div class="contacts-teaser__text">
+            <h2 class="contacts-teaser__title" id="contacts-teaser-title">
+              Готовы начать?
+            </h2>
+            <p class="contacts-teaser__address">Да Нанг, Вьетнам — адрес уточняется</p>
+          </div>
+
+          <div class="contacts-teaser__actions">
+            <ul class="contacts-teaser__messengers" role="list">
+
+              <li>
+                <a
+                  class="contacts-teaser__messenger-link"
+                  href="https://wa.me/84357132621"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Написать в WhatsApp"
+                >
+                  <svg class="contacts-teaser__messenger-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                  </svg>
+                  WhatsApp
+                </a>
+              </li>
+
+              <li>
+                <a
+                  class="contacts-teaser__messenger-link"
+                  href="https://t.me/doctor_cosmetolog_pro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Написать в Telegram"
+                >
+                  <svg class="contacts-teaser__messenger-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                  </svg>
+                  Telegram
+                </a>
+              </li>
+
+              <li>
+                <a
+                  class="contacts-teaser__messenger-link"
+                  href="https://www.instagram.com/vn.neva.beauty"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Страница в Instagram"
+                >
+                  <svg class="contacts-teaser__messenger-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                  </svg>
+                  Instagram
+                </a>
+              </li>
+
+            </ul>
+
+            <a class="btn btn--ghost contacts-teaser__cta" href="/contacts">
+              Все контакты
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="site-footer" role="contentinfo">
