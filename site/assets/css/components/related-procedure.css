@@ -1,0 +1,132 @@
+/* ================================================================
+   related-procedure — Блок «Дополните ваш уход»
+   BEM block: .related-procedure
+   ================================================================ */
+
+.related-procedure {
+  padding-block: var(--space-lg);
+}
+
+.related-procedure__head {
+  margin-block-end: var(--space-lg);
+}
+
+.related-procedure__title {
+  /* Наследует h2 из base.css */
+  margin-block: 0;
+}
+
+/* Карточка-ссылка */
+
+.related-procedure__card {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: var(--color-text);
+  background: var(--color-surface);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+  max-width: 520px;
+}
+
+.related-procedure__card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.related-procedure__card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* Медиа */
+
+.related-procedure__media {
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.related-procedure__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-image);
+}
+
+.related-procedure__card:hover .related-procedure__image {
+  transform: scale(1.04);
+}
+
+/* Тело карточки */
+
+.related-procedure__body {
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.related-procedure__label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.related-procedure__name {
+  font-family: var(--font-heading);
+  font-size: var(--font-xl);
+  font-weight: 500;
+  color: var(--color-text);
+  margin-block: 0;
+}
+
+.related-procedure__desc {
+  font-size: var(--font-base);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-block: var(--space-xs) 0;
+}
+
+.related-procedure__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-sm);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.related-procedure__link-arrow {
+  transition: transform var(--transition-fast);
+}
+
+.related-procedure__card:hover .related-procedure__link-arrow {
+  transform: translateX(3px);
+}
+
+/* ── Адаптив ──────────────────────────────────────────────── */
+
+@media (min-width: 480px) {
+  .related-procedure__card {
+    grid-template-columns: 1fr 1fr;
+    max-width: 640px;
+  }
+
+  .related-procedure__media {
+    aspect-ratio: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .related-procedure {
+    padding-block: calc(var(--space-lg) * 1.5);
+  }
+}

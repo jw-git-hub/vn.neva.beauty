@@ -1,0 +1,144 @@
+/* ================================================================
+   booking-cta — Блок «Запишитесь» с кнопками мессенджеров
+   BEM block: .booking-cta
+   ================================================================ */
+
+.booking-cta {
+  padding-block: var(--space-lg);
+  background: var(--color-bg-soft);
+}
+
+.booking-cta__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+/* Текстовая часть */
+
+.booking-cta__title {
+  /* Наследует h2 из base.css */
+  margin-block: 0 var(--space-sm);
+}
+
+.booking-cta__body {
+  font-size: var(--font-base);
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  margin-block: 0;
+  max-width: 58ch;
+}
+
+/* Кнопки */
+
+.booking-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+/* Базовая кнопка-мессенджер */
+
+.booking-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 48px;
+  padding-inline: var(--space-lg);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--font-base);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.booking-cta__btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.booking-cta__btn-icon {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+/* Основная кнопка — WhatsApp (фуксия) */
+
+.booking-cta__btn--primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-cta);
+}
+
+.booking-cta__btn--primary:hover {
+  background: var(--color-primary-hover);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-cta-strong);
+}
+
+/* Вторичная кнопка — Telegram */
+
+.booking-cta__btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.booking-cta__btn--secondary:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+  border-color: var(--color-primary-soft);
+}
+
+/* Третичная кнопка — Instagram */
+
+.booking-cta__btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-soft);
+}
+
+.booking-cta__btn--ghost:hover {
+  background: var(--color-accent);
+  border-color: var(--color-primary);
+}
+
+/* ── Адаптив ──────────────────────────────────────────────── */
+
+@media (min-width: 768px) {
+  .booking-cta {
+    padding-block: calc(var(--space-lg) * 1.5);
+  }
+
+  .booking-cta__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xl);
+  }
+
+  .booking-cta__text {
+    flex: 1 1 auto;
+    max-width: 46ch;
+  }
+
+  .booking-cta__actions {
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .booking-cta__btn {
+    justify-content: center;
+    min-width: 220px;
+  }
+}

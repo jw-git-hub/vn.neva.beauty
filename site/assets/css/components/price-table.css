@@ -1,0 +1,155 @@
+/* ================================================================
+   price-table — Блок «Цены» с таблицей услуг
+   BEM block: .price-table
+   ================================================================ */
+
+.price-table {
+  padding-block: var(--space-lg);
+}
+
+.price-table__head {
+  margin-block-end: var(--space-lg);
+}
+
+.price-table__title {
+  /* Наследует h2 из base.css */
+  margin-block: 0 var(--space-sm);
+}
+
+.price-table__subtitle {
+  font-size: var(--font-base);
+  color: var(--color-text-muted);
+  margin-block: 0;
+}
+
+/* Группа: Тело / Лицо */
+
+.price-table__group {
+  margin-block-end: var(--space-lg);
+}
+
+.price-table__group-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-md);
+  font-weight: 500;
+  color: var(--color-text);
+  margin-block: 0 var(--space-md);
+  padding-block-end: var(--space-sm);
+  border-block-end: 2px solid var(--color-primary-soft);
+}
+
+/* Таблица */
+
+.price-table__table-wrapper {
+  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.price-table__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-base);
+}
+
+.price-table__table thead {
+  background: var(--color-bg-soft);
+}
+
+.price-table__table th {
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.price-table__table th:last-child {
+  text-align: right;
+}
+
+.price-table__table td {
+  padding: var(--space-sm) var(--space-md);
+  vertical-align: middle;
+  border-block-end: 1px solid var(--color-border-soft);
+  color: var(--color-text);
+}
+
+.price-table__table tr:last-child td {
+  border-block-end: none;
+}
+
+/* Название услуги */
+
+.price-table__item-name {
+  font-weight: 500;
+}
+
+/* Единица (1 сеанс, 5 сеансов…) */
+
+.price-table__unit {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* Цена — правая колонка, крупная, акцент */
+
+.price-table__price {
+  text-align: right;
+  font-family: var(--font-heading);
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* Строка-примечание (Костюм) */
+
+.price-table__note-row td {
+  background: var(--color-accent);
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.price-table__note-row .price-table__price {
+  font-size: var(--font-base);
+}
+
+/* Описательный текст примечания может переноситься */
+.price-table__note-row .price-table__unit {
+  white-space: normal;
+}
+
+/* ── Адаптив ──────────────────────────────────────────────── */
+
+/* Сжатые стили для узких экранов (< 480px) */
+@media (max-width: 479px) {
+  .price-table__table th,
+  .price-table__table td {
+    padding-inline: var(--space-sm);
+  }
+
+  .price-table__price {
+    font-size: var(--font-base);
+  }
+}
+
+@media (min-width: 768px) {
+  .price-table {
+    padding-block: calc(var(--space-lg) * 1.5);
+  }
+
+  .price-table__table th,
+  .price-table__table td {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .price-table__price {
+    font-size: var(--font-xl);
+  }
+}
