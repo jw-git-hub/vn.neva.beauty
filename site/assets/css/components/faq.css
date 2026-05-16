@@ -1,0 +1,128 @@
+/* ================================================================
+   faq.css — раскрывающиеся вопросы-ответы
+   Стратегия: больше воздуха внутри пунктов, акцентный hover,
+   шеврон в кружке soft-pink с цветом из var(--color-primary).
+   ================================================================ */
+
+.faq__list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.faq__item {
+  border-bottom: 1px solid var(--color-border);
+  transition: background var(--transition-fast);
+}
+
+.faq__item[open] {
+  background: var(--color-bg-soft);
+}
+
+.faq__question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-sm);
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: var(--font-md);
+  letter-spacing: -0.01em;
+  transition: color var(--transition-fast);
+  border-radius: var(--radius-sm);
+}
+
+.faq__question:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.faq__question::-webkit-details-marker {
+  display: none;
+}
+
+.faq__question {
+  position: relative;
+}
+
+/* Шеврон-индикатор: ::after — soft-pink кружок-фон. */
+.faq__question::after {
+  content: '';
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent);
+  transition: background-color var(--transition-fast);
+}
+
+/* ::before — сам шеврон через mask + background-color из --color-primary
+   (избегаем хардкода #-цвета в data-URL SVG). */
+.faq__question::before {
+  content: '';
+  position: absolute;
+  right: calc(var(--space-sm) + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-primary);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 6l5 5 5-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center / contain;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 6l5 5 5-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center / contain;
+  pointer-events: none;
+  transition: transform var(--transition-fast);
+  z-index: 1;
+}
+
+.faq__question:hover {
+  color: var(--color-primary);
+}
+
+.faq__question:hover::after {
+  background-color: var(--color-primary-soft);
+}
+
+.faq__item[open] .faq__question {
+  color: var(--color-primary);
+}
+
+.faq__item[open] .faq__question::after {
+  background-color: var(--color-primary-soft);
+}
+
+.faq__item[open] .faq__question::before {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.faq__answer {
+  padding: 0 var(--space-sm) var(--space-md);
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+.faq__answer p {
+  margin: 0 0 var(--space-sm);
+}
+
+.faq__answer p:last-child {
+  margin-bottom: 0;
+}
+
+.faq__answer a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.faq__answer a:hover {
+  color: var(--color-primary-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq__question::after,
+  .faq__question::before { transition: none; }
+  .faq__item { transition: none; }
+}

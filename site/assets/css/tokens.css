@@ -1,0 +1,116 @@
+:root {
+  /* Фон */
+  --color-bg: #FFFFFF;
+  --color-bg-soft: #FFF5F9;
+  --color-surface: #FFFFFF;
+
+  /* Текст */
+  --color-text: #1A1A1A;
+  --color-text-muted: #5A5A5A;
+  --color-text-inverse: #FFFFFF;
+
+  /* Акцент — фуксия из референса */
+  --color-primary: #D6006E;
+  --color-primary-hover: #B80060;
+  --color-primary-soft: #F5D6E5;
+  --color-accent: #FCE8F1;
+
+  /* Границы */
+  --color-border: #EFEFEF;
+  --color-border-soft: #F7F7F7;
+  --color-border-strong: #E0E0E0;
+
+  /* Skeleton-плейсхолдер */
+  --color-skeleton: #F0EBF0;
+
+  /* Состояния */
+  --color-danger: #C83737;
+  --color-danger-hover: #A82C2C;
+  --color-danger-soft: #FDEAEA;
+  --color-success: #0B8A47;
+  --color-success-soft: #E8F6EE;
+
+  /* Типографика */
+  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: 'Lora', Georgia, 'Times New Roman', serif;
+
+  /* Типографическая шкала */
+  --font-xs: 0.75rem;
+  --font-13: 0.8125rem;  /* 13px */
+  --font-sm: 0.875rem;
+  --font-15: 0.9375rem;  /* 15px */
+  --font-base: 1rem;
+  --font-md: 1.125rem;
+  --font-lg: 1.25rem;
+  --font-xl: 1.5rem;
+  --font-2xl: 1.875rem;
+
+  /* Отступы */
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 32px;
+  --space-xl: 64px;
+
+  /* Радиусы */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xs: 2px;
+  --radius-full: 999px;
+
+  /* Тени */
+  --shadow-card: 0 2px 8px rgb(0 0 0 / 0.06);
+  --shadow-card-hover: 0 8px 20px rgb(0 0 0 / 0.12);
+  --shadow-panel: -8px 0 24px rgb(0 0 0 / 0.08);
+  --shadow-focus: 0 0 0 3px var(--color-primary-soft);
+  --shadow-bar: 0 -4px 16px rgb(0 0 0 / 0.06);          /* sticky-bars (product/cart) */
+  --shadow-cta: 0 8px 24px rgb(214 0 110 / 0.18);       /* primary CTA glow */
+  --shadow-cta-strong: 0 12px 28px rgb(214 0 110 / 0.28);
+  --shadow-toast: 0 8px 24px rgb(0 0 0 / 0.2);
+  --shadow-bloom: 0 20px 50px rgb(214 0 110 / 0.18);    /* мягкий фуксийный glow для SVG-визуала */
+  --shadow-bloom-glow: 0 0 30px rgb(214 0 110 / 0.10);
+
+  /* Слои поверх primary (для иконок/контуров на фуксии) */
+  --color-on-primary: #FFFFFF;
+  --color-on-primary-soft: rgb(255 255 255 / 0.18);
+  --color-on-primary-medium: rgb(255 255 255 / 0.3);
+
+  /* Размеры иконок */
+  --icon-sm: 16px;
+  --icon-md: 24px;
+  --icon-lg: 32px;
+
+  /* Размеры макета */
+  --header-height: 64px;
+
+  /* Подложка для модалок и off-canvas меню */
+  --color-backdrop: rgb(0 0 0 / 0.4);
+
+  /* Контейнер */
+  --container-max: 1280px;
+
+  /* Переходы */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-image: 400ms ease;
+
+  /* Z-index */
+  --z-header: 100;
+  --z-backdrop: 200;
+  --z-drawer: 300;
+  --z-modal: 400;
+}
+
+/* Уважение к настройкам пользователя: сокращаем все анимации, если он попросил. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

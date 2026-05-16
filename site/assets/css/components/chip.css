@@ -1,0 +1,63 @@
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-soft);
+  color: var(--color-text-muted);
+  font-size: var(--font-13);
+  line-height: 1.2;
+  text-decoration: none;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.chip:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary-soft);
+  background: var(--color-accent);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Removable chip variant — used for active filter indicators */
+.chip--removable {
+  border-color: var(--color-primary-soft);
+  background: var(--color-accent);
+  color: var(--color-primary);
+  cursor: pointer;
+  gap: var(--space-xs);
+}
+
+.chip--removable:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.chip--removable:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.chip__close {
+  font-size: 1rem;
+  line-height: 1;
+  margin-inline-start: var(--space-xs);
+  opacity: 0.7;
+}
+
+.chip--removable:hover .chip__close {
+  opacity: 1;
+}
