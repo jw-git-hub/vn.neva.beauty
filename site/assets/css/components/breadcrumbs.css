@@ -1,3 +1,10 @@
+/* Единый вертикальный ритм вокруг крошек: воздух от шапки сверху и до
+   заголовка страницы снизу. Следующий за крошками блок не должен
+   добавлять свой top-отступ, иначе ритм разъедется между страницами. */
+.breadcrumbs-wrap {
+  padding-block: var(--space-md) var(--space-lg);
+}
+
 .breadcrumbs {
   display: flex;
   flex-wrap: wrap;
@@ -41,5 +48,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 60vw;
+    padding-inline-end: var(--space-xs);
   }
 }
