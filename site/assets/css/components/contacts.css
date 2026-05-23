@@ -16,7 +16,7 @@
   display: inline-block;
   font-family: var(--font-body);
   font-size: var(--font-xs);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-primary);
@@ -26,7 +26,7 @@
 .contacts-page__title {
   font-family: var(--font-heading);
   font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--color-text);
   margin-block: 0 var(--space-sm);
   line-height: 1.1;
@@ -101,7 +101,7 @@
 
 .contacts-info__card-label {
   font-size: var(--font-xs);
-  font-weight: 700;
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -118,7 +118,7 @@
 
 .contacts-info__card-value--accent {
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 /* Разделитель */
@@ -134,7 +134,7 @@
 .contacts-messengers__heading {
   font-family: var(--font-heading);
   font-size: var(--font-lg);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--color-text);
   margin-block: 0 var(--space-md);
 }
@@ -160,7 +160,7 @@
   text-decoration: none;
   font-family: var(--font-body);
   font-size: var(--font-base);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   transition:
     background var(--transition-fast),
     color var(--transition-fast),
@@ -206,7 +206,7 @@
 
 .contacts-messengers__btn-sub {
   font-size: var(--font-sm);
-  font-weight: 400;
+  font-weight: var(--weight-regular);
   opacity: 0.75;
   line-height: 1.2;
 }
@@ -270,7 +270,7 @@
 .contacts-map__label {
   font-family: var(--font-heading);
   font-size: var(--font-lg);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--color-text);
   margin: 0;
 }
@@ -329,7 +329,7 @@
   align-items: center;
   gap: var(--space-sm);
   font-size: var(--font-sm);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   color: var(--color-primary);
   text-decoration: none;
   padding: var(--space-xs) 0;

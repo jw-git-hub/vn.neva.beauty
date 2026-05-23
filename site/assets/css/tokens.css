@@ -45,6 +45,16 @@
   --font-xl: 1.5rem;
   --font-2xl: 1.875rem;
 
+  /* Начертания */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Межстрочные */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+
   /* Отступы */
   --space-xxs: 2px;
   --space-xs: 4px;

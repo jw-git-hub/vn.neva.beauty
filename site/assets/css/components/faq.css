@@ -27,7 +27,7 @@
   padding: var(--space-md) var(--space-sm);
   cursor: pointer;
   list-style: none;
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   color: var(--color-text);
   font-size: var(--font-md);
   letter-spacing: -0.01em;

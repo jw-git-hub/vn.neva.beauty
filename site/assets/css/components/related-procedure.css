@@ -73,7 +73,7 @@
 
 .related-procedure__label {
   font-size: var(--font-sm);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-primary);
@@ -82,7 +82,7 @@
 .related-procedure__name {
   font-family: var(--font-heading);
   font-size: var(--font-xl);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--color-text);
   margin-block: 0;
 }
@@ -100,7 +100,7 @@
   gap: var(--space-xs);
   margin-block-start: var(--space-sm);
   font-size: var(--font-sm);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   color: var(--color-primary);
 }
 

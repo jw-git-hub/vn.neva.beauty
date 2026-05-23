@@ -19,7 +19,7 @@
 .trust__title {
   font-family: var(--font-heading);
   font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--color-text);
   margin: 0;
   line-height: 1.15;
@@ -94,7 +94,7 @@
 .trust__item-title {
   font-family: var(--font-heading);
   font-size: var(--font-md);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: 1.25;
   color: var(--color-text);
   margin: 0;

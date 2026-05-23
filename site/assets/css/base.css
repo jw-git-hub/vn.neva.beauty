@@ -2,7 +2,7 @@ html {
   font-family: var(--font-body);
   color: var(--color-text);
   background: var(--color-bg);
-  line-height: 1.5;
+  line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,8 +19,8 @@ main {
 
 h1, h2, h3 {
   font-family: var(--font-heading);
-  font-weight: 500;
-  line-height: 1.2;
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
   color: var(--color-text);
 }
 
@@ -83,8 +83,8 @@ a:hover {
   border: none;
   border-radius: var(--radius-md);
   font-family: var(--font-body);
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
   cursor: pointer;
   text-decoration: none;
   transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
@@ -148,12 +148,12 @@ a:hover {
 
 .form-label {
   font-size: var(--font-sm);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   color: var(--color-text);
 }
 
 .form-label__hint {
-  font-weight: 400;
+  font-weight: var(--weight-regular);
   color: var(--color-text-muted);
   font-size: var(--font-13);
 }

@@ -31,7 +31,7 @@
 .contacts-teaser__title {
   font-family: var(--font-heading);
   font-size: clamp(1.375rem, 2.5vw, 1.875rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--color-text);
   margin: 0 0 var(--space-sm);
   line-height: 1.2;
@@ -86,7 +86,7 @@
   background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: var(--font-sm);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   text-decoration: none;
   box-shadow: var(--shadow-card);
   transition:

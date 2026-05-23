@@ -23,7 +23,7 @@
 .legal__title {
   font-family: var(--font-heading);
   font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: 1.2;
   color: var(--color-text);
   margin-block: 0 var(--space-lg);
@@ -46,7 +46,7 @@
 .legal__section-title {
   font-family: var(--font-heading);
   font-size: var(--font-xl);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: 1.25;
   color: var(--color-text);
   margin-block: 0 var(--space-md);
@@ -97,7 +97,7 @@
 }
 
 .legal__dt {
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   font-size: var(--font-sm);
   color: var(--color-text);
 }
@@ -112,7 +112,7 @@
 /* ── Inline strong (clause sub-labels) ───────────────────────────── */
 
 .legal__body strong {
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 /* ── Contact link inside prose ───────────────────────────────────── */
@@ -144,7 +144,7 @@
 .not-found__eyebrow {
   font-family: var(--font-heading);
   font-size: clamp(4rem, 18vw, 9rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: 1;
   color: var(--color-primary-soft);
   margin-block: 0 var(--space-md);
@@ -154,7 +154,7 @@
 .not-found__title {
   font-family: var(--font-heading);
   font-size: clamp(1.5rem, 4vw, 2.25rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--color-text);
   margin-block: 0 var(--space-md);
 }

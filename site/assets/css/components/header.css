@@ -11,7 +11,7 @@
   color: var(--color-text-inverse);
   font-family: var(--font-body);
   font-size: var(--font-sm);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   text-decoration: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   white-space: nowrap;
@@ -62,7 +62,7 @@
 .site-header__logo-name {
   font-family: var(--font-heading);
   font-size: var(--font-base);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-primary);
@@ -175,7 +175,7 @@
 
 .site-header__nav-link--active {
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 /* ---------- Dropdown toggle ---------- */

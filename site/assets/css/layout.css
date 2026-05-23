@@ -81,7 +81,7 @@
 
 .section__link {
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   text-decoration: none;
   font-size: var(--font-15);
 }

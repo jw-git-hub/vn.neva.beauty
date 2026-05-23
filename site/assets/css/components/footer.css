@@ -31,7 +31,7 @@
 .site-footer__logo {
   font-family: var(--font-heading);
   font-size: var(--font-lg);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   margin: 0;
   line-height: 1;
   text-decoration: none;
@@ -79,7 +79,7 @@
   position: relative;
   font-family: var(--font-heading);
   font-size: var(--font-15);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   margin: 0 0 var(--space-sm);
   padding-block-end: var(--space-xs);
   color: var(--color-text);

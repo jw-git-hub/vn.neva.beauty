@@ -37,7 +37,7 @@
 
 .procedure-hero__lead {
   font-size: var(--font-lg);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   color: var(--color-text);
   margin-block: 0 var(--space-md);
   line-height: 1.4;
