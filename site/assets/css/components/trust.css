@@ -1,10 +1,8 @@
 /* ===================================================================
-   trust.css — блок «Почему Neva Beauty»
-   4 точки доверия.
-   Mobile-first. Фон --color-bg-soft для визуального разделения.
+   trust.css — секция «Почему Neva Beauty» (4 точки доверия).
+   Карточки — на kit-компоненте feature-grid (chip-иконка, --cols-4).
+   Здесь — только секция и точечные надстройки поверх кит-рецепта.
    =================================================================== */
-
-/* ---- Секция «Почему мы» ---- */
 
 .trust {
   background: var(--color-bg-soft);
@@ -33,77 +31,15 @@
   line-height: 1.55;
 }
 
-/* ---- Сетка пунктов ---- */
-
-.trust__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-md);
-}
-
-@media (min-width: 480px) {
-  .trust__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  .trust__grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-lg);
-  }
-}
-
-@media (min-width: 1024px) {
-  .trust__grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* ---- Один пункт доверия ---- */
-
-.trust__item {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+/* Надстройки поверх feature-grid: статичная карточка с тенью,
+   чуть уже боковой паддинг, крупнее межкарточный отступ на десктопе. */
+.trust .feature-grid__item {
   padding: var(--space-lg) var(--space-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
   box-shadow: var(--shadow-card);
 }
 
-/* Иконка / число */
-.trust__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  background: var(--color-accent);
-  color: var(--color-primary);
-  flex-shrink: 0;
+@media (min-width: 768px) {
+  .trust .feature-grid {
+    gap: var(--space-lg);
+  }
 }
-
-.trust__icon svg {
-  width: var(--icon-lg);
-  height: var(--icon-lg);
-}
-
-.trust__item-title {
-  font-family: var(--font-heading);
-  font-size: var(--font-md);
-  font-weight: var(--weight-medium);
-  line-height: 1.25;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.trust__item-text {
-  font-size: var(--font-sm);
-  color: var(--color-text-muted);
-  line-height: 1.55;
-  margin: 0;
-}
-

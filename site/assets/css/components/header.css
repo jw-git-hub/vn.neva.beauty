@@ -49,39 +49,13 @@
 
 /* ---------- Logo ---------- */
 
+/* Контейнерная геометрия логотипа; тип и flex-раскладка — из wordmark. */
 .site-header__logo {
-  display: inline-flex;
-  flex-direction: column;
-  gap: var(--space-xxs);
   padding: var(--space-sm) 0;
-  line-height: 1;
-  text-decoration: none;
   flex-shrink: 0;
 }
 
-.site-header__logo-name {
-  font-family: var(--font-heading);
-  font-size: var(--font-base);
-  font-weight: var(--weight-medium);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-primary);
-  transition: color var(--transition-fast);
-}
-
-.site-header__logo-tag {
-  font-family: var(--font-body);
-  font-size: var(--font-xs);
-  font-weight: 300;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.site-header__logo:hover .site-header__logo-name,
-.site-header__logo:focus-visible .site-header__logo-name {
-  color: var(--color-primary-hover);
-}
+/* Тип логотипа (имя + тэглайн) — из kit-компонента wordmark. */
 
 .site-header__logo:focus-visible {
   outline: 2px solid var(--color-primary);

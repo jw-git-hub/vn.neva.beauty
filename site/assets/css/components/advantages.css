@@ -1,6 +1,7 @@
 /* ================================================================
-   advantages — Блок «Преимущества процедуры»
-   BEM block: .advantages
+   advantages — секция «Преимущества процедуры».
+   Карточки — на kit-компоненте feature-grid (голая иконка --plain,
+   auto-fit). Здесь — только секция и надстройки поверх кит-рецепта.
    ================================================================ */
 
 .advantages {
@@ -24,71 +25,25 @@
   max-width: 60ch;
 }
 
-/* Сетка карточек */
-
-.advantages__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-md);
-}
-
-/* Карточка преимущества */
-
-.advantages__item {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
+/* Надстройки поверх feature-grid: текст крупнее (font-base),
+   карточка реагирует тенью на наведение (без подъёма). */
+.advantages .feature-grid__item {
   transition: box-shadow var(--transition-base);
 }
 
-.advantages__item:hover {
-  box-shadow: var(--shadow-card-hover);
-}
-
-/* Иконка */
-
-.advantages__icon {
-  width: var(--icon-lg);
-  height: var(--icon-lg);
-  color: var(--color-primary);
-  flex-shrink: 0;
-}
-
-/* Заголовок преимущества */
-
-.advantages__item-title {
-  /* Наследует h3 из base.css */
-  margin-block: 0;
-  color: var(--color-text);
-}
-
-/* Описание преимущества */
-
-.advantages__item-desc {
-  font-size: var(--font-base);
-  color: var(--color-text-muted);
-  line-height: 1.65;
-  margin-block: 0;
-}
-
-/* ── Адаптив ──────────────────────────────────────────────── */
-
-@media (min-width: 480px) {
-  .advantages__grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+@media (hover: hover) {
+  .advantages .feature-grid__item:hover {
+    box-shadow: var(--shadow-card-hover);
   }
+}
+
+.advantages .feature-grid__text {
+  font-size: var(--font-base);
+  line-height: 1.65;
 }
 
 @media (min-width: 768px) {
   .advantages {
     padding-block: calc(var(--space-lg) * 1.5);
-  }
-
-  .advantages__grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   }
 }

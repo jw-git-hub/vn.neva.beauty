@@ -28,35 +28,10 @@
 
 /* ---------- Logo ---------- */
 
+/* Тип логотипа (имя + тэглайн) — из kit-компонента wordmark (--lg). */
 .site-footer__logo {
-  font-family: var(--font-heading);
-  font-size: var(--font-lg);
-  font-weight: var(--weight-medium);
   margin: 0;
-  line-height: 1;
-  text-decoration: none;
-  display: inline-flex;
-  flex-direction: column;
   gap: var(--space-xs);
-}
-
-.site-footer__logo-name {
-  color: var(--color-primary);
-  letter-spacing: 0.08em;
-}
-
-.site-footer__logo-tag {
-  font-family: var(--font-body);
-  font-size: var(--font-xs);
-  font-weight: 300;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.site-footer__logo:hover .site-footer__logo-name,
-.site-footer__logo:focus-visible .site-footer__logo-name {
-  color: var(--color-primary-hover);
 }
 
 .site-footer__logo:focus-visible {

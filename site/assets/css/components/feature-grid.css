@@ -1,0 +1,130 @@
+/* ============================================================
+   feature-grid.css — сетка карточек-преимуществ.
+   Карточка = иконка/маркер + заголовок + текст.
+
+   Кит фиксирует РЕЦЕПТ карточки и типографику; число колонок,
+   интерактив и форму иконки выбирают модификаторы; размеры/фон/
+   заголовок секции остаются site-local-надстройкой.
+
+   Разметка:
+     <ul class="feature-grid feature-grid--cols-4">   (или --cols-3, либо без модификатора — auto-fit)
+       <li class="feature-grid__item [feature-grid__item--interactive]">
+         <span class="feature-grid__icon [feature-grid__icon--plain]">…</span>
+         <h3 class="feature-grid__title">…</h3>
+         <p  class="feature-grid__text">…</p>
+       </li>
+     </ul>
+
+   Секционную обёртку (заголовок секции, подзаголовок, фон) сайт
+   делает сам — это не часть сетки.
+   ============================================================ */
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* По умолчанию — гибкая авто-раскладка (карточки от 15rem). */
+@media (min-width: 480px) {
+  .feature-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+}
+
+/* Фиксированные раскладки колонок (перекрывают auto-fit). */
+@media (min-width: 480px) {
+  .feature-grid--cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .feature-grid--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .feature-grid--cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ── Карточка ─────────────────────────────────────────────── */
+
+.feature-grid__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* Интерактивная карточка — подъём + акцентная рамка при наведении. */
+.feature-grid__item--interactive {
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+@media (hover: hover) {
+  .feature-grid__item--interactive:hover {
+    border-color: var(--color-primary-soft);
+    box-shadow: var(--shadow-card);
+    transform: translateY(-2px);
+  }
+}
+
+/* ── Иконка ───────────────────────────────────────────────── */
+
+/* Чип: квадрат с soft-pink подложкой (премиальный акцент). */
+.feature-grid__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Голая иконка — без подложки (контурный стиль). */
+.feature-grid__icon--plain {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  border-radius: 0;
+  background: none;
+}
+
+/* ── Текст карточки ───────────────────────────────────────── */
+
+.feature-grid__title {
+  font-family: var(--font-heading);
+  font-size: var(--font-md);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.feature-grid__text {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-grid__item--interactive { transition: none; }
+  .feature-grid__item--interactive:hover { transform: none; }
+}

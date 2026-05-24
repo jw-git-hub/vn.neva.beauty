@@ -46,6 +46,7 @@
   --font-2xl: 1.875rem;
 
   /* Начертания */
+  --weight-light: 300;     /* тэглайн вордмарка (uppercase, tracked) */
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;

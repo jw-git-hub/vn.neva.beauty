@@ -1,0 +1,58 @@
+/* ============================================================
+   wordmark.css — бренд-вордмарк Neva Beauty: имя + тэглайн.
+
+   Тип (гарнитура, вес, цвет, uppercase, hover) фиксирован китом.
+   Размер/трекинг задаёт контекст: базовый вариант — шапка
+   (имя --font-base), модификатор --lg — крупный вариант (подвал).
+
+   Разметка:
+     <a class="wordmark [wordmark--lg]" href="/">
+       <span class="wordmark__name">Neva Beauty</span>
+       <span class="wordmark__tag">Da Nang</span>
+     </a>
+
+   Контейнерную геометрию (padding, flex-shrink, margin, gap-override)
+   добавляет сайт на том же узле (напр. .site-header__logo).
+   ============================================================ */
+
+.wordmark {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  line-height: 1;
+  text-decoration: none;
+}
+
+.wordmark__name {
+  font-family: var(--font-heading);
+  font-size: var(--font-base);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  transition: color var(--transition-fast);
+}
+
+.wordmark__tag {
+  font-family: var(--font-body);
+  font-size: var(--font-xs);
+  font-weight: var(--weight-light);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.wordmark:hover .wordmark__name,
+.wordmark:focus-visible .wordmark__name {
+  color: var(--color-primary-hover);
+}
+
+/* Крупный вариант — подвал: имя крупнее, трекинг плотнее. */
+.wordmark--lg .wordmark__name {
+  font-size: var(--font-lg);
+  letter-spacing: 0.08em;
+}
+
+.wordmark--lg .wordmark__tag {
+  letter-spacing: 0.28em;
+}

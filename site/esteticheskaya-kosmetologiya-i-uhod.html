@@ -28,6 +28,8 @@
   <link rel="stylesheet" href="/assets/css/reset.css">
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components/wordmark.css">
+  <link rel="stylesheet" href="/assets/css/components/feature-grid.css">
   <link rel="stylesheet" href="/assets/css/components/header.css">
   <link rel="stylesheet" href="/assets/css/components/footer.css">
   <link rel="stylesheet" href="/assets/css/components/breadcrumbs.css">
@@ -96,9 +98,9 @@
   <header class="site-header" role="banner">
     <div class="site-header__inner container">
 
-      <a class="site-header__logo" href="/" aria-label="Neva Beauty — главная">
-        <span class="site-header__logo-name">Neva Beauty</span>
-        <span class="site-header__logo-tag">Da Nang</span>
+      <a class="wordmark site-header__logo" href="/" aria-label="Neva Beauty — главная">
+        <span class="wordmark__name">Neva Beauty</span>
+        <span class="wordmark__tag">Da Nang</span>
       </a>
 
       <nav class="site-header__nav" id="site-nav" aria-label="Главная навигация">
@@ -275,55 +277,55 @@
           </p>
         </div>
 
-        <div class="advantages__grid">
+        <div class="feature-grid">
 
           <!-- Преимущество 1 -->
-          <div class="advantages__item">
-            <svg class="advantages__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <div class="feature-grid__item">
+            <svg class="feature-grid__icon feature-grid__icon--plain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            <h3 class="advantages__item-title">Решение разных проблем</h3>
-            <p class="advantages__item-desc">
+            <h3 class="feature-grid__title">Решение разных проблем</h3>
+            <p class="feature-grid__text">
               Индивидуально подобранные программы эффективно борются с акне, тусклым
               цветом лица, расширенными порами и признаками фотостарения.
             </p>
           </div>
 
           <!-- Преимущество 2 -->
-          <div class="advantages__item">
-            <svg class="advantages__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <div class="feature-grid__item">
+            <svg class="feature-grid__icon feature-grid__icon--plain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <h3 class="advantages__item-title">Безопасность и комфорт</h3>
-            <p class="advantages__item-desc">
+            <h3 class="feature-grid__title">Безопасность и комфорт</h3>
+            <p class="feature-grid__text">
               Все процедуры проводятся по атравматичным методикам, что гарантирует
               отсутствие долгого периода восстановления и приятные ощущения во время сеанса.
             </p>
           </div>
 
           <!-- Преимущество 3 -->
-          <div class="advantages__item">
-            <svg class="advantages__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <div class="feature-grid__item">
+            <svg class="feature-grid__icon feature-grid__icon--plain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
             </svg>
-            <h3 class="advantages__item-title">Глубинный эффект</h3>
-            <p class="advantages__item-desc">
+            <h3 class="feature-grid__title">Глубинный эффект</h3>
+            <p class="feature-grid__text">
               Использование препаратов экспертного класса позволяет активным компонентам
               проникать в глубокие слои эпидермиса, запуская процессы естественного обновления.
             </p>
           </div>
 
           <!-- Преимущество 4 -->
-          <div class="advantages__item">
-            <svg class="advantages__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <div class="feature-grid__item">
+            <svg class="feature-grid__icon feature-grid__icon--plain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
               <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
-            <h3 class="advantages__item-title">Универсальность</h3>
-            <p class="advantages__item-desc">
+            <h3 class="feature-grid__title">Универсальность</h3>
+            <p class="feature-grid__text">
               Эстетические уходы подходят для любого типа кожи и возраста, обеспечивая
               видимый результат уже после первого визита.
             </p>
@@ -553,9 +555,9 @@
 
         <!-- Колонка 1: Бренд -->
         <div class="site-footer__col">
-          <a class="site-footer__logo" href="/" aria-label="Neva Beauty — главная">
-            <span class="site-footer__logo-name">Neva Beauty</span>
-            <span class="site-footer__logo-tag">Da Nang, Vietnam</span>
+          <a class="wordmark wordmark--lg site-footer__logo" href="/" aria-label="Neva Beauty — главная">
+            <span class="wordmark__name">Neva Beauty</span>
+            <span class="wordmark__tag">Da Nang, Vietnam</span>
           </a>
           <p class="site-footer__about">
             Салон аппаратной косметологии и эстетического ухода в Да Нанге.
