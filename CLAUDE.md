@@ -96,3 +96,19 @@ site/assets/fonts/*.woff2
 `executing-plans` / `subagent-driven-development` → `requesting-code-review` /
 `receiving-code-review` → `verification-before-completion`.  
 Для багов — `systematic-debugging`. Перед UI-правкой — `frontend-design`.
+
+---
+
+## Verify-гейт
+
+Перед коммитом любой UI/CSS-правки прогнать из корня репозитория:
+
+```bash
+./check-design-tokens.sh
+```
+
+Страж следит, что начертания заданы токенами кита (`var(--weight-*)`), а не
+магическими числами `font-weight: 600`. Любой хардкод `font-weight` в
+`site/assets/css/**` (кроме `fonts.css`) валит гейт с ненулевым кодом — это
+дрейф от бренд-кита. Чинить токенизацией на `--weight-regular/medium/semibold/bold`
+(см. `tokens.css`), а не правкой числа. Гейт обязан быть зелёным до `git push`.
