@@ -1,9 +1,17 @@
 import { lockScroll, unlockScroll, resetScrollLock } from '../utils/scroll-lock.js';
 
-const NAV_OPEN_CLASS      = 'site-header__nav--open';
-const BACKDROP_VISIBLE    = 'site-header__backdrop--visible';
+// Класс панели/backdrop — из kit-компонента nav-drawer (механика общая
+// для th+vn). z-bump шапки над backdrop — site-local.
+const NAV_OPEN_CLASS      = 'nav-drawer--open';
+const BACKDROP_VISIBLE    = 'nav-drawer__backdrop--visible';
 const DRAWER_OPEN_CLASS   = 'site-header--drawer-open';
 const DROPDOWN_OPEN_CLASS = 'site-header__dropdown--open';
+
+// Брейкпоинт перехода drawer → горизонтальная навигация. У vn — 1024px
+// (длинные ярлыки не влезают в строку раньше ~1016px); kit .nav-drawer
+// сбросился бы уже на 768px, но header.css держит off-canvas до 1024px
+// (vn-override). Совпадает с @media шапки.
+const DESKTOP_MQ = '(min-width: 1024px)';
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -18,11 +26,14 @@ export function initHeader() {
   const nav    = header.querySelector('.site-header__nav');
   if (!burger || !nav) return;
 
+  // Кнопка ✕ внутри панели (из kit-разметки nav-drawer)
+  const closeBtn = nav.querySelector('.nav-drawer__close');
+
   // Backdrop — создаём один раз, не дублируем
-  let backdrop = document.querySelector('.site-header__backdrop');
+  let backdrop = document.querySelector('.nav-drawer__backdrop');
   if (!backdrop) {
     backdrop = document.createElement('div');
-    backdrop.className = 'site-header__backdrop';
+    backdrop.className = 'nav-drawer__backdrop';
     backdrop.setAttribute('aria-hidden', 'true');
     document.body.appendChild(backdrop);
   }
@@ -62,7 +73,7 @@ export function initHeader() {
 
   function setNavAccessibility(open) {
     if (!SUPPORTS_INERT) return;
-    const isMobile = !window.matchMedia('(min-width: 1024px)').matches;
+    const isMobile = !window.matchMedia(DESKTOP_MQ).matches;
     if (isMobile) {
       if (open) nav.removeAttribute('inert');
       else      nav.setAttribute('inert', '');
@@ -104,6 +115,15 @@ export function initHeader() {
 
   backdrop.addEventListener('click', () => setOpen(false));
 
+  // Крестик ✕ закрывает; фокус возвращается на бургер (setOpen вернёт его
+  // на lastFocused = бургер, открывавший меню).
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      setOpen(false);
+      burger.focus();
+    });
+  }
+
   // Закрываем drawer при клике по ссылке внутри
   nav.addEventListener('click', (e) => {
     const link = e.target.closest('.site-header__nav-link');
@@ -113,7 +133,7 @@ export function initHeader() {
   });
 
   // Закрываем drawer при переходе на desktop
-  const mq = window.matchMedia('(min-width: 1024px)');
+  const mq = window.matchMedia(DESKTOP_MQ);
   mq.addEventListener('change', (e) => {
     if (e.matches && nav.classList.contains(NAV_OPEN_CLASS)) {
       setOpen(false);

@@ -5,10 +5,10 @@
    Размер/трекинг задаёт контекст: базовый вариант — шапка
    (имя --font-base), модификатор --lg — крупный вариант (подвал).
 
-   Разметка:
+   Разметка (тэглайн заполняет сайт — th: Thailand · vn: Da Nang):
      <a class="wordmark [wordmark--lg]" href="/">
        <span class="wordmark__name">Neva Beauty</span>
-       <span class="wordmark__tag">Da Nang</span>
+       <span class="wordmark__tag">Локация</span>
      </a>
 
    Контейнерную геометрию (padding, flex-shrink, margin, gap-override)

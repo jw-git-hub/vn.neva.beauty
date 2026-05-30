@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="/assets/css/layout.css">
   <link rel="stylesheet" href="/assets/css/components/wordmark.css">
   <link rel="stylesheet" href="/assets/css/components/feature-grid.css">
+  <link rel="stylesheet" href="/assets/css/components/nav-drawer.css">
   <link rel="stylesheet" href="/assets/css/components/header.css">
   <link rel="stylesheet" href="/assets/css/components/footer.css">
   <link rel="stylesheet" href="/assets/css/components/hero.css">
@@ -70,7 +71,13 @@
         <span class="wordmark__tag">Da Nang</span>
       </a>
 
-      <nav class="site-header__nav" id="site-nav" aria-label="Главная навигация">
+      <nav class="site-header__nav nav-drawer" id="site-nav" aria-label="Главная навигация">
+        <button class="nav-drawer__close" type="button" aria-label="Закрыть меню">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
         <ul class="site-header__nav-list" role="list">
 
           <li class="site-header__nav-item">

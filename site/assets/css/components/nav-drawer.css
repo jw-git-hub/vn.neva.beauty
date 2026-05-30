@@ -1,0 +1,122 @@
+/* ============================================================
+   nav-drawer.css — рецепт выезжающего off-canvas меню (мобилка).
+
+   Кит фиксирует механику и структуру классов: панель уезжает справа,
+   затемнение-backdrop, кнопка закрытия ✕, тайминги, reduced-motion,
+   сброс на десктопе. Содержимое панели (навигация, ссылки), триггер
+   (бургер) и stacking-контекст, поднимающий панель над backdrop,
+   добавляет сайт поверх.
+
+   Разметка (сайт заполняет содержимое панели):
+     <nav class="nav-drawer [site-namespace]" id="…" aria-label="…">
+       <button class="nav-drawer__close" type="button" aria-label="Закрыть меню">
+         <svg…>✕</svg>
+       </button>
+       <ul class="site-nav-list">…</ul>      ← список ссылок — site-local
+     </nav>
+     <!-- backdrop создаётся скриптом и добавляется в body: -->
+     <div class="nav-drawer__backdrop" aria-hidden="true"></div>
+
+   JS сайта переключает: .nav-drawer--open на панели,
+   .nav-drawer__backdrop--visible на backdrop. Над backdrop панель
+   поднимает сайт (напр. z-bump sticky-шапки, родителя панели).
+   ============================================================ */
+
+.nav-drawer__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-backdrop);
+  background: var(--color-backdrop);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-base), visibility var(--transition-base);
+}
+
+.nav-drawer__backdrop--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 85%;
+  max-width: 320px;
+  z-index: var(--z-drawer);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: translateX(100%);
+  /* visibility:hidden убирает панель из tab-order, пока она за экраном;
+     transition держит её видимой ровно на время анимации ухода. */
+  visibility: hidden;
+  transition: transform var(--transition-base), visibility var(--transition-base);
+}
+
+.nav-drawer--open {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.nav-drawer__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  margin-bottom: var(--space-md);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-drawer__close:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+
+.nav-drawer__close:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Десктоп: панель перестаёт быть off-canvas — сайт раскладывает
+   содержимое как обычную горизонтальную навигацию. */
+@media (min-width: 768px) {
+  .nav-drawer {
+    position: static;
+    width: auto;
+    max-width: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+    transform: none;
+    visibility: visible;
+    transition: none;
+  }
+
+  .nav-drawer__backdrop {
+    display: none;
+  }
+
+  .nav-drawer__close {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-drawer,
+  .nav-drawer__backdrop {
+    transition: visibility 0s;
+  }
+}

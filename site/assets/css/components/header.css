@@ -63,47 +63,14 @@
   border-radius: var(--radius-xs);
 }
 
-/* ---------- Nav (off-canvas on mobile, horizontal on desktop) ---------- */
-
-.site-header__nav {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 85%;
-  max-width: 320px;
-  z-index: var(--z-drawer);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-panel);
-  padding: calc(var(--header-height) + var(--space-md)) var(--space-lg) var(--space-lg);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  transform: translateX(100%);
-  visibility: hidden;
-  transition: transform var(--transition-base), visibility var(--transition-base);
-}
-
-.site-header__nav--open {
-  transform: translateX(0);
-  visibility: visible;
-}
-
-/* ---------- Backdrop ---------- */
-
-.site-header__backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-backdrop);
-  background: var(--color-backdrop);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--transition-base), visibility var(--transition-base);
-}
-
-.site-header__backdrop--visible {
-  opacity: 1;
-  visibility: visible;
-}
+/* ---------- Nav (off-canvas drawer) ----------
+   Механика выезжающей панели, затемнение-backdrop и кнопка ✕ — в
+   kit-компоненте nav-drawer (.nav-drawer / __backdrop / __close).
+   Элемент <nav> несёт оба класса: .site-header__nav (site-local
+   содержимое) + .nav-drawer (kit-механика). Сброс в статичную
+   навигацию на десктопе (≥768px) и prefers-reduced-motion — тоже в
+   ките. Сайт добавляет только z-bump панели над backdrop
+   (.site-header--drawer-open) и горизонтальную раскладку ссылок. */
 
 /* ---------- Nav list ---------- */
 
@@ -147,9 +114,16 @@
   outline-offset: 2px;
 }
 
+/* Текущая страница: сдержанный маркер, а не заливка текста фуксией —
+   единственный «удар фуксии» на экране остаётся за CTA (бренд-правило).
+   Тёмный полужирный текст + тонкое фуксия-подчёркивание как индикатор. */
 .site-header__nav-link--active {
-  color: var(--color-primary);
+  color: var(--color-text);
   font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 /* ---------- Dropdown toggle ---------- */
@@ -177,6 +151,14 @@
 .site-header__nav-item--has-dropdown.site-header__dropdown--open
   .site-header__dropdown-arrow {
   transform: rotate(180deg);
+}
+
+/* Открытое состояние триггера: мягкая фуксия-подсветка строки (как при
+   hover) — чтобы пункт читался как разворачивающийся, а не обычная
+   ссылка. Текст тёмный — без второго «удара фуксии». */
+.site-header__nav-item--has-dropdown.site-header__dropdown--open
+  .site-header__dropdown-toggle .site-header__nav-link {
+  background: var(--color-accent);
 }
 
 /* ---------- Dropdown panel ---------- */
@@ -322,7 +304,50 @@
   transform: rotate(-45deg);
 }
 
-/* ===== Responsive: desktop (1024px) — horizontal nav + CTA ===== */
+/* ===== Off-canvas drawer держим до 1024px (vn-override) =====
+   У vn длинные ярлыки навигации («Аппаратная косметология»,
+   «Уходовые процедуры»): горизонтальной строкой они помещаются лишь
+   с ~1016px (проверено Playwright — на 768px меню переполняет страницу
+   на 248px). Поэтому бургер/drawer на vn живут до 1024px, тогда как kit
+   .nav-drawer по умолчанию сбрасывается в статичную навигацию уже с
+   768px. Этот блок отменяет китовый сброс в полосе 768–1023px,
+   возвращая панели off-canvas-механику. Это осознанное site-local
+   отклонение от th (th с короткими ярлыками переключается на 768px). */
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .site-header__nav.nav-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 85%;
+    max-width: 320px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-panel);
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform var(--transition-base), visibility var(--transition-base);
+  }
+
+  .site-header__nav.nav-drawer.nav-drawer--open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  /* Кнопку ✕ и backdrop kit прячет с ≥768px — на vn они нужны до 1024. */
+  .nav-drawer__close {
+    display: flex;
+  }
+
+  .nav-drawer__backdrop {
+    display: block;
+  }
+}
+
+/* ===== Responsive: desktop (≥1024px) — horizontal nav + CTA ===== */
 
 @media (min-width: 1024px) {
   .site-header__inner {
@@ -336,18 +361,10 @@
     justify-self: end;
   }
 
-  /* Nav becomes static horizontal bar */
+  /* Off-canvas-сброс панели (position/transform/visibility/фон/тень/
+     padding/overflow) делает kit .nav-drawer (с ≥768px, см. override
+     выше) — здесь только горизонтальная flex-выкладка ссылок. */
   .site-header__nav {
-    position: static;
-    width: auto;
-    max-width: none;
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-    overflow: visible;
-    transform: none;
-    visibility: visible;
-    transition: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -412,9 +429,7 @@
     padding: var(--space-xs) var(--space-md);
   }
 
-  .site-header__backdrop {
-    display: none;
-  }
+  /* .nav-drawer__backdrop десктоп скрывает kit — site-local дубля нет. */
 
   .site-header__burger {
     display: none;
@@ -442,8 +457,7 @@
     transition: none;
   }
 
-  .site-header__nav,
-  .site-header__backdrop,
+  /* .nav-drawer / .nav-drawer__backdrop reduced-motion — в ките. */
   .site-header__dropdown {
     transition: visibility 0s;
   }
