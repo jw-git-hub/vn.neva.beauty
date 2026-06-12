@@ -1,0 +1,88 @@
+{% extends "base.html.j2" %}
+{% from 'partials/decor.html.j2' import decor %}
+{% block extra_css %}<link rel="stylesheet" href="/assets/css/home.css">{% endblock %}
+{% macro price_of(prices, slug, name) -%}
+  {%- set ns = namespace(found=false) -%}
+  {%- for sec in prices.get(slug, []) -%}{%- for it in sec['items'] -%}
+    {%- if it.name == name and not ns.found %}{{ it.price }}{%- set ns.found = true -%}{% endif -%}
+  {%- endfor -%}{%- endfor -%}
+{%- endmacro %}
+{% block content %}
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__text">
+      <p class="eyebrow">{{ site.tagline }}</p>
+      <h1 class="hero__title">{% for line in home.hero_title_lines %}<span>{{ line }}</span>{% endfor %}</h1>
+      <p class="hero__sub">{{ home.hero_sub }}</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">Записаться</a>
+        <a class="btn btn--ghost" href="#services">Услуги</a>
+      </div>
+    </div>
+    <div class="hero__media">
+      <span class="hero__blob" aria-hidden="true"></span>
+      <span class="hero__ring" aria-hidden="true"></span>
+      <img class="hero__photo" src="/assets/img/hero.jpg" alt="Уходовая процедура в центре красоты Neva Beauty" width="560" height="700">
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="contact-strip">
+    <div class="contact-strip__item">{{ icon('map-pin') }}<span>{{ site.location }}</span></div>
+    <div class="contact-strip__item">{{ icon('clock') }}<span>{{ site.hours }}</span></div>
+    <a class="contact-strip__item" href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener">{{ icon('message-circle') }}<span>+84 357 132 621</span></a>
+  </div>
+</section>
+
+<section class="section container has-decor" id="services">
+  {{ decor('soft') }}
+  <div class="section-head" data-reveal><p class="eyebrow">Услуги</p><h2>Направления красоты</h2><p>Аппаратные и уходовые процедуры под ваши задачи.</p></div>
+  <div class="cat-grid" data-reveal-children>
+    {% for c in home.categories %}
+    <a class="cat-card card" href="/{{ c.slug }}/">
+      <div class="cat-card__media"><img src="/assets/img/{{ c.image }}.jpg" alt="{{ c.title }}" width="600" height="440" loading="lazy"></div>
+      <div class="cat-card__body"><h3>{{ c.title }}</h3><span class="cat-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section benefits-section has-decor">
+  {{ decor('accent') }}
+  <div class="container">
+    <div class="section-head" data-reveal><p class="eyebrow">Почему Neva Beauty</p><h2>Забота в каждой детали</h2></div>
+    <div class="benefits-grid" data-reveal-children>
+      {% for b in home.benefits %}
+      <div class="benefit"><span class="benefit__icon">{{ icon(b.icon) }}</span><h3>{{ b.title }}</h3><p>{{ b.text }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section container has-decor">
+  {{ decor('soft') }}
+  <div class="section-head" data-reveal><p class="eyebrow">Популярное</p><h2>Частые процедуры</h2><p>Цены указаны во вьетнамских донгах (đ).</p></div>
+  <div class="popular-grid" data-reveal-children>
+    {% for p in home.popular %}
+    <a class="popular-card card" href="/{{ p.slug }}/">
+      <span class="popular-card__name">{{ p.name }}</span>
+      <span class="popular-card__price">{{ price_of(prices, p.slug, p.name) }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section has-decor">
+  {{ decor('soft') }}
+  <div class="container booking">
+    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
+    <div class="booking__actions">
+      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
+      <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
+      <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
+    </div>
+    <p class="booking__loc">{{ icon('map-pin') }} {{ site.location }}</p>
+  </div>
+</section>
+{% endblock %}

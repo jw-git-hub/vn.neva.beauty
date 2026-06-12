@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://vn.neva.beauty/sitemap.xml
