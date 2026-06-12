@@ -1,0 +1,27 @@
+brand: "Neva Beauty"
+tagline: "Центр красоты · Дананг"
+location: "Да Нанг, Вьетнам"
+hours: "Ежедневно 10:00 – 20:00"
+contacts:
+  whatsapp_number: "84357132621"
+  whatsapp_url: "https://wa.me/84357132621"
+  telegram_url: "https://t.me/doctor_cosmetolog_pro"
+  instagram_url: "https://instagram.com/vn.neva.beauty"
+nav:
+  - {label: "Главная", url: "/"}
+  - label: "Аппаратная косметология"
+    children:
+      - {label: "LPG-массаж", slug: "lpg-massazh"}
+      - {label: "Эндосфера-терапия", slug: "endosfera-terapiya"}
+      - {label: "Ультразвуковая кавитация", slug: "ultrazvukovaya-kavitaciya"}
+      - {label: "Ультразвуковой SMAS-лифтинг", slug: "smas-lifting"}
+      - {label: "Лазерное удаление татуировок", slug: "udalenie-tatuirovok-lazerom"}
+      - {label: "Удаление перманентного макияжа", slug: "udalenye-permanentnogo-makiyazha"}
+      - {label: "Morpheus 8 RF-лифтинг", slug: "morpheus-8-rf-lifting"}
+      - {label: "Фотоомоложение M22", slug: "fotoomolozhenie-m22"}
+  - label: "Эпиляция"
+    children:
+      - {label: "Лазерная эпиляция", slug: "lazernaya-epilyaciya"}
+  - label: "Уход"
+    children:
+      - {label: "Эстетическая косметология и уход", slug: "esteticheskaya-kosmetologiya-i-uhod"}

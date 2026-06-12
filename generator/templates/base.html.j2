@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <title>{{ page.seo_title }}</title>
+  <meta name="description" content="{{ page.seo_desc }}">
+  <link rel="canonical" href="https://vn.neva.beauty{{ page.url }}">
+  <meta property="og:title" content="{{ page.seo_title }}">
+  <meta property="og:description" content="{{ page.seo_desc }}">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/decor.css">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% include 'partials/header.html.j2' %}
+  <main id="main">{% block content %}{% endblock %}</main>
+  {% include 'partials/footer.html.j2' %}
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/reveal.js"></script>
+  <script type="module" src="/assets/js/parallax.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

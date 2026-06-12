@@ -1,0 +1,101 @@
+{% extends "base.html.j2" %}
+{% from 'partials/decor.html.j2' import decor %}
+{% block extra_css %}<link rel="stylesheet" href="/assets/css/service.css">{% endblock %}
+{% block content %}
+<section class="svc-hero">
+  <div class="container svc-hero__inner">
+    <div class="svc-hero__text">
+      <p class="eyebrow">{{ svc.category }}</p>
+      <h1>{{ svc.title }}</h1>
+      <p class="svc-hero__intro">{{ svc.intro }}</p>
+      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ svc.title) | urlencode }}" target="_blank" rel="noopener">Записаться</a>
+    </div>
+    <div class="svc-hero__media">
+      <span class="svc-hero__blob" aria-hidden="true"></span>
+      <img src="/assets/img/{{ svc.hero_image }}.jpg" alt="{{ svc.title }}" width="520" height="650">
+    </div>
+  </div>
+</section>
+
+{% if svc.benefits %}
+<section class="section container has-decor">
+  {{ decor('soft') }}
+  <div class="section-head" data-reveal><p class="eyebrow">Преимущества</p><h2>Почему это работает</h2></div>
+  <div class="svc-benefits" data-reveal-children>
+    {% for b in svc.benefits %}
+    <div class="svc-benefit"><span class="svc-benefit__icon">{{ icon(b.icon) }}</span><h3>{{ b.title }}</h3><p>{{ b.text }}</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="section pricelist-section has-decor">
+  {{ decor('accent') }}
+  <div class="container">
+    <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>Цены</h2><p>Указаны во вьетнамских донгах (đ).</p></div>
+    <div class="pricelist" data-pricelist>
+      {% if sections|length > 1 %}
+      <div class="pricelist__tabs" role="tablist">
+        {% for sec in sections %}
+        <button class="pricelist__tab{{ ' is-active' if loop.first }}" type="button" role="tab"
+          aria-selected="{{ 'true' if loop.first else 'false' }}" data-tab="{{ loop.index0 }}">{{ sec.section or 'Цены' }}</button>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% for sec in sections %}
+      <div class="pricelist__panel{{ ' is-active' if loop.first }}" data-panel="{{ loop.index0 }}">
+        {% set combos = sec['items'] | selectattr('name','match','^(КОМБО|Комбо)') | list %}
+        {% set rows = sec['items'] | rejectattr('name','match','^(КОМБО|Комбо)') | list %}
+        {% if combos %}
+        <div class="pricelist__combos">
+          {% for c in combos %}
+          <div class="combo">
+            <div class="combo__name">{{ c.name }}</div>
+            {% if c.desc %}<div class="combo__desc">{{ c.desc }}</div>{% endif %}
+            <div class="combo__price">{{ c.price }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="pricelist__rows">
+          {% for it in rows %}
+          <div class="pricelist__row">
+            <span class="pricelist__name">{{ it.name }}{% if it.desc %}<span class="pricelist__desc">{{ it.desc }}</span>{% endif %}</span>
+            <span class="pricelist__price">{{ it.price }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section has-decor">
+  {{ decor('soft') }}
+  <div class="container booking">
+    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
+    <div class="booking__actions">
+      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ svc.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
+      <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
+      <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
+    </div>
+  </div>
+</section>
+
+{% if svc.related %}
+<section class="section container has-decor">
+  {{ decor('soft') }}
+  <div class="section-head" data-reveal><p class="eyebrow">Дополните уход</p><h2>Смотрите также</h2></div>
+  <div class="related-grid" data-reveal-children>
+    {% for rslug in svc.related %}{% set r = services.get(rslug) %}{% if r %}
+    <a class="related-card card" href="/{{ rslug }}/">
+      <div class="related-card__media"><img src="/assets/img/{{ r.hero_image }}.jpg" alt="{{ r.title }}" width="400" height="300" loading="lazy"></div>
+      <div class="related-card__body"><h3>{{ r.title }}</h3><span class="related-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
+    </a>
+    {% endif %}{% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+{% block extra_js %}<script src="/assets/js/price-tabs.js" defer></script>{% endblock %}

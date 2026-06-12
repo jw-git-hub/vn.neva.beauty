@@ -1,0 +1,25 @@
+<div class="overlay" data-overlay data-drawer-close aria-hidden="true"></div>
+<aside class="drawer" data-drawer aria-label="Мобильное меню">
+  <div class="drawer__top">
+    <span class="drawer__brand">{{ site.brand }}</span>
+    <button class="drawer__close" data-drawer-close aria-label="Закрыть меню">&times;</button>
+  </div>
+  <nav class="drawer__nav">
+    {% for item in site.nav %}
+      {% if item.children %}
+      <div class="drawer__group">
+        <div class="drawer__group-label">{{ item.label }}</div>
+        {% for c in item.children %}<a class="drawer__sub" href="/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
+      </div>
+      {% else %}
+      <a class="drawer__link" href="{{ item.url }}">{{ item.label }}</a>
+      {% endif %}
+    {% endfor %}
+  </nav>
+  <a class="btn btn--primary drawer__cta" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">Записаться</a>
+  <div class="drawer__socials">
+    <a href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener" aria-label="WhatsApp">WhatsApp</a>
+    <a href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener" aria-label="Telegram">Telegram</a>
+    <a href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
+  </div>
+</aside>

@@ -1,0 +1,25 @@
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__col site-footer__brand">
+      <span class="site-footer__logo">{{ site.brand }}</span>
+      <p class="site-footer__loc">{{ site.location }}</p>
+      <p class="site-footer__hours">{{ site.hours }}</p>
+    </div>
+    <nav class="site-footer__col" aria-label="Услуги">
+      <h4 class="site-footer__title">Услуги</h4>
+      {% for item in site.nav %}
+        {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}{% endif %}
+      {% endfor %}
+    </nav>
+    <div class="site-footer__col">
+      <h4 class="site-footer__title">Контакты</h4>
+      <a class="site-footer__link" href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="site-footer__link" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">Telegram</a>
+      <a class="site-footer__link" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
+  <div class="site-footer__bottom container">
+    <span>© Neva Beauty — Da Nang, Vietnam</span>
+    <a href="/privacy/">Политика конфиденциальности</a>
+  </div>
+</footer>

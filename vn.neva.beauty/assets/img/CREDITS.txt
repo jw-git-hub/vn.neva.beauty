@@ -1,0 +1,21 @@
+# Источники изображений
+
+hero: Adrian Motroc (@just_me_again) https://unsplash.com/photos/woman-wearing-blue-robe-lying-with-cucumber-on-eye-87InWldRhgs
+
+# Фото процедур и категорий взяты из материалов предыдущего сайта клиники
+# (Tilda-экспорт, папка «lданные старого сайта/images»). Показывают реальные
+# аппараты под каждую услугу.
+cat-apparat:                          УЗ-кавитация (tild6561…)
+cat-epil:                             лазерная эпиляция, 800 нм (tild6261…)
+cat-care:                             уходовая процедура, маска (tild3465…)
+cat-lift:                             SMAS-лифтинг, Doublo (tild6533-3866…)
+epilyaciya-hero:                      лазерная эпиляция, 800 нм + очки (tild6261…)
+lpg-massazh:                          LPG-массаж, костюм + роликовая манипула (tild3030…)
+endosfera-terapiya:                   Endosphere therapy, сферическая насадка (tild6133…)
+ultrazvukovaya-kavitaciya:            УЗ-кавитация, манипула на животе (tild6561…)
+esteticheskaya-kosmetologiya-i-uhod:  уходовая процедура, маска (tild3465…)
+smas-lifting:                         SMAS-лифтинг, Doublo 10T (tild6533-3866…)
+udalenie-tatuirovok-lazerom:          лазерное удаление тату на спине (tild6465…)
+udalenye-permanentnogo-makiyazha:     удаление перманентного макияжа бровей (tild6132…)
+morpheus-8-rf-lifting:                игольчатый RF, фракционная манипула (tild3430…)
+fotoomolozhenie-m22:                  M22, фото «до/после» пигментации (tild6533-3236…)
