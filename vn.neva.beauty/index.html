@@ -17,10 +17,18 @@
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/components.css">
-  <link rel="stylesheet" href="/assets/css/decor.css">
+  <link rel="stylesheet" href="/assets/css/aurora.css">
+  <link rel="stylesheet" href="/assets/css/reveal.css">
   <link rel="stylesheet" href="/assets/css/home.css">
 </head>
 <body>
+  <div class="aurora" aria-hidden="true">
+  <span class="aurora__blob" style="--x:12%;--y:8%;--size:48vw;--tint:var(--rose-soft);--op:.62;--dur:34s;--delay:0s;--dx:6vw;--dy:4vh"></span>
+  <span class="aurora__blob" style="--x:78%;--y:2%;--size:42vw;--tint:#F1D3C5;--op:.66;--dur:42s;--delay:-9s;--dx:-5vw;--dy:5vh"></span>
+  <span class="aurora__blob" style="--x:62%;--y:52%;--size:54vw;--tint:var(--rose);--op:.40;--dur:46s;--delay:-18s;--dx:-7vw;--dy:-5vh"></span>
+  <span class="aurora__blob" style="--x:4%;--y:60%;--size:44vw;--tint:var(--taupe);--op:.44;--dur:38s;--delay:-5s;--dx:6vw;--dy:-6vh"></span>
+  <span class="aurora__blob" style="--x:40%;--y:82%;--size:46vw;--tint:var(--rose-soft);--op:.54;--dur:40s;--delay:-22s;--dx:4vw;--dy:4vh"></span>
+</div>
   <header class="site-header" data-header>
   <div class="container site-header__inner">
     <a class="site-header__logo" href="/">Neva Beauty</a>
@@ -117,7 +125,6 @@
     </div>
     <div class="hero__media">
       <span class="hero__blob" aria-hidden="true"></span>
-      <span class="hero__ring" aria-hidden="true"></span>
       <img class="hero__photo" src="/assets/img/hero.jpg" alt="Уходовая процедура в центре красоты Neva Beauty" width="560" height="700">
     </div>
   </div>
@@ -172,13 +179,7 @@
   </div>
 </section>
 
-<section class="section container has-decor" id="services">
-  <div class="decor decor--soft" aria-hidden="true">
-  <span class="decor__dot" data-depth="0.05" style="--x:-5%;--y:6%;--size:clamp(150px,21vw,300px);--tint:var(--rose-soft);--op:.26;--blur:10px;--dur:24s;--delay:0s;--dx:20px;--dy:-14px"></span>
-  <span class="decor__dot" data-depth="0.10" style="--x:90%;--y:2%;--size:clamp(100px,14vw,210px);--tint:var(--taupe);--op:.18;--blur:12px;--dur:28s;--delay:-7s;--dx:-16px;--dy:18px"></span>
-  <span class="decor__dot" data-depth="0.04" style="--x:74%;--y:66%;--size:clamp(170px,23vw,340px);--tint:var(--rose-soft);--op:.20;--blur:14px;--dur:32s;--delay:-13s;--dx:-22px;--dy:-18px"></span>
-  <span class="decor__dot" data-depth="0.08" style="--x:8%;--y:80%;--size:clamp(90px,12vw,170px);--tint:#E7C0B4;--op:.16;--blur:10px;--dur:26s;--delay:-4s;--dx:14px;--dy:16px"></span>
-</div>
+<section class="section container" id="services">
   <div class="section-head" data-reveal><p class="eyebrow">Услуги</p><h2>Направления красоты</h2><p>Аппаратные и уходовые процедуры под ваши задачи.</p></div>
   <div class="cat-grid" data-reveal-children>
     
@@ -261,14 +262,7 @@
   </div>
 </section>
 
-<section class="section benefits-section has-decor">
-  <div class="decor decor--accent" aria-hidden="true">
-  <span class="decor__dot" data-depth="0.05" style="--x:-6%;--y:12%;--size:clamp(160px,22vw,320px);--tint:#E7C0B4;--op:.24;--blur:12px;--dur:25s;--delay:0s;--dx:22px;--dy:-12px"></span>
-  <span class="decor__dot" data-depth="0.09" style="--x:92%;--y:8%;--size:clamp(120px,16vw,240px);--tint:var(--rose-soft);--op:.22;--blur:12px;--dur:29s;--delay:-8s;--dx:-18px;--dy:16px"></span>
-  <span class="decor__dot" data-depth="0.07" style="--x:4%;--y:74%;--size:clamp(130px,18vw,260px);--tint:var(--taupe);--op:.16;--blur:14px;--dur:31s;--delay:-5s;--dx:16px;--dy:-16px"></span>
-  <span class="decor__dot" data-depth="0.04" style="--x:80%;--y:78%;--size:clamp(150px,20vw,300px);--tint:var(--rose-soft);--op:.20;--blur:14px;--dur:34s;--delay:-15s;--dx:-20px;--dy:-14px"></span>
-  <span class="decor__dot" data-depth="0.06" style="--x:48%;--y:-8%;--size:clamp(110px,15vw,220px);--tint:#E7C0B4;--op:.14;--blur:12px;--dur:27s;--delay:-11s;--dx:12px;--dy:18px"></span>
-</div>
+<section class="section benefits-section">
   <div class="container">
     <div class="section-head" data-reveal><p class="eyebrow">Почему Neva Beauty</p><h2>Забота в каждой детали</h2></div>
     <div class="benefits-grid" data-reveal-children>
@@ -343,56 +337,62 @@
   </div>
 </section>
 
-<section class="section container has-decor">
-  <div class="decor decor--soft" aria-hidden="true">
-  <span class="decor__dot" data-depth="0.05" style="--x:-5%;--y:6%;--size:clamp(150px,21vw,300px);--tint:var(--rose-soft);--op:.26;--blur:10px;--dur:24s;--delay:0s;--dx:20px;--dy:-14px"></span>
-  <span class="decor__dot" data-depth="0.10" style="--x:90%;--y:2%;--size:clamp(100px,14vw,210px);--tint:var(--taupe);--op:.18;--blur:12px;--dur:28s;--delay:-7s;--dx:-16px;--dy:18px"></span>
-  <span class="decor__dot" data-depth="0.04" style="--x:74%;--y:66%;--size:clamp(170px,23vw,340px);--tint:var(--rose-soft);--op:.20;--blur:14px;--dur:32s;--delay:-13s;--dx:-22px;--dy:-18px"></span>
-  <span class="decor__dot" data-depth="0.08" style="--x:8%;--y:80%;--size:clamp(90px,12vw,170px);--tint:#E7C0B4;--op:.16;--blur:10px;--dur:26s;--delay:-4s;--dx:14px;--dy:16px"></span>
-</div>
+<section class="section container">
   <div class="section-head" data-reveal><p class="eyebrow">Популярное</p><h2>Частые процедуры</h2><p>Цены указаны во вьетнамских донгах (đ).</p></div>
   <div class="popular-grid" data-reveal-children>
     
     <a class="popular-card card" href="/lazernaya-epilyaciya/">
-      <span class="popular-card__name">КОМБО 1 (подмышки, глуб. бикини, голени)</span>
+      <span class="popular-card__info">
+        <span class="popular-card__cat">Лазерная эпиляция</span>
+        <span class="popular-card__name">КОМБО 1 (подмышки, глуб. бикини, голени)</span>
+      </span>
       <span class="popular-card__price">1 600 000 đ</span>
     </a>
     
     <a class="popular-card card" href="/lpg-massazh/">
-      <span class="popular-card__name">LPG Массаж - Тело</span>
+      <span class="popular-card__info">
+        <span class="popular-card__cat">LPG-массаж</span>
+        <span class="popular-card__name">LPG Массаж - Тело</span>
+      </span>
       <span class="popular-card__price">800 000 đ</span>
     </a>
     
     <a class="popular-card card" href="/morpheus-8-rf-lifting/">
-      <span class="popular-card__name">Лицо + шея + глаза</span>
+      <span class="popular-card__info">
+        <span class="popular-card__cat">Morpheus 8</span>
+        <span class="popular-card__name">Лицо + шея + глаза</span>
+      </span>
       <span class="popular-card__price">10 000 000 đ</span>
     </a>
     
     <a class="popular-card card" href="/smas-lifting/">
-      <span class="popular-card__name">Лицо</span>
+      <span class="popular-card__info">
+        <span class="popular-card__cat">SMAS-лифтинг</span>
+        <span class="popular-card__name">Лицо</span>
+      </span>
       <span class="popular-card__price">10 000 000 đ</span>
     </a>
     
     <a class="popular-card card" href="/esteticheskaya-kosmetologiya-i-uhod/">
-      <span class="popular-card__name">HydraFacial</span>
+      <span class="popular-card__info">
+        <span class="popular-card__cat">Уход за лицом</span>
+        <span class="popular-card__name">HydraFacial</span>
+      </span>
       <span class="popular-card__price">1 700 000 đ</span>
     </a>
     
     <a class="popular-card card" href="/fotoomolozhenie-m22/">
-      <span class="popular-card__name">Лицо + шея</span>
+      <span class="popular-card__info">
+        <span class="popular-card__cat">Фотоомоложение M22</span>
+        <span class="popular-card__name">Лицо + шея</span>
+      </span>
       <span class="popular-card__price">8 500 000 đ</span>
     </a>
     
   </div>
 </section>
 
-<section class="section has-decor">
-  <div class="decor decor--soft" aria-hidden="true">
-  <span class="decor__dot" data-depth="0.05" style="--x:-5%;--y:6%;--size:clamp(150px,21vw,300px);--tint:var(--rose-soft);--op:.26;--blur:10px;--dur:24s;--delay:0s;--dx:20px;--dy:-14px"></span>
-  <span class="decor__dot" data-depth="0.10" style="--x:90%;--y:2%;--size:clamp(100px,14vw,210px);--tint:var(--taupe);--op:.18;--blur:12px;--dur:28s;--delay:-7s;--dx:-16px;--dy:18px"></span>
-  <span class="decor__dot" data-depth="0.04" style="--x:74%;--y:66%;--size:clamp(170px,23vw,340px);--tint:var(--rose-soft);--op:.20;--blur:14px;--dur:32s;--delay:-13s;--dx:-22px;--dy:-18px"></span>
-  <span class="decor__dot" data-depth="0.08" style="--x:8%;--y:80%;--size:clamp(90px,12vw,170px);--tint:#E7C0B4;--op:.16;--blur:10px;--dur:26s;--delay:-4s;--dx:14px;--dy:16px"></span>
-</div>
+<section class="section">
   <div class="container booking">
     <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
     <div class="booking__actions">
@@ -425,7 +425,22 @@
   <path d="m21.854 2.147-10.94 10.939" />
 </svg>
  Telegram</a>
-      <a class="btn btn--ghost" href="https://instagram.com/vn.neva.beauty" target="_blank" rel="noopener">Not found: /lucide-static@1.17.0/icons/instagram.svg Instagram</a>
+      <a class="btn btn--ghost" href="https://instagram.com/vn.neva.beauty" target="_blank" rel="noopener"><svg class="icon"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+</svg>
+ Instagram</a>
     </div>
     <p class="booking__loc"><svg class="icon"
   xmlns="http://www.w3.org/2000/svg"
@@ -478,7 +493,7 @@
 </footer>
   <script type="module" src="/assets/js/nav.js"></script>
   <script type="module" src="/assets/js/reveal.js"></script>
-  <script type="module" src="/assets/js/parallax.js"></script>
+  <script type="module" src="/assets/js/aurora.js"></script>
   
 </body>
 </html>

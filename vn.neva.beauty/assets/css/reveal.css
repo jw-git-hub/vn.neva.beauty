@@ -1,0 +1,13 @@
+/* ===== ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ (fade-up, пара к reveal.js) ===== */
+/* Скрываем только при включённом JS, чтобы без него контент был виден сразу. */
+.js [data-reveal],
+.js [data-reveal-children] > *{
+  opacity:0;transform:translateY(20px);
+  transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js [data-reveal].is-visible,
+.js [data-reveal-children] > .is-visible{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .js [data-reveal],
+  .js [data-reveal-children] > *{opacity:1;transform:none;transition:none}
+}

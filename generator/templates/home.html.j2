@@ -1,5 +1,4 @@
 {% extends "base.html.j2" %}
-{% from 'partials/decor.html.j2' import decor %}
 {% block extra_css %}<link rel="stylesheet" href="/assets/css/home.css">{% endblock %}
 {% macro price_of(prices, slug, name) -%}
   {%- set ns = namespace(found=false) -%}
@@ -21,7 +20,6 @@
     </div>
     <div class="hero__media">
       <span class="hero__blob" aria-hidden="true"></span>
-      <span class="hero__ring" aria-hidden="true"></span>
       <img class="hero__photo" src="/assets/img/hero.jpg" alt="Уходовая процедура в центре красоты Neva Beauty" width="560" height="700">
     </div>
   </div>
@@ -35,8 +33,7 @@
   </div>
 </section>
 
-<section class="section container has-decor" id="services">
-  {{ decor('soft') }}
+<section class="section container" id="services">
   <div class="section-head" data-reveal><p class="eyebrow">Услуги</p><h2>Направления красоты</h2><p>Аппаратные и уходовые процедуры под ваши задачи.</p></div>
   <div class="cat-grid" data-reveal-children>
     {% for c in home.categories %}
@@ -48,8 +45,7 @@
   </div>
 </section>
 
-<section class="section benefits-section has-decor">
-  {{ decor('accent') }}
+<section class="section benefits-section">
   <div class="container">
     <div class="section-head" data-reveal><p class="eyebrow">Почему Neva Beauty</p><h2>Забота в каждой детали</h2></div>
     <div class="benefits-grid" data-reveal-children>
@@ -60,21 +56,22 @@
   </div>
 </section>
 
-<section class="section container has-decor">
-  {{ decor('soft') }}
+<section class="section container">
   <div class="section-head" data-reveal><p class="eyebrow">Популярное</p><h2>Частые процедуры</h2><p>Цены указаны во вьетнамских донгах (đ).</p></div>
   <div class="popular-grid" data-reveal-children>
     {% for p in home.popular %}
     <a class="popular-card card" href="/{{ p.slug }}/">
-      <span class="popular-card__name">{{ p.name }}</span>
+      <span class="popular-card__info">
+        <span class="popular-card__cat">{{ p.label }}</span>
+        <span class="popular-card__name">{{ p.name }}</span>
+      </span>
       <span class="popular-card__price">{{ price_of(prices, p.slug, p.name) }}</span>
     </a>
     {% endfor %}
   </div>
 </section>
 
-<section class="section has-decor">
-  {{ decor('soft') }}
+<section class="section">
   <div class="container booking">
     <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
     <div class="booking__actions">

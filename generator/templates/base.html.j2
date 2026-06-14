@@ -17,16 +17,18 @@
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/components.css">
-  <link rel="stylesheet" href="/assets/css/decor.css">
+  <link rel="stylesheet" href="/assets/css/aurora.css">
+  <link rel="stylesheet" href="/assets/css/reveal.css">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
+  {% include 'partials/aurora.html.j2' %}
   {% include 'partials/header.html.j2' %}
   <main id="main">{% block content %}{% endblock %}</main>
   {% include 'partials/footer.html.j2' %}
   <script type="module" src="/assets/js/nav.js"></script>
   <script type="module" src="/assets/js/reveal.js"></script>
-  <script type="module" src="/assets/js/parallax.js"></script>
+  <script type="module" src="/assets/js/aurora.js"></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

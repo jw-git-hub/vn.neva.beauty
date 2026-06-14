@@ -1,0 +1,18 @@
+{#-
+  Глобальный фоновый слой «Аврора»: мягкие размытые световые пятна,
+  очень медленно перетекающие под контентом. Подключается один раз в base.
+  Каждое пятно получает через CSS-переменные позицию/размер/тон/дрейф/тайминги.
+  Координаты — в % от вьюпорта (слой position:fixed). Тона — из токенов палитры.
+-#}
+{%- set blobs = [
+  {'x':'12%','y':'8%', 'size':'48vw','tint':'var(--rose-soft)','op':'.62','dur':'34s','delay':'0s',  'dx':'6vw', 'dy':'4vh'},
+  {'x':'78%','y':'2%', 'size':'42vw','tint':'#F1D3C5',         'op':'.66','dur':'42s','delay':'-9s', 'dx':'-5vw','dy':'5vh'},
+  {'x':'62%','y':'52%','size':'54vw','tint':'var(--rose)',     'op':'.40','dur':'46s','delay':'-18s','dx':'-7vw','dy':'-5vh'},
+  {'x':'4%', 'y':'60%','size':'44vw','tint':'var(--taupe)',    'op':'.44','dur':'38s','delay':'-5s', 'dx':'6vw', 'dy':'-6vh'},
+  {'x':'40%','y':'82%','size':'46vw','tint':'var(--rose-soft)','op':'.54','dur':'40s','delay':'-22s','dx':'4vw', 'dy':'4vh'}
+] -%}
+<div class="aurora" aria-hidden="true">
+{%- for b in blobs %}
+  <span class="aurora__blob" style="--x:{{ b.x }};--y:{{ b.y }};--size:{{ b.size }};--tint:{{ b.tint }};--op:{{ b.op }};--dur:{{ b.dur }};--delay:{{ b.delay }};--dx:{{ b.dx }};--dy:{{ b.dy }}"></span>
+{%- endfor %}
+</div>
