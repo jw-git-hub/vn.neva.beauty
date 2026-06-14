@@ -14,12 +14,12 @@ home:
     - {title: "Уход и косметология", slug: "esteticheskaya-kosmetologiya-i-uhod", image: "cat-care"}
     - {title: "Лифтинг и омоложение", slug: "smas-lifting", image: "cat-lift"}
   popular:
-    - {slug: "lazernaya-epilyaciya", name: "КОМБО 1 (подмышки, глуб. бикини, голени)"}
-    - {slug: "lpg-massazh", name: "LPG Массаж - Тело"}
-    - {slug: "morpheus-8-rf-lifting", name: "Лицо + шея + глаза"}
-    - {slug: "smas-lifting", name: "Лицо"}
-    - {slug: "esteticheskaya-kosmetologiya-i-uhod", name: "HydraFacial"}
-    - {slug: "fotoomolozhenie-m22", name: "Лицо + шея"}
+    - {slug: "lazernaya-epilyaciya", label: "Лазерная эпиляция", name: "КОМБО 1 (подмышки, глуб. бикини, голени)"}
+    - {slug: "lpg-massazh", label: "LPG-массаж", name: "LPG Массаж - Тело"}
+    - {slug: "morpheus-8-rf-lifting", label: "Morpheus 8", name: "Лицо + шея + глаза"}
+    - {slug: "smas-lifting", label: "SMAS-лифтинг", name: "Лицо"}
+    - {slug: "esteticheskaya-kosmetologiya-i-uhod", label: "Уход за лицом", name: "HydraFacial"}
+    - {slug: "fotoomolozhenie-m22", label: "Фотоомоложение M22", name: "Лицо + шея"}
 services:
   lazernaya-epilyaciya:
     title: "Лазерная эпиляция"

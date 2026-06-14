@@ -7,10 +7,15 @@
 .svc-hero__intro{font-size:var(--fs-500);color:var(--ink);margin-bottom:var(--sp-6)}
 .svc-hero__media{position:relative;display:flex;justify-content:center;order:-1}
 @media(min-width:1024px){.svc-hero__media{order:0}}
-.svc-hero__blob{position:absolute;width:min(80%,360px);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle at 50% 40%, var(--rose-soft) 0%, transparent 70%);opacity:.5;z-index:0}
+.svc-hero__blob{position:absolute;width:min(98%,480px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 50% 42%, #EBC9BC 0%, rgba(206,155,145,.45) 40%, transparent 70%);
+  filter:blur(52px);opacity:.65;z-index:0}
 .svc-hero__media img{position:relative;z-index:1;width:min(82%,380px);aspect-ratio:4/5;object-fit:cover;
-  border-radius:190px 190px 24px 24px;box-shadow:var(--shadow-md)}
+  border-radius:190px 190px 24px 24px;
+  box-shadow:0 22px 55px rgba(74,59,56,.18), 0 0 0 1px rgba(255,255,255,.4) inset;
+  transition:transform var(--t-mid) var(--ease),box-shadow var(--t-mid) var(--ease)}
+.svc-hero__media:hover img{transform:translateY(-5px) scale(1.012);
+  box-shadow:0 30px 66px rgba(74,59,56,.22), 0 0 0 1px rgba(255,255,255,.4) inset}
 
 /* ===== BENEFITS ===== */
 .svc-benefits{display:grid;gap:var(--sp-6);grid-template-columns:1fr}
@@ -24,7 +29,7 @@
 .svc-benefit p{color:var(--muted);font-size:var(--fs-300)}
 
 /* ===== PRICELIST ===== */
-.pricelist-section{background:var(--surface)}
+.pricelist-section{background:color-mix(in srgb,var(--surface) 72%,transparent)}
 .pricelist{max-width:760px;margin-inline:auto}
 .pricelist__tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:var(--sp-2);margin:0 auto var(--sp-8)}
 .pricelist__tab{font-family:inherit;font-size:var(--fs-300);font-weight:600;color:var(--muted);
@@ -58,4 +63,5 @@
 .related-card__body{padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-2)}
 .related-card__body h3{font-size:var(--fs-500)}
 .related-card__more{display:inline-flex;align-items:center;gap:6px;color:var(--rose);font-weight:600;font-size:var(--fs-300)}
-.related-card__more .icon{width:16px;height:16px}
+.related-card__more .icon{width:16px;height:16px;transition:transform var(--t-mid) var(--ease)}
+.related-card:hover .related-card__more .icon{transform:translateX(4px)}

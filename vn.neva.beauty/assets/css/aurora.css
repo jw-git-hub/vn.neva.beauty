@@ -1,0 +1,37 @@
+/* ===== ФОНОВЫЙ СЛОЙ «АВРОРА» (мягкое перетекающее сияние) ===== */
+/* Единый фиксированный слой за всем контентом: непрерывный фон при скролле.
+   z-index:-1 рисуется поверх фоновой заливки body, но под всем контентом. */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+  /* небольшой сдвиг от pointer-parallax (aurora.js) кладётся в --px/--py */
+  transform:translate3d(var(--px,0px),var(--py,0px),0);
+  transition:transform 600ms var(--ease)}
+
+/* Световое пятно: размытый радиальный градиент тона, очень медленный дрейф. */
+.aurora__blob{position:absolute;left:var(--x);top:var(--y);
+  width:var(--size);height:var(--size);margin:calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  border-radius:50%;opacity:var(--op,.4);will-change:transform;
+  background:radial-gradient(circle at 50% 50%, var(--tint) 0%, transparent 70%);
+  filter:blur(60px);
+  animation:aurora-drift var(--dur,40s) ease-in-out var(--delay,0s) infinite}
+
+@keyframes aurora-drift{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(var(--dx,4vw),var(--dy,4vh),0) scale(1.12)}
+}
+
+/* Тонкая плёночная зернистость — добавляет глубины, статична. */
+.aurora::after{content:"";position:absolute;inset:0;opacity:.05;mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* Мобильная оптимизация: меньше пятен и легче blur → гарантированный 60fps на слабых GPU.
+   Это не отключение — фон остаётся живым. */
+@media (max-width:768px){
+  .aurora__blob{filter:blur(45px)}
+  .aurora__blob:nth-child(n+4){display:none}
+}
+
+/* Уважение к настройке пользователя: всё замирает, остаётся мягкий статичный градиент. */
+@media (prefers-reduced-motion:reduce){
+  .aurora{transition:none}
+  .aurora__blob{animation:none}
+}

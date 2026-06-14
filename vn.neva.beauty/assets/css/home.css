@@ -10,12 +10,15 @@
 .hero__actions{display:flex;flex-wrap:wrap;gap:var(--sp-3)}
 .hero__media{position:relative;display:flex;justify-content:center;align-items:center;min-height:340px;order:-1}
 @media(min-width:1024px){.hero__media{order:0}}
-.hero__blob{position:absolute;width:min(78%,420px);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle at 50% 40%, var(--rose-soft) 0%, #E7C0B4 60%, transparent 72%);
-  filter:blur(2px);opacity:.55;z-index:0}
-.hero__ring{position:absolute;width:min(86%,470px);aspect-ratio:1;border-radius:50%;border:1px solid var(--rose-soft);opacity:.4;z-index:0}
+.hero__blob{position:absolute;width:min(98%,540px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 50% 42%, #EBC9BC 0%, rgba(206,155,145,.45) 40%, transparent 70%);
+  filter:blur(52px);opacity:.7;z-index:0}
 .hero__photo{position:relative;z-index:1;width:min(82%,400px);aspect-ratio:4/5;object-fit:cover;
-  border-radius:200px 200px 24px 24px;box-shadow:var(--shadow-md)}
+  border-radius:200px 200px 24px 24px;
+  box-shadow:0 22px 55px rgba(74,59,56,.18), 0 0 0 1px rgba(255,255,255,.4) inset;
+  transition:transform var(--t-mid) var(--ease),box-shadow var(--t-mid) var(--ease)}
+.hero__media:hover .hero__photo{transform:translateY(-5px) scale(1.012);
+  box-shadow:0 30px 66px rgba(74,59,56,.22), 0 0 0 1px rgba(255,255,255,.4) inset}
 
 /* ===== CONTACT STRIP ===== */
 .contact-strip{position:relative;z-index:3;margin-top:calc(var(--sp-12) * -1);
@@ -36,10 +39,12 @@
 .cat-card__body{padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-2)}
 .cat-card__body h3{font-size:var(--fs-600)}
 .cat-card__more{display:inline-flex;align-items:center;gap:6px;color:var(--rose);font-weight:600;font-size:var(--fs-300)}
-.cat-card__more .icon{width:16px;height:16px}
+.cat-card__more .icon{width:16px;height:16px;transition:transform var(--t-mid) var(--ease)}
+.cat-card:hover .cat-card__more .icon{transform:translateX(4px)}
 
 /* ===== BENEFITS ===== */
-.benefits-section{background:var(--surface)}
+/* Полупрозрачный тон → аврора просвечивает сквозь полосу, фон непрерывен. */
+.benefits-section{background:color-mix(in srgb,var(--surface) 72%,transparent)}
 .benefits-grid{display:grid;gap:var(--sp-8);grid-template-columns:1fr}
 @media(min-width:560px){.benefits-grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1024px){.benefits-grid{grid-template-columns:repeat(4,1fr)}}
@@ -55,6 +60,8 @@
 @media(min-width:560px){.popular-grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1024px){.popular-grid{grid-template-columns:repeat(3,1fr)}}
 .popular-card{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);padding:var(--sp-5)}
+.popular-card__info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.popular-card__cat{font-size:var(--fs-200);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .popular-card__name{font-weight:500;min-width:0}
 .popular-card__price{font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
 

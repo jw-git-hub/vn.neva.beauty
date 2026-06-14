@@ -1,5 +1,4 @@
 {% extends "base.html.j2" %}
-{% from 'partials/decor.html.j2' import decor %}
 {% block extra_css %}<link rel="stylesheet" href="/assets/css/service.css">{% endblock %}
 {% block content %}
 <section class="svc-hero">
@@ -18,8 +17,7 @@
 </section>
 
 {% if svc.benefits %}
-<section class="section container has-decor">
-  {{ decor('soft') }}
+<section class="section container">
   <div class="section-head" data-reveal><p class="eyebrow">Преимущества</p><h2>Почему это работает</h2></div>
   <div class="svc-benefits" data-reveal-children>
     {% for b in svc.benefits %}
@@ -29,8 +27,7 @@
 </section>
 {% endif %}
 
-<section class="section pricelist-section has-decor">
-  {{ decor('accent') }}
+<section class="section pricelist-section">
   <div class="container">
     <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>Цены</h2><p>Указаны во вьетнамских донгах (đ).</p></div>
     <div class="pricelist" data-pricelist>
@@ -71,8 +68,7 @@
   </div>
 </section>
 
-<section class="section has-decor">
-  {{ decor('soft') }}
+<section class="section">
   <div class="container booking">
     <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
     <div class="booking__actions">
@@ -84,8 +80,7 @@
 </section>
 
 {% if svc.related %}
-<section class="section container has-decor">
-  {{ decor('soft') }}
+<section class="section container">
   <div class="section-head" data-reveal><p class="eyebrow">Дополните уход</p><h2>Смотрите также</h2></div>
   <div class="related-grid" data-reveal-children>
     {% for rslug in svc.related %}{% set r = services.get(rslug) %}{% if r %}
