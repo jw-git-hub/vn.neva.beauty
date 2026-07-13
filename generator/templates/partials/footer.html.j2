@@ -1,14 +1,15 @@
+{% from 'partials/brand.html.j2' import brand_mark %}
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="site-footer__col site-footer__brand">
-      <span class="site-footer__logo">{{ site.brand }}</span>
-      <p class="site-footer__loc">{{ site.location }}</p>
-      <p class="site-footer__hours">{{ site.hours }}</p>
+      <span class="site-footer__logo brand-mark">{{ brand_mark(site.brand, site.brand_location) }}</span>
     </div>
     <nav class="site-footer__col" aria-label="Услуги">
       <h4 class="site-footer__title">Услуги</h4>
       {% for item in site.nav %}
-        {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}{% endif %}
+        {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
+        {% elif item.url and item.url != "/" %}<a class="site-footer__link" href="{{ item.url }}">{{ item.label }}</a>
+        {% endif %}
       {% endfor %}
     </nav>
     <div class="site-footer__col">

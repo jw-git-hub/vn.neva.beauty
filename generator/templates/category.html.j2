@@ -1,0 +1,46 @@
+{% extends "base.html.j2" %}
+{% block extra_css %}<link rel="stylesheet" href="/assets/css/service.css">{% endblock %}
+{% block content %}
+<section class="section container">
+  <nav class="breadcrumbs" aria-label="Хлебные крошки">
+    <a href="/">Главная</a>
+    <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+    <span aria-current="page">{{ cat.title }}</span>
+  </nav>
+  <div class="section-head" data-reveal><p class="eyebrow">Направление</p><h1>{{ cat.title }}</h1><p>{{ cat.intro }}</p></div>
+  <div class="related-grid" data-reveal-children>
+    {% for slug in cat.services %}{% set r = services.get(slug) %}{% if r %}
+    <a class="related-card card" href="/{{ slug }}/">
+      <div class="related-card__media"><img src="/assets/img/{{ r.hero_image }}.webp" alt="{{ r.title }} — {{ cat.title }} в Neva Beauty, Дананг" width="400" height="300" loading="lazy"></div>
+      <div class="related-card__body"><h3>{{ r.title }}</h3><span class="related-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
+    </a>
+    {% endif %}{% endfor %}
+  </div>
+</section>
+
+{% if cat.faq %}
+<section class="section container" id="faq">
+  <div class="section-head" data-reveal><p class="eyebrow">Вопросы и ответы</p><h2>Частые вопросы — {{ cat.title }}</h2></div>
+  <div class="faq" data-reveal-children>
+    {% for item in cat.faq %}
+    <details class="faq__item"{% if loop.first %} open{% endif %}>
+      <summary class="faq__q">{{ item.q }}</summary>
+      <p class="faq__a">{{ item.a | safe }}</p>
+    </details>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container booking">
+    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
+    <div class="booking__actions">
+      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ cat.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
+      <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
+      <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
+    </div>
+    <p class="booking__loc">{{ icon('map-pin') }} {{ site.location }}</p>
+  </div>
+</section>
+{% endblock %}
