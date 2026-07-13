@@ -1,19 +1,24 @@
 /* ===== SERVICE HERO ===== */
-.svc-hero{background:radial-gradient(120% 120% at 82% 8%, #F8E7DE 0%, var(--bg) 55%)}
+/* Фон прозрачный → сквозь hero течёт единый слой «Аврора»; тёплый фокус даёт .svc-hero__blob. */
+.svc-hero{background:transparent}
+/* Крошки ведут герой: отступ от шапки сверху, снизу гэп даёт padding самого героя. */
+.svc-hero .breadcrumbs{padding-top:var(--sp-8);margin-bottom:0}
 .svc-hero__inner{display:grid;gap:var(--sp-8);align-items:center;padding-block:var(--sp-12)}
-@media(min-width:1024px){.svc-hero__inner{grid-template-columns:1.1fr .9fr;gap:var(--sp-12);padding-block:var(--sp-16)}}
+@media(min-width:768px){.svc-hero__inner{grid-template-columns:1.1fr .9fr;gap:var(--sp-10);padding-block:var(--sp-14)}}
+@media(min-width:1024px){.svc-hero__inner{gap:var(--sp-12);padding-block:var(--sp-16)}}
 .svc-hero__text{max-width:580px}
 .svc-hero__text h1{font-size:clamp(2.25rem,5.5vw,var(--fs-800));margin:var(--sp-3) 0 var(--sp-4)}
 .svc-hero__intro{font-size:var(--fs-500);color:var(--ink);margin-bottom:var(--sp-6)}
 .svc-hero__media{position:relative;display:flex;justify-content:center;order:-1}
-@media(min-width:1024px){.svc-hero__media{order:0}}
+@media(min-width:768px){.svc-hero__media{order:0;align-self:start;margin-top:var(--sp-8)}}
 .svc-hero__blob{position:absolute;width:min(98%,480px);aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle at 50% 42%, #EBC9BC 0%, rgba(206,155,145,.45) 40%, transparent 70%);
-  filter:blur(52px);opacity:.65;z-index:0}
-.svc-hero__media img{position:relative;z-index:1;width:min(82%,380px);aspect-ratio:4/5;object-fit:cover;
+  filter:blur(52px);opacity:.8;z-index:0}
+.svc-hero__media img{position:relative;z-index:1;width:min(78%,290px);aspect-ratio:4/5;height:auto;object-fit:cover;
   border-radius:190px 190px 24px 24px;
   box-shadow:0 22px 55px rgba(74,59,56,.18), 0 0 0 1px rgba(255,255,255,.4) inset;
   transition:transform var(--t-mid) var(--ease),box-shadow var(--t-mid) var(--ease)}
+@media(min-width:768px){.svc-hero__media img{width:min(92%,360px)}}
 .svc-hero__media:hover img{transform:translateY(-5px) scale(1.012);
   box-shadow:0 30px 66px rgba(74,59,56,.22), 0 0 0 1px rgba(255,255,255,.4) inset}
 
@@ -22,8 +27,11 @@
 @media(min-width:560px){.svc-benefits{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1024px){.svc-benefits{grid-template-columns:repeat(4,1fr)}}
 .svc-benefit{text-align:center;padding:var(--sp-4)}
+/* Кольцо + мягкая тень дают кружку собственный контур: он читается одинаково
+   при любом тоне «авроры» за полупрозрачной секцией (иначе сливается со светлыми участками). */
 .svc-benefit__icon{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;
-  border-radius:var(--radius-pill);background:var(--surface);color:var(--rose);margin-bottom:var(--sp-4)}
+  border-radius:var(--radius-pill);background:var(--surface-2);color:var(--rose);margin-bottom:var(--sp-4);
+  border:1px solid color-mix(in srgb,var(--rose-soft) 20%,transparent);box-shadow:var(--shadow-sm)}
 .svc-benefit__icon .icon{width:24px;height:24px}
 .svc-benefit h3{font-size:var(--fs-500);margin-bottom:var(--sp-2)}
 .svc-benefit p{color:var(--muted);font-size:var(--fs-300)}

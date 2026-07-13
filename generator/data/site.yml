@@ -1,27 +1,33 @@
 brand: "Neva Beauty"
+brand_location: "Da Nang"
 tagline: "Центр красоты · Дананг"
 location: "Да Нанг, Вьетнам"
-hours: "Ежедневно 10:00 – 20:00"
+hours: "Приём по записи"
+base_url: "https://vn.neva.beauty"
 contacts:
   whatsapp_number: "84357132621"
   whatsapp_url: "https://wa.me/84357132621"
   telegram_url: "https://t.me/doctor_cosmetolog_pro"
   instagram_url: "https://instagram.com/vn.neva.beauty"
-nav:
-  - {label: "Главная", url: "/"}
-  - label: "Аппаратная косметология"
-    children:
-      - {label: "LPG-массаж", slug: "lpg-massazh"}
-      - {label: "Эндосфера-терапия", slug: "endosfera-terapiya"}
-      - {label: "Ультразвуковая кавитация", slug: "ultrazvukovaya-kavitaciya"}
-      - {label: "Ультразвуковой SMAS-лифтинг", slug: "smas-lifting"}
-      - {label: "Лазерное удаление татуировок", slug: "udalenie-tatuirovok-lazerom"}
-      - {label: "Удаление перманентного макияжа", slug: "udalenye-permanentnogo-makiyazha"}
-      - {label: "Morpheus 8 RF-лифтинг", slug: "morpheus-8-rf-lifting"}
-      - {label: "Фотоомоложение M22", slug: "fotoomolozhenie-m22"}
-  - label: "Эпиляция"
-    children:
-      - {label: "Лазерная эпиляция", slug: "lazernaya-epilyaciya"}
-  - label: "Уход"
-    children:
-      - {label: "Эстетическая косметология и уход", slug: "esteticheskaya-kosmetologiya-i-uhod"}
+
+# Единый источник фактов о бизнесе для JSON-LD (schema.org). Только реальные
+# данные; отсутствующие поля закомментированы как TODO — не выдумываем.
+business:
+  type: "BeautySalon"                 # заказчик: салон красоты (не мед-клиника)
+  telephone: "+84357132621"           # основной телефон, он же WhatsApp
+  price_range: "$$"                   # качественный ориентир (Google priceRange)
+  currency: "VND"
+  language: ["Russian", "English"]    # языки обслуживания (availableLanguage)
+  language_code: "ru"
+  image: "/assets/img/hero.jpg"
+  logo: "/favicon.svg"                # брендовая буква N (отдельного логотипа нет)
+  same_as:
+    - "https://www.instagram.com/vn.neva.beauty/"
+    - "https://t.me/doctor_cosmetolog_pro_channel"   # публичный Telegram-канал
+  address:
+    locality: "Da Nang"
+    region: "Da Nang"
+    country: "VN"
+    # streetAddress не публикуем — заказчик: только город; адрес выдаётся при записи
+  # geo не публикуем (адрес по записи)
+  # openingHours не задаём — приём по записи (см. site.hours)

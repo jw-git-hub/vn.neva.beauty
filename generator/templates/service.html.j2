@@ -2,16 +2,27 @@
 {% block extra_css %}<link rel="stylesheet" href="/assets/css/service.css">{% endblock %}
 {% block content %}
 <section class="svc-hero">
-  <div class="container svc-hero__inner">
-    <div class="svc-hero__text">
-      <p class="eyebrow">{{ svc.category }}</p>
-      <h1>{{ svc.title }}</h1>
-      <p class="svc-hero__intro">{{ svc.intro }}</p>
-      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ svc.title) | urlencode }}" target="_blank" rel="noopener">Записаться</a>
-    </div>
-    <div class="svc-hero__media">
-      <span class="svc-hero__blob" aria-hidden="true"></span>
-      <img src="/assets/img/{{ svc.hero_image }}.jpg" alt="{{ svc.title }}" width="520" height="650">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      {% if category.is_page %}
+      <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+      <a href="{{ category.url }}">{{ category.title }}</a>
+      {% endif %}
+      <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ svc.title }}</span>
+    </nav>
+    <div class="svc-hero__inner">
+      <div class="svc-hero__text">
+        <p class="eyebrow">{{ svc.category }}</p>
+        <h1>{{ svc.title }}</h1>
+        <p class="svc-hero__intro">{{ svc.intro }}</p>
+        <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ svc.title) | urlencode }}" target="_blank" rel="noopener">Записаться</a>
+      </div>
+      <div class="svc-hero__media">
+        <span class="svc-hero__blob" aria-hidden="true"></span>
+        <img src="/assets/img/{{ svc.hero_image }}.webp" alt="{{ svc.title }} — Neva Beauty, Дананг" width="520" height="650">
+      </div>
     </div>
   </div>
 </section>
@@ -68,6 +79,20 @@
   </div>
 </section>
 
+{% if svc.faq %}
+<section class="section container" id="faq">
+  <div class="section-head" data-reveal><p class="eyebrow">Вопросы и ответы</p><h2>Частые вопросы — {{ svc.title }}</h2></div>
+  <div class="faq" data-reveal-children>
+    {% for item in svc.faq %}
+    <details class="faq__item"{% if loop.first %} open{% endif %}>
+      <summary class="faq__q">{{ item.q }}</summary>
+      <p class="faq__a">{{ item.a | safe }}</p>
+    </details>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 <section class="section">
   <div class="container booking">
     <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
@@ -76,6 +101,7 @@
       <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
       <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
     </div>
+    <p class="booking__loc">{{ icon('map-pin') }} {{ site.location }}</p>
   </div>
 </section>
 
@@ -85,7 +111,7 @@
   <div class="related-grid" data-reveal-children>
     {% for rslug in svc.related %}{% set r = services.get(rslug) %}{% if r %}
     <a class="related-card card" href="/{{ rslug }}/">
-      <div class="related-card__media"><img src="/assets/img/{{ r.hero_image }}.jpg" alt="{{ r.title }}" width="400" height="300" loading="lazy"></div>
+      <div class="related-card__media"><img src="/assets/img/{{ r.hero_image }}.webp" alt="{{ r.title }}" width="400" height="300" loading="lazy"></div>
       <div class="related-card__body"><h3>{{ r.title }}</h3><span class="related-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
     </a>
     {% endif %}{% endfor %}

@@ -10,8 +10,8 @@
 <section class="hero">
   <div class="container hero__inner">
     <div class="hero__text">
-      <p class="eyebrow">{{ site.tagline }}</p>
-      <h1 class="hero__title">{% for line in home.hero_title_lines %}<span>{{ line }}</span>{% endfor %}</h1>
+      <p class="eyebrow">{{ home.hero_kicker | default(site.tagline) }}</p>
+      <h1 class="hero__title">{% for line in home.hero_title_lines %}<span>{{ line }}</span>{{ " " }}{% endfor %}</h1>
       <p class="hero__sub">{{ home.hero_sub }}</p>
       <div class="hero__actions">
         <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">Записаться</a>
@@ -20,7 +20,7 @@
     </div>
     <div class="hero__media">
       <span class="hero__blob" aria-hidden="true"></span>
-      <img class="hero__photo" src="/assets/img/hero.jpg" alt="Уходовая процедура в центре красоты Neva Beauty" width="560" height="700">
+      <img class="hero__photo" src="/assets/img/hero.webp" alt="Безупречная кожа и макияж — центр красоты Neva Beauty" width="560" height="700">
     </div>
   </div>
 </section>
@@ -36,9 +36,9 @@
 <section class="section container" id="services">
   <div class="section-head" data-reveal><p class="eyebrow">Услуги</p><h2>Направления красоты</h2><p>Аппаратные и уходовые процедуры под ваши задачи.</p></div>
   <div class="cat-grid" data-reveal-children>
-    {% for c in home.categories %}
-    <a class="cat-card card" href="/{{ c.slug }}/">
-      <div class="cat-card__media"><img src="/assets/img/{{ c.image }}.jpg" alt="{{ c.title }}" width="600" height="440" loading="lazy"></div>
+    {% for c in categories %}
+    <a class="cat-card card" href="{{ c.url }}">
+      <div class="cat-card__media"><img src="/assets/img/{{ c.image }}.webp" alt="{{ c.title }}" width="600" height="440" loading="lazy"></div>
       <div class="cat-card__body"><h3>{{ c.title }}</h3><span class="cat-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
     </a>
     {% endfor %}
@@ -67,6 +67,22 @@
       </span>
       <span class="popular-card__price">{{ price_of(prices, p.slug, p.name) }}</span>
     </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section container" id="faq">
+  <div class="section-head" data-reveal>
+    <p class="eyebrow">Вопросы и ответы</p>
+    <h2>Коротко о Neva Beauty</h2>
+    <p>{{ home.about_lead }}</p>
+  </div>
+  <div class="faq" data-reveal-children>
+    {% for item in home.faq %}
+    <details class="faq__item"{% if loop.first %} open{% endif %}>
+      <summary class="faq__q">{{ item.q }}</summary>
+      <p class="faq__a">{{ item.a | safe }}</p>
+    </details>
     {% endfor %}
   </div>
 </section>

@@ -1,30 +1,35 @@
 /* ===== HERO (photo) ===== */
-.hero{position:relative;overflow:hidden;
-  background:radial-gradient(120% 120% at 82% 10%, #F8E7DE 0%, var(--bg) 52%, #F3E3DC 100%)}
+/* Фон прозрачный → сквозь hero течёт единый слой «Аврора» (aurora.css).
+   Тёплый фокус на фото создаётся локальным свечением .hero__blob ниже. */
+.hero{position:relative;overflow:hidden;background:transparent}
 .hero__inner{display:grid;gap:var(--sp-8);align-items:center;padding-block:var(--sp-16)}
-@media(min-width:1024px){.hero__inner{grid-template-columns:1.05fr .95fr;gap:var(--sp-12);padding-block:var(--sp-24)}}
+@media(min-width:768px){.hero__inner{grid-template-columns:1.05fr .95fr;gap:var(--sp-10);padding-block:var(--sp-20)}}
+@media(min-width:1024px){.hero__inner{gap:var(--sp-12);padding-block:var(--sp-24)}}
 .hero__text{max-width:560px}
 .hero__title{font-size:clamp(2.75rem,7vw,var(--fs-900));margin:var(--sp-4) 0}
 .hero__title span{display:block}
 .hero__sub{font-size:var(--fs-500);color:var(--ink);max-width:34ch;margin-bottom:var(--sp-8)}
-.hero__actions{display:flex;flex-wrap:wrap;gap:var(--sp-3)}
-.hero__media{position:relative;display:flex;justify-content:center;align-items:center;min-height:340px;order:-1}
-@media(min-width:1024px){.hero__media{order:0}}
+.hero__actions{display:flex;flex-wrap:wrap;gap:var(--sp-3);justify-content:center}
+@media(min-width:768px){.hero__actions{justify-content:flex-start}}
+.hero__media{position:relative;display:flex;justify-content:center;align-items:center;min-height:300px;order:-1}
+@media(min-width:768px){.hero__media{order:0;min-height:0;align-self:start;margin-top:var(--sp-8)}}
 .hero__blob{position:absolute;width:min(98%,540px);aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle at 50% 42%, #EBC9BC 0%, rgba(206,155,145,.45) 40%, transparent 70%);
-  filter:blur(52px);opacity:.7;z-index:0}
-.hero__photo{position:relative;z-index:1;width:min(82%,400px);aspect-ratio:4/5;object-fit:cover;
+  filter:blur(52px);opacity:.82;z-index:0}
+.hero__photo{position:relative;z-index:1;width:min(78%,300px);aspect-ratio:4/5;height:auto;object-fit:cover;
   border-radius:200px 200px 24px 24px;
   box-shadow:0 22px 55px rgba(74,59,56,.18), 0 0 0 1px rgba(255,255,255,.4) inset;
   transition:transform var(--t-mid) var(--ease),box-shadow var(--t-mid) var(--ease)}
+@media(min-width:768px){.hero__photo{width:min(92%,380px)}}
 .hero__media:hover .hero__photo{transform:translateY(-5px) scale(1.012);
   box-shadow:0 30px 66px rgba(74,59,56,.22), 0 0 0 1px rgba(255,255,255,.4) inset}
 
 /* ===== CONTACT STRIP ===== */
-.contact-strip{position:relative;z-index:3;margin-top:calc(var(--sp-12) * -1);
+.contact-strip{position:relative;z-index:3;margin-top:var(--sp-8);
   background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);
   box-shadow:var(--shadow-md);padding:var(--sp-6);display:grid;gap:var(--sp-4);grid-template-columns:1fr}
 @media(min-width:768px){.contact-strip{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1024px){.contact-strip{margin-top:0}}
 .contact-strip__item{display:flex;align-items:center;gap:var(--sp-3);color:var(--ink);font-weight:500;justify-content:center}
 .contact-strip__item .icon{width:22px;height:22px;color:var(--rose);flex:none}
 
@@ -49,8 +54,11 @@
 @media(min-width:560px){.benefits-grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1024px){.benefits-grid{grid-template-columns:repeat(4,1fr)}}
 .benefit{text-align:center}
+/* Кольцо + мягкая тень дают кружку собственный контур: он читается одинаково
+   при любом тоне «авроры» за полупрозрачной секцией (иначе сливается со светлыми участками). */
 .benefit__icon{display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;
-  border-radius:var(--radius-pill);background:var(--surface-2);color:var(--rose);margin-bottom:var(--sp-4)}
+  border-radius:var(--radius-pill);background:var(--surface-2);color:var(--rose);margin-bottom:var(--sp-4);
+  border:1px solid color-mix(in srgb,var(--rose-soft) 20%,transparent);box-shadow:var(--shadow-sm)}
 .benefit__icon .icon{width:26px;height:26px}
 .benefit h3{font-size:var(--fs-500);margin-bottom:var(--sp-2)}
 .benefit p{color:var(--muted);font-size:var(--fs-300)}
@@ -64,10 +72,3 @@
 .popular-card__cat{font-size:var(--fs-200);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .popular-card__name{font-weight:500;min-width:0}
 .popular-card__price{font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
-
-/* ===== BOOKING ===== */
-.booking{text-align:center}
-.booking__actions{display:flex;flex-wrap:wrap;gap:var(--sp-3);justify-content:center;margin-bottom:var(--sp-6)}
-.booking__actions .icon{width:18px;height:18px}
-.booking__loc{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
-.booking__loc .icon{width:18px;height:18px;color:var(--rose)}
