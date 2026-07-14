@@ -22,15 +22,15 @@
   <meta name="twitter:description" content="{{ page.seo_desc }}">
   <meta name="twitter:image" content="{{ site.base_url }}{{ page.og_image | default('/assets/img/hero.jpg') }}">
   {% if page.schema_json %}<script type="application/ld+json">{{ page.schema_json }}</script>{% endif %}
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="{{ base_path }}/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/tokens.css">
-  <link rel="stylesheet" href="/assets/css/base.css">
-  <link rel="stylesheet" href="/assets/css/components.css">
-  <link rel="stylesheet" href="/assets/css/aurora.css">
-  <link rel="stylesheet" href="/assets/css/reveal.css">
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/tokens.css">
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/base.css">
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/components.css">
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/aurora.css">
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/reveal.css">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -41,9 +41,9 @@
   {% include 'partials/drawer.html.j2' %}
   <main id="main">{% block content %}{% endblock %}</main>
   {% include 'partials/footer.html.j2' %}
-  <script type="module" src="/assets/js/nav.js"></script>
-  <script type="module" src="/assets/js/reveal.js"></script>
-  <script type="module" src="/assets/js/aurora.js"></script>
+  <script type="module" src="{{ base_path }}/assets/js/nav.js"></script>
+  <script type="module" src="{{ base_path }}/assets/js/reveal.js"></script>
+  <script type="module" src="{{ base_path }}/assets/js/aurora.js"></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

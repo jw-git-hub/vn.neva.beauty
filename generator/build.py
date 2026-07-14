@@ -69,9 +69,10 @@ def fill_related(content):
                     related.append(candidate)
         svc["related"] = related[:RELATED_COUNT]
 
-def render_faq_contacts(faq, contacts):
-    """Подставляет URL мессенджеров вместо плейсхолдеров {whatsapp}/{telegram}/{instagram}
-    в HTML-ответах FAQ — чтобы не дублировать ссылки, единый источник — site.yml."""
+def render_faq_contacts(faq, contacts, base_path=""):
+    """Финализирует HTML-ответы FAQ: подставляет URL мессенджеров вместо плейсхолдеров
+    {whatsapp}/{telegram}/{instagram} (единый источник — site.yml) и префиксует внутренние
+    ссылки href="/..." на base_path — чтобы они работали и на превью по подпути."""
     tokens = {
         "{whatsapp}": contacts["whatsapp_url"],
         "{telegram}": contacts["telegram_url"],
@@ -82,6 +83,8 @@ def render_faq_contacts(faq, contacts):
         answer = item["a"]
         for token, url in tokens.items():
             answer = answer.replace(token, url)
+        if base_path:
+            answer = answer.replace('href="/', f'href="{base_path}/')
         result.append({"q": item["q"], "a": answer})
     return result
 
@@ -144,6 +147,10 @@ def build_nav(categories, services):
 def main():
     site, content, prices = load()
     e = env()
+    # Префикс пути для ссылок на ассеты/страницы: пусто на боевом домене (сайт в корне),
+    # "/vn.neva.beauty" для превью на GitHub Pages по подпути проекта. SEO-URL (base_url) не трогает.
+    base_path = site.get("base_path", "").rstrip("/")
+    e.globals["base_path"] = base_path
     enrich_categories(content)
     fill_related(content)
     site["nav"] = build_nav(content["categories"], content["services"])
@@ -151,7 +158,7 @@ def main():
     # главная
     home_faq = content["home"].get("faq", [])
     if home_faq:
-        home_faq = render_faq_contacts(home_faq, site["contacts"])
+        home_faq = render_faq_contacts(home_faq, site["contacts"], base_path)
         content["home"]["faq"] = home_faq
         home_schema = schema.render(site, [schema.faq_node(home_faq)])
     else:
@@ -180,7 +187,7 @@ def main():
                                 price_aggregate(sections, currency)),
         ]
         if svc.get("faq"):
-            svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"])
+            svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"], base_path)
             nodes.append(schema.faq_node(svc["faq"]))
         page = {"url": f"/{slug}/", "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
                 "schema_json": schema.render(site, nodes)}
@@ -200,7 +207,7 @@ def main():
             schema.item_list_node(cat["title"], [f"{base_url}/{slug}/" for slug in cat["services"]]),
         ]
         if cat.get("faq"):
-            cat["faq"] = render_faq_contacts(cat["faq"], site["contacts"])
+            cat["faq"] = render_faq_contacts(cat["faq"], site["contacts"], base_path)
             nodes.append(schema.faq_node(cat["faq"]))
         page = {"url": cat["url"], "seo_title": cat["seo_title"], "seo_desc": cat["seo_desc"],
                 "schema_json": schema.render(site, nodes)}
