@@ -11,11 +11,11 @@
     {% for item in site.nav %}
       {% if item.children %}
       <div class="drawer__group" style="--i:{{ loop.index }}">
-        <a class="drawer__group-label" href="{{ item.url }}">{{ item.title }}<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
-        {% for c in item.children %}<a class="drawer__sub" href="/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
+        <a class="drawer__group-label" href="{{ base_path }}{{ item.url }}">{{ item.title }}<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+        {% for c in item.children %}<a class="drawer__sub" href="{{ base_path }}/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
       </div>
       {% else %}
-      <a class="drawer__link" href="{{ item.url }}" style="--i:{{ loop.index }}">{{ item.title }}</a>
+      <a class="drawer__link" href="{{ base_path }}{{ item.url }}" style="--i:{{ loop.index }}">{{ item.title }}</a>
       {% endif %}
     {% endfor %}
   </nav>

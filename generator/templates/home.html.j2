@@ -1,5 +1,5 @@
 {% extends "base.html.j2" %}
-{% block extra_css %}<link rel="stylesheet" href="/assets/css/home.css">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ base_path }}/assets/css/home.css">{% endblock %}
 {% macro price_of(prices, slug, name) -%}
   {%- set ns = namespace(found=false) -%}
   {%- for sec in prices.get(slug, []) -%}{%- for it in sec['items'] -%}
@@ -20,7 +20,7 @@
     </div>
     <div class="hero__media">
       <span class="hero__blob" aria-hidden="true"></span>
-      <img class="hero__photo" src="/assets/img/hero.webp" alt="Безупречная кожа и макияж — центр красоты Neva Beauty" width="560" height="700">
+      <img class="hero__photo" src="{{ base_path }}/assets/img/hero.webp" alt="Безупречная кожа и макияж — центр красоты Neva Beauty" width="560" height="700">
     </div>
   </div>
 </section>
@@ -37,8 +37,8 @@
   <div class="section-head" data-reveal><p class="eyebrow">Услуги</p><h2>Направления красоты</h2><p>Аппаратные и уходовые процедуры под ваши задачи.</p></div>
   <div class="cat-grid" data-reveal-children>
     {% for c in categories %}
-    <a class="cat-card card" href="{{ c.url }}">
-      <div class="cat-card__media"><img src="/assets/img/{{ c.image }}.webp" alt="{{ c.title }}" width="600" height="440" loading="lazy"></div>
+    <a class="cat-card card" href="{{ base_path }}{{ c.url }}">
+      <div class="cat-card__media"><img src="{{ base_path }}/assets/img/{{ c.image }}.webp" alt="{{ c.title }}" width="600" height="440" loading="lazy"></div>
       <div class="cat-card__body"><h3>{{ c.title }}</h3><span class="cat-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
     </a>
     {% endfor %}
@@ -60,7 +60,7 @@
   <div class="section-head" data-reveal><p class="eyebrow">Популярное</p><h2>Частые процедуры</h2><p>Цены указаны во вьетнамских донгах (đ).</p></div>
   <div class="popular-grid" data-reveal-children>
     {% for p in home.popular %}
-    <a class="popular-card card" href="/{{ p.slug }}/">
+    <a class="popular-card card" href="{{ base_path }}/{{ p.slug }}/">
       <span class="popular-card__info">
         <span class="popular-card__cat">{{ p.label }}</span>
         <span class="popular-card__name">{{ p.name }}</span>

@@ -7,8 +7,8 @@
     <nav class="site-footer__col" aria-label="Услуги">
       <h4 class="site-footer__title">Услуги</h4>
       {% for item in site.nav %}
-        {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
-        {% elif item.url and item.url != "/" %}<a class="site-footer__link" href="{{ item.url }}">{{ item.label }}</a>
+        {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="{{ base_path }}/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
+        {% elif item.url and item.url != "/" %}<a class="site-footer__link" href="{{ base_path }}{{ item.url }}">{{ item.label }}</a>
         {% endif %}
       {% endfor %}
     </nav>
@@ -21,6 +21,6 @@
   </div>
   <div class="site-footer__bottom container">
     <span>© Neva Beauty — Da Nang, Vietnam</span>
-    <a href="/privacy/">Политика конфиденциальности</a>
+    <a href="{{ base_path }}/privacy/">Политика конфиденциальности</a>
   </div>
 </footer>

@@ -1,19 +1,19 @@
 {% from 'partials/brand.html.j2' import brand_mark %}
 <header class="site-header" data-header>
   <div class="container site-header__inner">
-    <a class="site-header__logo brand-mark" href="/" aria-label="{{ site.brand }} — {{ site.brand_location }}">{{ brand_mark(site.brand, site.brand_location) }}</a>
+    <a class="site-header__logo brand-mark" href="{{ base_path }}/" aria-label="{{ site.brand }} — {{ site.brand_location }}">{{ brand_mark(site.brand, site.brand_location) }}</a>
     <nav class="nav" aria-label="Основная навигация">
       {% for item in site.nav %}
         {% if item.children %}
         <div class="nav__group">
           <button class="nav__link nav__toggle" aria-expanded="false">{{ item.label }}<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="nav__menu">
-            <a class="nav__lead" href="{{ item.url }}"><span>{{ item.title }}</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
-            {% for c in item.children %}<a class="nav__sub" href="/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
+            <a class="nav__lead" href="{{ base_path }}{{ item.url }}"><span>{{ item.title }}</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            {% for c in item.children %}<a class="nav__sub" href="{{ base_path }}/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
           </div>
         </div>
         {% else %}
-        <a class="nav__link" href="{{ item.url }}">{{ item.label }}</a>
+        <a class="nav__link" href="{{ base_path }}{{ item.url }}">{{ item.label }}</a>
         {% endif %}
       {% endfor %}
     </nav>
