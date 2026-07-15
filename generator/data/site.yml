@@ -6,7 +6,7 @@ hours: "Приём по записи"
 base_url: "https://vn.neva.beauty"
 # Префикс пути для ссылок на ассеты/внутренние страницы (не SEO-URL, те всегда base_url).
 # Пусто = сайт в корне домена (боевой). "/vn.neva.beauty" = превью на GitHub Pages по подпути.
-base_path: "/vn.neva.beauty"
+base_path: ""
 contacts:
   whatsapp_number: "84357132621"
   whatsapp_url: "https://wa.me/84357132621"
