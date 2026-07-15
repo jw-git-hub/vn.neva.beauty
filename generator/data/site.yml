@@ -7,6 +7,8 @@ base_url: "https://vn.neva.beauty"
 # Префикс пути для ссылок на ассеты/внутренние страницы (не SEO-URL, те всегда base_url).
 # Пусто = сайт в корне домена (боевой). "/vn.neva.beauty" = превью на GitHub Pages по подпути.
 base_path: ""
+# Яндекс.Метрика: номер счётчика (перенесён со старого сайта). Пусто = не подключать.
+metrika_id: 106778458
 contacts:
   whatsapp_number: "84357132621"
   whatsapp_url: "https://wa.me/84357132621"
