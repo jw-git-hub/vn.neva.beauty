@@ -253,6 +253,9 @@ def main():
     write(OUT/"sitemap.xml", sitemap)
     # llms.txt — карта сайта для ИИ-ассистентов
     write(OUT/"llms.txt", build_llms(site, content))
+    # CNAME — боевой домен для GitHub Pages. Кладём в артефакт, иначе workflow-деплой
+    # каждый раз сбрасывает кастомный домен в настройках Pages. Хост берём из base_url.
+    write(OUT/"CNAME", urllib.parse.urlsplit(base_url).netloc + "\n")
 
 if __name__ == "__main__":
     main()
