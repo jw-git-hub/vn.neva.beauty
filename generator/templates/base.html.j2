@@ -23,14 +23,10 @@
   <meta name="twitter:image" content="{{ site.base_url }}{{ page.og_image | default('/assets/img/hero.jpg') }}">
   {% if page.schema_json %}<script type="application/ld+json">{{ page.schema_json }}</script>{% endif %}
   <link rel="icon" href="{{ base_path }}/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ base_path }}/assets/css/tokens.css">
-  <link rel="stylesheet" href="{{ base_path }}/assets/css/base.css">
-  <link rel="stylesheet" href="{{ base_path }}/assets/css/components.css">
-  <link rel="stylesheet" href="{{ base_path }}/assets/css/aurora.css">
-  <link rel="stylesheet" href="{{ base_path }}/assets/css/reveal.css">
+  {% if page.hero_image %}<link rel="preload" as="image" href="{{ base_path }}{{ page.hero_image }}" fetchpriority="high">{% endif %}
+  <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/manrope-400-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/cormorant-600-cyrillic.woff2" crossorigin>
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/bundle.min.css">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
