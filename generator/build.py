@@ -1,4 +1,4 @@
-import json, re, urllib.parse, yaml
+import json, re, urllib.parse, yaml, rcssmin
 from datetime import date
 from pathlib import Path
 from markupsafe import Markup
@@ -10,6 +10,12 @@ OUT = ROOT.parent / "vn.neva.beauty"
 ICONS = OUT / "assets" / "icons"
 
 RELATED_COUNT = 3  # сколько карточек «Смотрите также» показываем на странице услуги
+
+# Порядок каскада для единого bundle.min.css. Все CSS сайта склеиваются в один
+# минифицированный файл → один render-blocking запрос вместо шести, общий кэш на
+# весь сайт. fonts первым (@font-face), затем токены/база, затем постраничные слои.
+CSS_BUNDLE_ORDER = ["fonts", "tokens", "base", "components",
+                    "aurora", "reveal", "home", "service", "legal"]
 
 def icon(name, cls="icon"):
     svg = (ICONS / f"{name}.svg").read_text(encoding="utf-8")
@@ -37,6 +43,19 @@ def write(path: Path, html: str):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(html, encoding="utf-8")
     print("→", path.relative_to(OUT.parent))
+
+def build_css_bundle():
+    """Склеивает CSS-слои в порядке каскада и минифицирует в единый bundle.min.css.
+    Один render-blocking запрос вместо шести; относительные url() внутри (../fonts,
+    ../img) работают и на превью по подпути, и на боевом домене."""
+    css_dir = OUT / "assets" / "css"
+    parts = [f.read_text(encoding="utf-8")
+             for name in CSS_BUNDLE_ORDER
+             if (f := css_dir / f"{name}.css").exists()]
+    bundle = rcssmin.cssmin("\n".join(parts))
+    out = css_dir / "bundle.min.css"
+    out.write_text(bundle, encoding="utf-8")
+    print("→", out.relative_to(OUT.parent), f"({len(bundle) // 1024} KB minified)")
 
 def enrich_categories(content):
     """Обогащает категории (url, is_page) и переопределяет svc.category — единая таксономия."""
@@ -151,6 +170,7 @@ def main():
     # "/vn.neva.beauty" для превью на GitHub Pages по подпути проекта. SEO-URL (base_url) не трогает.
     base_path = site.get("base_path", "").rstrip("/")
     e.globals["base_path"] = base_path
+    build_css_bundle()  # единый минифицированный bundle.min.css
     enrich_categories(content)
     fill_related(content)
     site["nav"] = build_nav(content["categories"], content["services"])
@@ -164,7 +184,8 @@ def main():
     else:
         home_schema = base_schema
     page = {"url":"/", "seo_title": content["home"].get("seo_title","Neva Beauty — центр красоты в Дананге"),
-            "seo_desc": content["home"].get("seo_desc",""), "schema_json": home_schema}
+            "seo_desc": content["home"].get("seo_desc",""), "schema_json": home_schema,
+            "hero_image": "/assets/img/hero.webp"}  # LCP-элемент → preload в base.html.j2
     write(OUT/"index.html", e.get_template("home.html.j2").render(
         site=site, page=page, home=content["home"], categories=content["categories"], prices=prices))
     # услуги
@@ -190,7 +211,8 @@ def main():
             svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"], base_path)
             nodes.append(schema.faq_node(svc["faq"]))
         page = {"url": f"/{slug}/", "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
-                "schema_json": schema.render(site, nodes)}
+                "schema_json": schema.render(site, nodes),
+                "hero_image": f"/assets/img/{svc['hero_image']}.webp"}  # LCP → preload
         write(OUT/slug/"index.html", tpl.render(
             site=site, page=page, svc=svc, slug=slug, category=cat,
             sections=sections, services=content["services"]))
