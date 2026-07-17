@@ -81,7 +81,14 @@ def business_nodes(site):
     if b.get("currency"):
         business["currenciesAccepted"] = b["currency"]
     if b.get("language"):
-        business["availableLanguage"] = b["language"]
+        # availableLanguage не входит в спецификацию BeautySalon — валидное место
+        # для языков обслуживания это узел ContactPoint (иначе предупреждение валидатора).
+        business["contactPoint"] = {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "telephone": b["telephone"],
+            "availableLanguage": b["language"],
+        }
     if b.get("same_as"):
         business["sameAs"] = b["same_as"]
     if b.get("geo"):
