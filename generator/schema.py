@@ -105,7 +105,11 @@ def business_nodes(site):
 
 
 def breadcrumb_node(items):
-    """BreadcrumbList из [{name, url}, ...] — абсолютные URL, порядок = вложенность."""
+    """BreadcrumbList из [{name, url}, ...] — абсолютные URL, порядок = вложенность.
+
+    Адрес звена дублируется в двух полях: `item` — обязательное для Google/schema.org,
+    `url` — поле из документации Яндекса (валидно на ListItem как наследнике Thing).
+    """
     return {
         "@type": "BreadcrumbList",
         "itemListElement": [
@@ -114,6 +118,7 @@ def breadcrumb_node(items):
                 "position": i + 1,
                 "name": item["name"],
                 "item": item["url"],
+                "url": item["url"],
             }
             for i, item in enumerate(items)
         ],
