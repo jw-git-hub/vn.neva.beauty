@@ -22,7 +22,7 @@ business:
   telephone: "+84357132621"           # основной телефон, он же WhatsApp
   price_range: "$$"                   # качественный ориентир (Google priceRange)
   currency: "VND"
-  language: ["Russian", "English"]    # языки обслуживания (availableLanguage)
+  language: ["Russian", "English"]    # языки обслуживания → availableLanguage в ContactPoint
   language_code: "ru"
   image: "/assets/img/hero.jpg"
   logo: "/favicon.svg"                # брендовая буква N (отдельного логотипа нет)
