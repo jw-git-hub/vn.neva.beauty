@@ -1,7 +1,9 @@
 {% from 'partials/brand.html.j2' import brand_mark %}
 <header class="site-header" data-header>
   <div class="container site-header__inner">
-    <a class="site-header__logo brand-mark" href="{{ base_path }}/" aria-label="{{ site.brand }} — {{ site.brand_location }}">{{ brand_mark(site.brand, site.brand_location) }}</a>
+    {# Без aria-label: имя ссылке даёт её же видимый текст («Neva Beauty Da Nang»).
+       Атрибут добавлял тире, из-за чего доступное имя не совпадало с видимым. #}
+    <a class="site-header__logo brand-mark" href="{{ base_path }}/">{{ brand_mark(site.brand, site.brand_location) }}</a>
     <nav class="nav" aria-label="Основная навигация">
       {% for item in site.nav %}
         {% if item.children %}

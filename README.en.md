@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/SEO-JSON--LD%20/%20schema.org-FF9900" alt="JSON-LD">
   <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions">
   <img src="https://img.shields.io/badge/Hosting-GitHub%20Pages-222?logo=github&logoColor=white" alt="GitHub Pages">
-  <img src="https://img.shields.io/badge/Lighthouse-100-0CCE6B?logo=lighthouse&logoColor=white" alt="Lighthouse 100">
+  <img src="https://img.shields.io/badge/Lighthouse-A11y%20100%20%C2%B7%20SEO%20100%20%C2%B7%20Perf%2094--98-0CCE6B?logo=lighthouse&logoColor=white" alt="Lighthouse: A11y 100, SEO 100, Performance 94-98">
 </p>
 
 <p align="center">
@@ -131,10 +131,12 @@ flowchart LR
   assistants. Procedure add-ons ("+350 000 đ") are excluded from the price range,
   which would otherwise understate the cost of the service itself.
 
-- **⚡ Performance — Lighthouse 100.** All CSS layers are concatenated into one minified
+- **⚡ Performance.** All CSS layers are concatenated into one minified
   `bundle.min.css` (one render-blocking request instead of six), fonts are self-hosted
-  as subsets, and the LCP image is preloaded. Render-blocking was removed and the
-  production score went from 75 to 100.
+  as subsets, and the LCP image is preloaded. Removing render-blocking took production
+  Performance from 75 to 98. Measured on the live domain (Lighthouse 12, mobile and
+  desktop): Accessibility 100, SEO 100, Performance 94–98, CLS 0. Best Practices sits at
+  78 — third-party cookies from Yandex.Metrica, the deliberate price of having analytics.
 
 - **🌿 Preview and production from one build.** A `base_path` parameter prefixes asset
   links for a GitHub Pages sub-path preview and stays empty on the production domain —

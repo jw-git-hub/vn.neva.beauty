@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/SEO-JSON--LD%20/%20schema.org-FF9900" alt="JSON-LD">
   <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions">
   <img src="https://img.shields.io/badge/Хостинг-GitHub%20Pages-222?logo=github&logoColor=white" alt="GitHub Pages">
-  <img src="https://img.shields.io/badge/Lighthouse-100-0CCE6B?logo=lighthouse&logoColor=white" alt="Lighthouse 100">
+  <img src="https://img.shields.io/badge/Lighthouse-A11y%20100%20%C2%B7%20SEO%20100%20%C2%B7%20Perf%2094--98-0CCE6B?logo=lighthouse&logoColor=white" alt="Lighthouse: A11y 100, SEO 100, Performance 94-98">
 </p>
 
 <p align="center">
@@ -129,10 +129,12 @@ flowchart LR
   однозначно. Надбавки к процедурам («+350 000 đ») в диапазон цен не входят: иначе
   он занижал бы стоимость услуги до цены доплаты.
 
-- **⚡ Оптимизация скорости — Lighthouse 100.** Все CSS-слои склеиваются в один
-  минифицированный `bundle.min.css` (один render-blocking запрос вместо шести),
-  шрифты самохостятся сабсетами, LCP-изображение прелоадится. Устранён render-blocking:
-  прод-показатель вырос с 75 до 100.
+- **⚡ Оптимизация скорости.** Все CSS-слои склеиваются в один минифицированный
+  `bundle.min.css` (один render-blocking запрос вместо шести), шрифты самохостятся
+  сабсетами, LCP-изображение прелоадится. Устранение render-blocking подняло Performance
+  на проде с 75 до 98. Замер боевого домена (Lighthouse 12, мобильный и десктоп):
+  Accessibility 100, SEO 100, Performance 94–98, CLS 0. Best Practices — 78: это
+  сторонние куки Яндекс.Метрики, осознанная цена подключённой аналитики.
 
 - **🌿 Превью и прод из одной сборки.** Параметр `base_path` префиксует ссылки на ассеты
   для превью на GitHub Pages по подпути проекта и остаётся пустым на боевом домене —
