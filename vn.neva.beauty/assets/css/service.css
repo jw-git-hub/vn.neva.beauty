@@ -46,19 +46,30 @@
 .pricelist__tab.is-active{background:var(--rose);color:var(--white);border-color:var(--rose)}
 .pricelist__panel{display:none}
 .pricelist__panel.is-active{display:block}
-.pricelist__combos{display:grid;gap:var(--sp-3);grid-template-columns:1fr;margin-bottom:var(--sp-6)}
+.pricelist__combos{display:grid;gap:var(--sp-3);grid-template-columns:1fr;margin-bottom:var(--sp-6);
+  list-style:none;padding:0}
 @media(min-width:600px){.pricelist__combos{grid-template-columns:repeat(3,1fr)}}
 .combo{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:var(--sp-4);text-align:center}
 .combo__name{font-weight:700;color:var(--rose-deep);font-size:var(--fs-300)}
 .combo__desc{font-size:var(--fs-200);color:var(--muted);margin:var(--sp-1) 0}
 .combo__price{font-weight:700;font-variant-numeric:tabular-nums;margin-top:var(--sp-2)}
+/* Карточка-обёртка держит фон, рамку и скругление — тогда пунктир строк остаётся
+   внутри её горизонтальных отступов, как и было до перехода на <table>. */
 .pricelist__rows{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);padding:0 var(--sp-5)}
-.pricelist__row{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-4);
-  padding:var(--sp-4) 0;border-bottom:1px dashed var(--line)}
-.pricelist__row:last-child{border-bottom:none}
-.pricelist__name{display:flex;flex-direction:column;color:var(--ink)}
-.pricelist__desc{font-size:var(--fs-200);color:var(--muted);font-weight:400;margin-top:2px}
-.pricelist__price{font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* border-collapse:separate + нулевой border-spacing: колонки встают ровно по краям
+   отступов карточки. Раскладка табличная: имя тянется, цена прижата вправо и не переносится.
+   Боковой padding ячеек гасим явно — иначе браузерный дефолт (1px) сдвинет обе колонки. */
+.pricelist__table{width:100%;border-collapse:separate;border-spacing:0}
+.pricelist__table thead th{padding:0;border:0}
+.pricelist__name,.pricelist__price{padding:var(--sp-4) 0;vertical-align:baseline;
+  border-bottom:1px dashed var(--line)}
+.pricelist__row:last-child > *{border-bottom:none}
+/* Колонка имени сжимается до последнего: длинное слово переносится (по возможности
+   с дефисом), а не распирает таблицу и не выдавливает колонку цены за карточку. */
+.pricelist__name{padding-right:var(--sp-4);text-align:left;font-weight:inherit;color:var(--ink);
+  hyphens:auto;overflow-wrap:anywhere}
+.pricelist__desc{display:block;font-size:var(--fs-200);color:var(--muted);font-weight:400;margin-top:2px}
+.pricelist__price{text-align:right;font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
 
 /* ===== RELATED ===== */
 .related-grid{display:grid;gap:var(--sp-6);grid-template-columns:1fr}

@@ -396,103 +396,135 @@
     <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>Цены</h2><p>Указаны во вьетнамских донгах (đ).</p></div>
     <div class="pricelist" data-pricelist>
       
-      <div class="pricelist__tabs" role="tablist">
+      
+      
+      <div class="pricelist__tabs" role="tablist" aria-label="Разделы прайс-листа">
         
         <button class="pricelist__tab is-active" type="button" role="tab"
-          aria-selected="true" data-tab="0">Цены</button>
+          id="price-tab-0" aria-controls="price-panel-0"
+          aria-selected="true">Цены</button>
         
         <button class="pricelist__tab" type="button" role="tab"
-          aria-selected="false" data-tab="1">Прайс-лист на услуги чистки</button>
+          id="price-tab-1" aria-controls="price-panel-1"
+          aria-selected="false" tabindex="-1">Прайс-лист на услуги чистки</button>
         
       </div>
       
       
-      <div class="pricelist__panel is-active" data-panel="0">
+      <div class="pricelist__panel is-active" id="price-panel-0" role="tabpanel" aria-labelledby="price-tab-0" tabindex="0">
+        
         
         
         
         <div class="pricelist__rows">
           
-          <div class="pricelist__row">
-            <span class="pricelist__name">Пилинг по типу кожи<span class="pricelist__desc">Дополнительно к процедурам</span></span>
-            <span class="pricelist__price">+200 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Пилинг BioRePeel Cl3</span>
-            <span class="pricelist__price">1 500 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Пилинг PRX T33</span>
-            <span class="pricelist__price">1 500 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Карбокситерапия</span>
-            <span class="pricelist__price">1 100 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Маска HydroPeptid</span>
-            <span class="pricelist__price">500 000 đ</span>
-          </div>
-          
+          <table class="pricelist__table">
+            <caption class="visually-hidden">Эстетическая косметология и уход — Цены</caption>
+            <thead>
+              <tr>
+                <th scope="col"><span class="visually-hidden">Услуга</span></th>
+                <th scope="col"><span class="visually-hidden">Цена</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Пилинг по типу кожи<span class="pricelist__desc">Дополнительно к процедурам</span></th>
+                <td class="pricelist__price">+200 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Пилинг BioRePeel Cl3</th>
+                <td class="pricelist__price">1 500 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Пилинг PRX T33</th>
+                <td class="pricelist__price">1 500 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Карбокситерапия</th>
+                <td class="pricelist__price">1 100 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Маска HydroPeptid</th>
+                <td class="pricelist__price">500 000 đ</td>
+              </tr>
+              
+            </tbody>
+          </table>
         </div>
+        
       </div>
       
-      <div class="pricelist__panel" data-panel="1">
+      <div class="pricelist__panel" id="price-panel-1" role="tabpanel" aria-labelledby="price-tab-1" tabindex="0">
         
         
         
-        <div class="pricelist__combos">
+        <ul class="pricelist__combos">
           
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">Комбо: Чистка + Пилинг</div>
             
             <div class="combo__price">2 000 000 đ</div>
-          </div>
+          </li>
           
-        </div>
+        </ul>
+        
         
         <div class="pricelist__rows">
           
-          <div class="pricelist__row">
-            <span class="pricelist__name">Чистка лица<span class="pricelist__desc">Косметика Christina</span></span>
-            <span class="pricelist__price">1 500 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Ультразвуковая чистка</span>
-            <span class="pricelist__price">800 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">HydraFacial</span>
-            <span class="pricelist__price">1 700 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">RF-терапия<span class="pricelist__desc">Дополнительно к процедурам</span></span>
-            <span class="pricelist__price">+350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Ультразвуковая терапия<span class="pricelist__desc">Дополнительно к процедурам</span></span>
-            <span class="pricelist__price">+350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Сыворотка высококонцентрированная<span class="pricelist__desc">Дополнительно к процедурам</span></span>
-            <span class="pricelist__price">+500 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Альгинатная маска<span class="pricelist__desc">Дополнительно к процедурам</span></span>
-            <span class="pricelist__price">+600 000 đ</span>
-          </div>
-          
+          <table class="pricelist__table">
+            <caption class="visually-hidden">Эстетическая косметология и уход — Прайс-лист на услуги чистки</caption>
+            <thead>
+              <tr>
+                <th scope="col"><span class="visually-hidden">Услуга</span></th>
+                <th scope="col"><span class="visually-hidden">Цена</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Чистка лица<span class="pricelist__desc">Косметика Christina</span></th>
+                <td class="pricelist__price">1 500 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Ультразвуковая чистка</th>
+                <td class="pricelist__price">800 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">HydraFacial</th>
+                <td class="pricelist__price">1 700 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">RF-терапия<span class="pricelist__desc">Дополнительно к процедурам</span></th>
+                <td class="pricelist__price">+350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Ультразвуковая терапия<span class="pricelist__desc">Дополнительно к процедурам</span></th>
+                <td class="pricelist__price">+350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Сыворотка высококонцентрированная<span class="pricelist__desc">Дополнительно к процедурам</span></th>
+                <td class="pricelist__price">+500 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Альгинатная маска<span class="pricelist__desc">Дополнительно к процедурам</span></th>
+                <td class="pricelist__price">+600 000 đ</td>
+              </tr>
+              
+            </tbody>
+          </table>
         </div>
+        
       </div>
       
     </div>

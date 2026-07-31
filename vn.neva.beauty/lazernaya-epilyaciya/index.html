@@ -406,252 +406,284 @@
     <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>Цены</h2><p>Указаны во вьетнамских донгах (đ).</p></div>
     <div class="pricelist" data-pricelist>
       
-      <div class="pricelist__tabs" role="tablist">
+      
+      
+      <div class="pricelist__tabs" role="tablist" aria-label="Разделы прайс-листа">
         
         <button class="pricelist__tab is-active" type="button" role="tab"
-          aria-selected="true" data-tab="0">Цены - Женщины</button>
+          id="price-tab-0" aria-controls="price-panel-0"
+          aria-selected="true">Цены - Женщины</button>
         
         <button class="pricelist__tab" type="button" role="tab"
-          aria-selected="false" data-tab="1">Цены - Мужчины</button>
+          id="price-tab-1" aria-controls="price-panel-1"
+          aria-selected="false" tabindex="-1">Цены - Мужчины</button>
         
       </div>
       
       
-      <div class="pricelist__panel is-active" data-panel="0">
+      <div class="pricelist__panel is-active" id="price-panel-0" role="tabpanel" aria-labelledby="price-tab-0" tabindex="0">
         
         
         
-        <div class="pricelist__combos">
+        <ul class="pricelist__combos">
           
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">КОМБО 1 (подмышки, глуб. бикини, голени)</div>
             
             <div class="combo__price">1 600 000 đ</div>
-          </div>
+          </li>
           
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">КОМБО 2 (подмышки, глуб. бикини, ноги полностью)</div>
             
             <div class="combo__price">2 000 000 đ</div>
-          </div>
+          </li>
           
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">КОМБО 3 (подмышки, глуб. бикини)</div>
             
             <div class="combo__price">1 000 000 đ</div>
-          </div>
+          </li>
           
-        </div>
+        </ul>
+        
         
         <div class="pricelist__rows">
           
-          <div class="pricelist__row">
-            <span class="pricelist__name">Лоб</span>
-            <span class="pricelist__price">150 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Верхняя губа</span>
-            <span class="pricelist__price">150 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Лицо полностью</span>
-            <span class="pricelist__price">350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Грудь</span>
-            <span class="pricelist__price">450 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Ареолы</span>
-            <span class="pricelist__price">200 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Живот</span>
-            <span class="pricelist__price">450 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Плечо</span>
-            <span class="pricelist__price">350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Предплечье</span>
-            <span class="pricelist__price">350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Руки полностью</span>
-            <span class="pricelist__price">650 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Подмышечные впадины</span>
-            <span class="pricelist__price">450 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Спина</span>
-            <span class="pricelist__price">750 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Классическое бикини</span>
-            <span class="pricelist__price">450 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Глубокое бикини</span>
-            <span class="pricelist__price">650 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Голени</span>
-            <span class="pricelist__price">650 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Бедра</span>
-            <span class="pricelist__price">650 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Ягодицы</span>
-            <span class="pricelist__price">500 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Ноги полностью</span>
-            <span class="pricelist__price">1 150 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Все тело</span>
-            <span class="pricelist__price">3 400 000 đ</span>
-          </div>
-          
+          <table class="pricelist__table">
+            <caption class="visually-hidden">Лазерная эпиляция — Цены - Женщины</caption>
+            <thead>
+              <tr>
+                <th scope="col"><span class="visually-hidden">Услуга</span></th>
+                <th scope="col"><span class="visually-hidden">Цена</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Лоб</th>
+                <td class="pricelist__price">150 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Верхняя губа</th>
+                <td class="pricelist__price">150 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Лицо полностью</th>
+                <td class="pricelist__price">350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Грудь</th>
+                <td class="pricelist__price">450 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Ареолы</th>
+                <td class="pricelist__price">200 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Живот</th>
+                <td class="pricelist__price">450 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Плечо</th>
+                <td class="pricelist__price">350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Предплечье</th>
+                <td class="pricelist__price">350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Руки полностью</th>
+                <td class="pricelist__price">650 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Подмышечные впадины</th>
+                <td class="pricelist__price">450 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Спина</th>
+                <td class="pricelist__price">750 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Классическое бикини</th>
+                <td class="pricelist__price">450 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Глубокое бикини</th>
+                <td class="pricelist__price">650 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Голени</th>
+                <td class="pricelist__price">650 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Бедра</th>
+                <td class="pricelist__price">650 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Ягодицы</th>
+                <td class="pricelist__price">500 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Ноги полностью</th>
+                <td class="pricelist__price">1 150 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Все тело</th>
+                <td class="pricelist__price">3 400 000 đ</td>
+              </tr>
+              
+            </tbody>
+          </table>
         </div>
+        
       </div>
       
-      <div class="pricelist__panel" data-panel="1">
+      <div class="pricelist__panel" id="price-panel-1" role="tabpanel" aria-labelledby="price-tab-1" tabindex="0">
         
         
         
-        <div class="pricelist__combos">
+        <ul class="pricelist__combos">
           
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">КОМБО 1 (подмышки, глуб. бикини, голени)</div>
             
             <div class="combo__price">2 000 000 đ</div>
-          </div>
+          </li>
           
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">КОМБО 2 (подмышки, глуб. бикини, ноги полностью)</div>
             
             <div class="combo__price">2 400 000 đ</div>
-          </div>
+          </li>
           
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">КОМБО 3 (подмышки, глуб. бикини)</div>
             
             <div class="combo__price">1 100 000 đ</div>
-          </div>
+          </li>
           
-        </div>
+        </ul>
+        
         
         <div class="pricelist__rows">
           
-          <div class="pricelist__row">
-            <span class="pricelist__name">Лоб</span>
-            <span class="pricelist__price">350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Верхняя губа</span>
-            <span class="pricelist__price">250 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Лицо полностью</span>
-            <span class="pricelist__price">350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Шея</span>
-            <span class="pricelist__price">350 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Грудь</span>
-            <span class="pricelist__price">550 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Живот</span>
-            <span class="pricelist__price">550 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Плечо</span>
-            <span class="pricelist__price">450 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Предплечье</span>
-            <span class="pricelist__price">450 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Руки полностью</span>
-            <span class="pricelist__price">750 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Подмышечные впадины</span>
-            <span class="pricelist__price">550 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Спина</span>
-            <span class="pricelist__price">850 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Классическое бикини</span>
-            <span class="pricelist__price">700 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Глубокое бикини</span>
-            <span class="pricelist__price">850 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Голени</span>
-            <span class="pricelist__price">750 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Бедра</span>
-            <span class="pricelist__price">750 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Ноги полностью</span>
-            <span class="pricelist__price">1 250 000 đ</span>
-          </div>
-          
-          <div class="pricelist__row">
-            <span class="pricelist__name">Все тело</span>
-            <span class="pricelist__price">3 900 000 đ</span>
-          </div>
-          
+          <table class="pricelist__table">
+            <caption class="visually-hidden">Лазерная эпиляция — Цены - Мужчины</caption>
+            <thead>
+              <tr>
+                <th scope="col"><span class="visually-hidden">Услуга</span></th>
+                <th scope="col"><span class="visually-hidden">Цена</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Лоб</th>
+                <td class="pricelist__price">350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Верхняя губа</th>
+                <td class="pricelist__price">250 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Лицо полностью</th>
+                <td class="pricelist__price">350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Шея</th>
+                <td class="pricelist__price">350 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Грудь</th>
+                <td class="pricelist__price">550 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Живот</th>
+                <td class="pricelist__price">550 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Плечо</th>
+                <td class="pricelist__price">450 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Предплечье</th>
+                <td class="pricelist__price">450 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Руки полностью</th>
+                <td class="pricelist__price">750 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Подмышечные впадины</th>
+                <td class="pricelist__price">550 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Спина</th>
+                <td class="pricelist__price">850 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Классическое бикини</th>
+                <td class="pricelist__price">700 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Глубокое бикини</th>
+                <td class="pricelist__price">850 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Голени</th>
+                <td class="pricelist__price">750 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Бедра</th>
+                <td class="pricelist__price">750 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Ноги полностью</th>
+                <td class="pricelist__price">1 250 000 đ</td>
+              </tr>
+              
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">Все тело</th>
+                <td class="pricelist__price">3 900 000 đ</td>
+              </tr>
+              
+            </tbody>
+          </table>
         </div>
+        
       </div>
       
     </div>

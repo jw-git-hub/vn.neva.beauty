@@ -41,37 +41,56 @@
   <div class="container">
     <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>Цены</h2><p>Указаны во вьетнамских донгах (đ).</p></div>
     <div class="pricelist" data-pricelist>
-      {% if sections|length > 1 %}
-      <div class="pricelist__tabs" role="tablist">
+      {% set tabbed = sections|length > 1 %}
+      {% if tabbed %}
+      {# Вкладки и панели связаны по id: aria-controls/aria-labelledby — по ним же
+         price-tabs.js находит панель, второго источника связи не нужно. #}
+      <div class="pricelist__tabs" role="tablist" aria-label="Разделы прайс-листа">
         {% for sec in sections %}
         <button class="pricelist__tab{{ ' is-active' if loop.first }}" type="button" role="tab"
-          aria-selected="{{ 'true' if loop.first else 'false' }}" data-tab="{{ loop.index0 }}">{{ sec.section or 'Цены' }}</button>
+          id="price-tab-{{ loop.index0 }}" aria-controls="price-panel-{{ loop.index0 }}"
+          aria-selected="{{ 'true' if loop.first else 'false' }}"{% if not loop.first %} tabindex="-1"{% endif %}>{{ sec.section or 'Цены' }}</button>
         {% endfor %}
       </div>
       {% endif %}
       {% for sec in sections %}
-      <div class="pricelist__panel{{ ' is-active' if loop.first }}" data-panel="{{ loop.index0 }}">
+      <div class="pricelist__panel{{ ' is-active' if loop.first }}"{% if tabbed %} id="price-panel-{{ loop.index0 }}" role="tabpanel" aria-labelledby="price-tab-{{ loop.index0 }}" tabindex="0"{% endif %}>
         {% set combos = sec['items'] | selectattr('name','match','^(КОМБО|Комбо)') | list %}
         {% set rows = sec['items'] | rejectattr('name','match','^(КОМБО|Комбо)') | list %}
         {% if combos %}
-        <div class="pricelist__combos">
+        <ul class="pricelist__combos">
           {% for c in combos %}
-          <div class="combo">
+          <li class="combo">
             <div class="combo__name">{{ c.name }}</div>
             {% if c.desc %}<div class="combo__desc">{{ c.desc }}</div>{% endif %}
             <div class="combo__price">{{ c.price }}</div>
-          </div>
+          </li>
           {% endfor %}
+        </ul>
+        {% endif %}
+        {% if rows %}
+        <div class="pricelist__rows">
+          {# Настоящая таблица: связь «услуга → цена» видна поисковикам, ИИ-ассистентам
+             и скринридерам. Заголовки колонок скрыты визуально, но есть в разметке. #}
+          <table class="pricelist__table">
+            <caption class="visually-hidden">{{ svc.title }} — {{ sec.section or 'Цены' }}</caption>
+            <thead>
+              <tr>
+                <th scope="col"><span class="visually-hidden">Услуга</span></th>
+                <th scope="col"><span class="visually-hidden">Цена</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for it in rows %}
+              <tr class="pricelist__row">
+                <th class="pricelist__name" scope="row">{{ it.name }}{% if it.desc %}<span class="pricelist__desc">{{ it.desc }}</span>{% endif %}</th>
+                <td class="pricelist__price">{{ it.price }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
         {% endif %}
-        <div class="pricelist__rows">
-          {% for it in rows %}
-          <div class="pricelist__row">
-            <span class="pricelist__name">{{ it.name }}{% if it.desc %}<span class="pricelist__desc">{{ it.desc }}</span>{% endif %}</span>
-            <span class="pricelist__price">{{ it.price }}</span>
-          </div>
-          {% endfor %}
-        </div>
       </div>
       {% endfor %}
     </div>
