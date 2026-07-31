@@ -159,10 +159,48 @@ def faq_node(faq):
     }
 
 
-def service_node(name, description, provider_ref, area_name, aggregate_offer=None):
+def _offer(item, currency):
+    """Одна позиция прайса как Offer: цена числом, название и описание — дословно.
+    Описание дублируется на самом Offer: у доплат («Дополнительно к процедурам») это
+    единственный признак надбавки, и он должен читаться там же, где цена, — иначе
+    потребитель разметки примет надбавку за полную стоимость услуги."""
+    offered = {"@type": "Service", "name": item["name"]}
+    offer = {
+        "@type": "Offer",
+        "price": item["price"],
+        "priceCurrency": currency,
+        "itemOffered": offered,
+    }
+    if item.get("desc"):
+        offered["description"] = item["desc"]
+        offer["description"] = item["desc"]
+    return offer
+
+
+def offer_catalog_node(name, sections, currency):
+    """OfferCatalog — прайс услуги в машиночитаемом виде: связь «позиция → цена»
+    задана явно, а не выводится поисковиком из вёрстки. Несколько разделов прайса —
+    вложенные каталоги (та же группировка, что у вкладок на странице)."""
+    if len(sections) == 1:
+        elements = [_offer(item, currency) for item in sections[0]["items"]]
+    else:
+        elements = [
+            {
+                "@type": "OfferCatalog",
+                "name": sec["title"],
+                "itemListElement": [_offer(item, currency) for item in sec["items"]],
+            }
+            for sec in sections
+        ]
+    return {"@type": "OfferCatalog", "name": name, "itemListElement": elements}
+
+
+def service_node(name, description, provider_ref, area_name,
+                 aggregate_offer=None, offer_catalog=None):
     """Service — профильная услуга страницы. provider ссылается на узел бизнеса,
     areaServed — город. Если передан aggregate_offer {low, high, count, currency},
-    добавляется AggregateOffer с диапазоном цен (числа считаются из прайса)."""
+    добавляется AggregateOffer с диапазоном цен; offer_catalog — готовый узел
+    OfferCatalog с позициями прайса (числа и там и там считаются из прайса)."""
     node = {
         "@type": "Service",
         "name": name,
@@ -178,6 +216,8 @@ def service_node(name, description, provider_ref, area_name, aggregate_offer=Non
             "highPrice": aggregate_offer["high"],
             "offerCount": aggregate_offer["count"],
         }
+    if offer_catalog:
+        node["hasOfferCatalog"] = offer_catalog
     return node
 
 

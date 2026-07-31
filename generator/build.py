@@ -108,19 +108,50 @@ def render_faq_contacts(faq, contacts, base_path=""):
     return result
 
 
+ADDON_MARK = "+"  # «+350 000 đ» — надбавка к процедуре, а не её самостоятельная цена
+PRICE_RE = re.compile(r"^\+?\d[\d ]*đ$")  # единственная допустимая форма записи цены
+
+
+def price_value(price):
+    """Цена строкой из прайса → число («1 500 000 đ» → 1500000).
+    Пустая цена — None (позиция без цены). Любая другая форма — ошибка сборки:
+    просто вырезать цифры нельзя, иначе «1 000 000 – 2 000 000 đ» молча уедет
+    в разметку как 10000002000000."""
+    text = price.strip()
+    if not text:
+        return None
+    if not PRICE_RE.match(text):
+        raise ValueError(f"Непонятная цена в prices.json: {price!r}. Допустимые формы — "
+                         f"«1 500 000 đ», «+350 000 đ» или пустая строка.")
+    return int(re.sub(r"[^\d]", "", text))
+
+
+def is_addon(item):
+    return item["price"].strip().startswith(ADDON_MARK)
+
+
 def price_aggregate(sections, currency):
     """Диапазон цен услуги (min/max/кол-во) для AggregateOffer — из строк прайса.
-    Возвращает None, если цен нет (числа не выдумываем, берём ровно из прайса)."""
-    values = []
-    for sec in sections:
-        for item in sec["items"]:
-            digits = re.sub(r"[^\d]", "", item["price"])
-            if digits:
-                values.append(int(digits))
+    Доплаты в диапазон не входят: иначе lowPrice занижает «услуги от» до надбавки,
+    которую нельзя купить отдельно. Возвращает None, если цен нет."""
+    values = [value for sec in sections for item in sec["items"]
+              if not is_addon(item) and (value := price_value(item["price"])) is not None]
     if not values:
         return None
     return {"low": min(values), "high": max(values),
             "count": len(values), "currency": currency}
+
+
+def offer_sections(sections):
+    """Разделы прайса для JSON-LD: цена числом, название и описание — дословно.
+    Позиции без цифр в цене пропускаем (нечего утверждать о цене)."""
+    result = []
+    for sec in sections:
+        items = [{"name": item["name"], "desc": item.get("desc", ""), "price": value}
+                 for item in sec["items"] if (value := price_value(item["price"])) is not None]
+        if items:
+            result.append({"title": sec.get("section") or "Цены", "items": items})
+    return result
 
 
 def build_llms(site, content):
@@ -202,10 +233,13 @@ def main():
         if cat["is_page"]:
             crumbs.append({"name": cat["title"], "url": base_url + cat["url"]})
         crumbs.append({"name": svc["title"], "url": base_url + f"/{slug}/"})
+        offers = offer_sections(sections)
+        catalog = (schema.offer_catalog_node(f"{svc['title']} — цены", offers, currency)
+                   if offers else None)
         nodes = [
             schema.breadcrumb_node(crumbs),
             schema.service_node(svc["title"], svc["intro"], provider_ref, area_name,
-                                price_aggregate(sections, currency)),
+                                price_aggregate(sections, currency), catalog),
         ]
         if svc.get("faq"):
             svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"], base_path)

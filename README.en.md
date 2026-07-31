@@ -112,13 +112,19 @@ flowchart LR
   pages and “See also” cross-linking — sections can’t drift out of sync by design.
 
 - **💰 Price-accuracy guarantee.** `prices.json` is the only source of prices. After the
-  build, `check_prices.py` parses the generated HTML and compares every price against
-  the reference, failing on any mismatch. Prices are never invented or drifted.
+  build, `check_prices.py` parses both the generated HTML and the JSON-LD and compares
+  not just the number but also the price-list section, the item description and the
+  currency, failing on any mismatch. The step runs inside the deploy pipeline, so a
+  price drift never reaches production. An unrecognised price format breaks the build
+  instead of being "digit-stripped" — numbers are never invented.
 
 - **🔎 Connected structured-data graph.** `schema.py` assembles one valid JSON-LD
   `@graph` (`Organization` + `BeautySalon` + `WebSite`), and pages append their own
-  nodes: `Service`, `FAQPage`, `BreadcrumbList`, `ItemList`, and `AggregateOffer`
-  (the price range is computed straight from the price list).
+  nodes: `Service`, `FAQPage`, `BreadcrumbList`, `ItemList`, `AggregateOffer` (price
+  range) and `OfferCatalog` — every price-list item as an `Offer` with a numeric price,
+  so that the "service → price" link is unambiguous for search engines and AI
+  assistants. Procedure add-ons ("+350 000 đ") are excluded from the price range,
+  which would otherwise understate the cost of the service itself.
 
 - **⚡ Performance — Lighthouse 100.** All CSS layers are concatenated into one minified
   `bundle.min.css` (one render-blocking request instead of six), fonts are self-hosted

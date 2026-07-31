@@ -31,6 +31,11 @@ jobs:
       - name: Generate site
         run: python generator/build.py
 
+      # Гарантия точности цен: сверяет прайс в HTML и в JSON-LD с prices.json.
+      # Стоит до загрузки артефакта — расхождение в ценах не должно доехать до прода.
+      - name: Check price parity
+        run: python generator/check_prices.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
