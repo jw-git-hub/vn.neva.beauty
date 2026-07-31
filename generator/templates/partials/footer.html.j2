@@ -5,7 +5,7 @@
       <span class="site-footer__logo brand-mark">{{ brand_mark(site.brand, site.brand_location) }}</span>
     </div>
     <nav class="site-footer__col" aria-label="Услуги">
-      <h4 class="site-footer__title">Услуги</h4>
+      <h2 class="site-footer__title">Услуги</h2>
       {% for item in site.nav %}
         {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="{{ base_path }}/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
         {% elif item.url and item.url != "/" %}<a class="site-footer__link" href="{{ base_path }}{{ item.url }}">{{ item.label }}</a>
@@ -13,7 +13,7 @@
       {% endfor %}
     </nav>
     <div class="site-footer__col">
-      <h4 class="site-footer__title">Контакты</h4>
+      <h2 class="site-footer__title">Контакты</h2>
       <a class="site-footer__link" href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
       <a class="site-footer__link" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">Telegram</a>
       <a class="site-footer__link" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">Instagram</a>

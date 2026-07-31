@@ -1,10 +1,4 @@
 {% extends "base.html.j2" %}
-{% macro price_of(prices, slug, name) -%}
-  {%- set ns = namespace(found=false) -%}
-  {%- for sec in prices.get(slug, []) -%}{%- for it in sec['items'] -%}
-    {%- if it.name == name and not ns.found %}{{ it.price }}{%- set ns.found = true -%}{% endif -%}
-  {%- endfor -%}{%- endfor -%}
-{%- endmacro %}
 {% block content %}
 <section class="hero">
   <div class="container hero__inner">
@@ -64,7 +58,7 @@
         <span class="popular-card__cat">{{ p.label }}</span>
         <span class="popular-card__name">{{ p.name }}</span>
       </span>
-      <span class="popular-card__price">{{ price_of(prices, p.slug, p.name) }}</span>
+      <span class="popular-card__price">{{ p.price }}</span>
     </a>
     {% endfor %}
   </div>

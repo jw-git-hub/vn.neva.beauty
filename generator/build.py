@@ -142,6 +142,20 @@ def price_aggregate(sections, currency):
             "count": len(values), "currency": currency}
 
 
+def popular_price(prices, slug, name):
+    """Цена для карточки «Популярное» на главной. Одноимённые позиции есть в разных
+    разделах прайса с разной ценой (эпиляция у женщин и мужчин) — тогда показываем
+    «от <минимальной>»: молча взять первую значит показать мужчине женскую цену.
+    Позиции нет в прайсе — ошибка сборки, иначе карточка уедет в прод без цены."""
+    matches = [item["price"] for sec in prices.get(slug, []) for item in sec["items"]
+               if item["name"] == name]
+    if not matches:
+        raise ValueError(f"«Популярное»: в прайсе {slug} нет позиции {name!r}")
+    if len(set(matches)) == 1:
+        return matches[0]
+    return f"от {min(matches, key=price_value)}"
+
+
 def offer_sections(sections):
     """Разделы прайса для JSON-LD: цена числом, название и описание — дословно.
     Позиции без цифр в цене пропускаем (нечего утверждать о цене)."""
@@ -214,11 +228,13 @@ def main():
         home_schema = schema.render(site, [schema.faq_node(home_faq)])
     else:
         home_schema = base_schema
+    for item in content["home"].get("popular", []):
+        item["price"] = popular_price(prices, item["slug"], item["name"])
     page = {"url":"/", "seo_title": content["home"].get("seo_title","Neva Beauty — центр красоты в Дананге"),
             "seo_desc": content["home"].get("seo_desc",""), "schema_json": home_schema,
             "hero_image": "/assets/img/hero.webp"}  # LCP-элемент → preload в base.html.j2
     write(OUT/"index.html", e.get_template("home.html.j2").render(
-        site=site, page=page, home=content["home"], categories=content["categories"], prices=prices))
+        site=site, page=page, home=content["home"], categories=content["categories"]))
     # услуги
     tpl = e.get_template("service.html.j2")
     base_url = site["base_url"]

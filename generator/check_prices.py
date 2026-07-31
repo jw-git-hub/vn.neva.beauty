@@ -18,6 +18,7 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parent
 NEW = ROOT.parent / "vn.neva.beauty"
 PRICES = json.loads((ROOT / "data" / "prices.json").read_text(encoding="utf-8"))
+CONTENT = yaml.safe_load((ROOT / "data" / "content.yml").read_text(encoding="utf-8"))
 SITE = yaml.safe_load((ROOT / "data" / "site.yml").read_text(encoding="utf-8"))
 CURRENCY = SITE["business"].get("currency")
 JSON_LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
@@ -166,6 +167,30 @@ def rendered_offers():
     return cnt, mismatched
 
 
+# ---------- цены на карточках «Популярное» (главная) ----------
+
+def expected_popular():
+    """Эталон карточек главной: точная цена, а при одноимённых позициях в разных
+    разделах прайса — «от <минимальной>» (см. build.popular_price)."""
+    result = {}
+    for item in CONTENT["home"].get("popular", []):
+        matches = [clean(it["price"]) for sec in PRICES.get(item["slug"], [])
+                   for it in sec["items"] if it["name"] == item["name"]]
+        if not matches:
+            sys.exit(f"«Популярное»: в прайсе {item['slug']} нет позиции {item['name']!r}")
+        price = matches[0] if len(set(matches)) == 1 else f"от {min(matches, key=price_number)}"
+        result[clean(item["name"])] = price
+    return result
+
+
+def rendered_popular():
+    """Факт — цены на карточках «Популярное» собранной главной."""
+    soup = BeautifulSoup((NEW / "index.html").read_text(encoding="utf-8"), "html.parser")
+    return {clean(card.select_one(".popular-card__name").get_text()):
+            clean(card.select_one(".popular-card__price").get_text())
+            for card in soup.select(".popular-card")}
+
+
 def expected_aggregates():
     """Эталон диапазона: min/max/кол-во по позициям без доплат."""
     result = {}
@@ -197,8 +222,17 @@ exp_offers = expected_offers()
 new_offers, desc_mismatch = rendered_offers()
 exp_aggr, new_aggr = expected_aggregates(), rendered_aggregates()
 
+exp_popular, new_popular = expected_popular(), rendered_popular()
+
 ok = report("HTML", exp_html, new_html)
 ok &= report("JSON-LD", exp_offers, new_offers)
+
+if exp_popular != new_popular:
+    ok = False
+    for name in sorted(set(exp_popular) | set(new_popular)):
+        if exp_popular.get(name) != new_popular.get(name):
+            print(f"POPULAR MISMATCH «{name}»: ожидалось {exp_popular.get(name)!r}, "
+                  f"на главной {new_popular.get(name)!r}")
 
 for slug, name, desc in desc_mismatch:
     ok = False
@@ -222,6 +256,6 @@ for slug, sections in PRICES.items():
               f"JSON-LD={new_aggr.get(slug)} (low, high, count, currency)")
 
 print(f"html_items={sum(new_html.values())} jsonld_offers={sum(new_offers.values())} "
-      f"aggregates={len(new_aggr)} currency={CURRENCY}")
+      f"aggregates={len(new_aggr)} popular={len(new_popular)} currency={CURRENCY}")
 print("PRICE PARITY OK" if ok else "PRICE PARITY FAILED")
 sys.exit(0 if ok else 1)
