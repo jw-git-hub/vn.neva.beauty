@@ -36,6 +36,11 @@ jobs:
       - name: Check price parity
         run: python generator/check_prices.py
 
+      # Пропуск уровня заголовков (h1 → h3) невидим глазом, но ломает навигацию
+      # скринридером и валидность — три страницы жили с этим незамеченными.
+      - name: Check heading hierarchy
+        run: python generator/check_headings.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

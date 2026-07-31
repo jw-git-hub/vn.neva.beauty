@@ -67,7 +67,7 @@
 | **Стили** | Чистый CSS, слои по каскаду, минификация `rcssmin` в один бандл |
 | **Шрифты** | Самохостинг Cormorant + Manrope (woff2, сабсеты cyrillic/latin) |
 | **Графика** | SVG-иконки, `WebP` с `JPG`-фолбэком, декоративный canvas-фон |
-| **Тесты** | `check_prices.py` — парити-тест цен на BeautifulSoup4 |
+| **Тесты** | `check_prices.py` — парити-тест цен, `check_headings.py` — иерархия заголовков (BeautifulSoup4) |
 | **Аналитика** | Яндекс.Метрика |
 | **CI/CD** | GitHub Actions → GitHub Pages, кастомный домен через `CNAME` |
 
@@ -97,7 +97,7 @@ flowchart LR
     D --> F
     E --> G["Статический HTML<br/>vn.neva.beauty/"]
     F --> G
-    G --> H{{"check_prices.py<br/>парити-тест цен"}}
+    G --> H{{"check_prices.py · check_headings.py<br/>автотесты сборки"}}
     H -->|OK| I["GitHub Actions"]
     I --> J["🌐 GitHub Pages<br/>vn.neva.beauty"]
 ```
@@ -115,6 +115,11 @@ flowchart LR
   но и раздел прайса, описание позиции и валюту, падая при любом расхождении. Шаг
   встроен в деплой: расхождение в ценах не доезжает до прода. Непонятная форма цены
   в прайсе роняет сборку, а не «вырезает цифры» — числа не выдумываются никогда.
+
+- **♿ Структура страницы под автотестом.** `check_headings.py` в том же шаге деплоя
+  проверяет иерархию заголовков: ровно один `h1`, уровни без пропусков. Пропуск
+  (`h1 → h3`) на экране не виден, но ломает навигацию скринридером по заголовкам
+  и валидность — три страницы прожили с ним незамеченными.
 
 - **🔎 Связный граф структурированных данных.** `schema.py` собирает один валидный
   JSON-LD `@graph` (`Organization` + `BeautySalon` + `WebSite`), к которому страницы
@@ -147,6 +152,7 @@ flowchart LR
 │  ├─ build.py                #   оркестратор сборки
 │  ├─ schema.py               #   сборка JSON-LD (schema.org)
 │  ├─ check_prices.py         #   парити-тест цен
+│  ├─ check_headings.py       #   проверка иерархии заголовков
 │  ├─ data/
 │  │  ├─ site.yml             #   бизнес, контакты, конфиг
 │  │  ├─ content.yml          #   тексты, FAQ, таксономия
@@ -174,8 +180,8 @@ pip install -r requirements.txt
 # 2. Сборка сайта в vn.neva.beauty/
 python generator/build.py
 
-# 3. Проверка точности цен
-cd generator && python check_prices.py
+# 3. Проверки: точность цен и иерархия заголовков
+cd generator && python check_prices.py && python check_headings.py
 
 # 4. Локальный просмотр
 cd ../vn.neva.beauty && python -m http.server 8000
@@ -185,7 +191,7 @@ cd ../vn.neva.beauty && python -m http.server 8000
 ## ☁️ Деплой
 
 Пуш в `main` запускает GitHub Actions: workflow ставит зависимости, гоняет
-`build.py`, публикует папку `vn.neva.beauty/` артефактом и деплоит на GitHub Pages.
+`build.py`, прогоняет автотесты (цены и заголовки), публикует папку `vn.neva.beauty/` артефактом и деплоит на GitHub Pages.
 Боевой домен `vn.neva.beauty` подключён через `CNAME`.
 
 ---

@@ -67,7 +67,7 @@ price accuracy is guarded by an automated test.
 | **Styling** | Plain CSS, cascade layers, minified into one bundle via `rcssmin` |
 | **Fonts** | Self-hosted Cormorant + Manrope (woff2, cyrillic/latin subsets) |
 | **Graphics** | SVG icons, `WebP` with `JPG` fallback, decorative canvas backdrop |
-| **Testing** | `check_prices.py` — price-parity test on BeautifulSoup4 |
+| **Testing** | `check_prices.py` (price parity) and `check_headings.py` (heading outline) on BeautifulSoup4 |
 | **Analytics** | Yandex.Metrica |
 | **CI/CD** | GitHub Actions → GitHub Pages, custom domain via `CNAME` |
 
@@ -98,7 +98,7 @@ flowchart LR
     D --> F
     E --> G["Static HTML<br/>vn.neva.beauty/"]
     F --> G
-    G --> H{{"check_prices.py<br/>price parity test"}}
+    G --> H{{"check_prices.py · check_headings.py<br/>build checks"}}
     H -->|OK| I["GitHub Actions"]
     I --> J["🌐 GitHub Pages<br/>vn.neva.beauty"]
 ```
@@ -117,6 +117,11 @@ flowchart LR
   currency, failing on any mismatch. The step runs inside the deploy pipeline, so a
   price drift never reaches production. An unrecognised price format breaks the build
   instead of being "digit-stripped" — numbers are never invented.
+
+- **♿ Page structure under test.** `check_headings.py` runs in the same deploy step and
+  verifies the heading outline: exactly one `h1`, no skipped levels. A skip (`h1 → h3`)
+  is invisible on screen but breaks screen-reader heading navigation and validity —
+  three pages had been living with one unnoticed.
 
 - **🔎 Connected structured-data graph.** `schema.py` assembles one valid JSON-LD
   `@graph` (`Organization` + `BeautySalon` + `WebSite`), and pages append their own
@@ -149,6 +154,7 @@ flowchart LR
 │  ├─ build.py                #   build orchestrator
 │  ├─ schema.py               #   JSON-LD (schema.org) assembly
 │  ├─ check_prices.py         #   price-parity test
+│  ├─ check_headings.py       #   heading-outline check
 │  ├─ data/
 │  │  ├─ site.yml             #   business, contacts, config
 │  │  ├─ content.yml          #   copy, FAQ, taxonomy
@@ -176,8 +182,8 @@ pip install -r requirements.txt
 # 2. Build the site into vn.neva.beauty/
 python generator/build.py
 
-# 3. Verify price accuracy
-cd generator && python check_prices.py
+# 3. Verify price accuracy and heading outline
+cd generator && python check_prices.py && python check_headings.py
 
 # 4. Preview locally
 cd ../vn.neva.beauty && python -m http.server 8000
@@ -187,7 +193,7 @@ cd ../vn.neva.beauty && python -m http.server 8000
 ## ☁️ Deployment
 
 Pushing to `main` triggers GitHub Actions: the workflow installs dependencies, runs
-`build.py`, uploads the `vn.neva.beauty/` folder as an artifact and deploys to GitHub
+`build.py`, runs the build checks (prices and headings), uploads the `vn.neva.beauty/` folder as an artifact and deploys to GitHub
 Pages. The production domain `vn.neva.beauty` is wired up via `CNAME`.
 
 ---
