@@ -155,6 +155,7 @@ flowchart LR
 │  ├─ schema.py               #   сборка JSON-LD (schema.org)
 │  ├─ check_prices.py         #   парити-тест цен
 │  ├─ check_headings.py       #   проверка иерархии заголовков
+│  ├─ make_brand_assets.py    #   разовая генерация фавиконов и превью из логотипа
 │  ├─ data/
 │  │  ├─ site.yml             #   бизнес, контакты, конфиг
 │  │  ├─ content.yml          #   тексты, FAQ, таксономия
@@ -164,7 +165,8 @@ flowchart LR
 ├─ vn.neva.beauty/            # Сгенерированный сайт (раздаётся GitHub Pages)
 │  ├─ index.html · <услуги>/ · <разделы>/
 │  ├─ assets/  css · js · fonts · icons · img
-│  ├─ sitemap.xml · llms.txt · CNAME · 404.html
+│  ├─ favicon.svg · favicon.ico · apple-touch-icon.png · icon-192/512.png
+│  ├─ sitemap.xml · llms.txt · site.webmanifest · CNAME · 404.html
 │
 ├─ .github/workflows/deploy.yml   # CI/CD: сборка и деплой
 └─ requirements.txt
@@ -188,6 +190,14 @@ cd generator && python check_prices.py && python check_headings.py
 # 4. Локальный просмотр
 cd ../vn.neva.beauty && python -m http.server 8000
 # → http://localhost:8000
+```
+
+Фавиконы, иконки приложения и карточка превью ссылок собраны из логотипа заранее
+и лежат в репозитории — обычная сборка их не трогает. Пересобрать нужно только при
+смене логотипа (нужны Pillow и macOS: карточку рисует системный `qlmanage`):
+
+```bash
+python generator/make_brand_assets.py
 ```
 
 ## ☁️ Деплой

@@ -25,7 +25,8 @@ business:
   language: ["Russian", "English"]    # языки обслуживания → availableLanguage в ContactPoint
   language_code: "ru"
   image: "/assets/img/hero.jpg"
-  logo: "/favicon.svg"                # брендовая буква N (отдельного логотипа нет)
+  logo: "/assets/img/logo-neva-beauty.png"  # круглая печать с лотосом, 512×512 (растр:
+                                            # его ждут карточки организации у Google и Яндекса)
   same_as:
     - "https://www.instagram.com/vn.neva.beauty/"
     - "https://t.me/doctor_cosmetolog_pro_channel"   # публичный Telegram-канал

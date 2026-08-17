@@ -157,6 +157,7 @@ flowchart LR
 │  ├─ schema.py               #   JSON-LD (schema.org) assembly
 │  ├─ check_prices.py         #   price-parity test
 │  ├─ check_headings.py       #   heading-outline check
+│  ├─ make_brand_assets.py    #   one-off favicon and share-card generation
 │  ├─ data/
 │  │  ├─ site.yml             #   business, contacts, config
 │  │  ├─ content.yml          #   copy, FAQ, taxonomy
@@ -166,7 +167,8 @@ flowchart LR
 ├─ vn.neva.beauty/            # Generated site (served by GitHub Pages)
 │  ├─ index.html · <services>/ · <categories>/
 │  ├─ assets/  css · js · fonts · icons · img
-│  ├─ sitemap.xml · llms.txt · CNAME · 404.html
+│  ├─ favicon.svg · favicon.ico · apple-touch-icon.png · icon-192/512.png
+│  ├─ sitemap.xml · llms.txt · site.webmanifest · CNAME · 404.html
 │
 ├─ .github/workflows/deploy.yml   # CI/CD: build and deploy
 └─ requirements.txt
@@ -190,6 +192,14 @@ cd generator && python check_prices.py && python check_headings.py
 # 4. Preview locally
 cd ../vn.neva.beauty && python -m http.server 8000
 # → http://localhost:8000
+```
+
+Favicons, app icons and the link-preview card are generated from the logo ahead of time
+and committed — a regular build leaves them alone. Rebuild only when the logo changes
+(needs Pillow and macOS: the card is rendered by the system `qlmanage`):
+
+```bash
+python generator/make_brand_assets.py
 ```
 
 ## ☁️ Deployment

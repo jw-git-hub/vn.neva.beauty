@@ -1,0 +1,68 @@
+{# Карточка превью ссылки 1200×630. Рендерится не при сборке сайта, а вручную скриптом
+   generator/make_brand_assets.py → assets/img/og-default.jpg. Файл кладётся в корень
+   собранного сайта, поэтому относительные пути к шрифтам, токенам и печати рабочие:
+   типографика и палитра здесь те же, что на страницах, из тех же файлов.
+
+   Две особенности вёрстки — обе из-за движка QuickLook, который рисует карточку:
+
+   1. Все размеры выражены через --px = сотая доля ширины окна, делённая на 12,
+      то есть «одна единица макета 1200 px». QuickLook верстает страницу в своём
+      вьюпорте (1024 px) и уже потом масштабирует картинку до запрошенной стороны —
+      при жёстких пикселях композиция уезжала и правый край обрезался. В долях ширины
+      кадр собирается одинаково при любом вьюпорте.
+   2. Блоки расставлены абсолютными координатами, а не флексом: раскладку флекс-контейнера
+      QuickLook считал иначе, чем браузер. У кадра фиксированный размер, так что
+      координаты здесь и есть простое описание композиции.
+
+   Прозрачные концы градиентов заданы через rgba того же цвета: ключевое слово
+   transparent часть движков разворачивает в прозрачный чёрный и подмешивает серый. #}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <style>
+    html,body{margin:0;padding:0;overflow:hidden}
+    .card{--px:calc(100vw / {{ width }});
+      position:relative;overflow:hidden;background:var(--bg);
+      width:calc({{ width }} * var(--px));height:calc({{ height }} * var(--px))}
+    /* те же мягкие пятна, что на фоне круглой печати — карточка и аватар соцсетей
+       выглядят как один материал */
+    .card::before{content:"";position:absolute;inset:0;background:
+      radial-gradient(calc(440 * var(--px)) calc(440 * var(--px)) at 10% 6%,
+        rgba(206,155,145,.28),rgba(206,155,145,0) 70%),
+      radial-gradient(calc(400 * var(--px)) calc(400 * var(--px)) at 94% 92%,
+        rgba(146,101,94,.16),rgba(146,101,94,0) 70%),
+      radial-gradient(calc(420 * var(--px)) calc(420 * var(--px)) at 66% 2%,
+        rgba(241,211,197,.32),rgba(241,211,197,0) 70%)}
+    .card__seal{position:absolute;left:calc(72 * var(--px));top:calc(135 * var(--px));
+      width:calc(360 * var(--px));height:calc(360 * var(--px))}
+    .card__text{position:absolute;left:calc(496 * var(--px));top:calc(186 * var(--px));
+      width:calc(632 * var(--px))}
+    .card__name{font-family:var(--font-head);font-weight:600;
+      font-size:calc(88 * var(--px));letter-spacing:.04em;line-height:1;color:var(--ink)}
+    .card__loc{position:relative;margin-top:calc(26 * var(--px));
+      padding-left:calc(76 * var(--px));
+      font-family:var(--font-body);font-weight:600;font-size:calc(23 * var(--px));
+      letter-spacing:.34em;text-transform:uppercase;color:var(--rose-deep)}
+    .card__loc::before{content:"";position:absolute;left:0;top:50%;
+      margin-top:calc(-1 * var(--px));
+      width:calc(56 * var(--px));height:calc(2 * var(--px));
+      background:linear-gradient(90deg,var(--rose-soft),rgba(206,155,145,0))}
+    .card__services{margin-top:calc(38 * var(--px));
+      font-family:var(--font-body);font-weight:400;font-size:calc(23 * var(--px));
+      line-height:1.55;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="card__seal" src="{{ logo_src }}" alt="">
+    <div class="card__text">
+      <div class="card__name">{{ brand }}</div>
+      <div class="card__loc">{{ loc }}</div>
+      <div class="card__services">{{ services | join(' · ') }}</div>
+    </div>
+  </div>
+</body>
+</html>

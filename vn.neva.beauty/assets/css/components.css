@@ -22,10 +22,15 @@
 .site-header__logo{color:var(--ink)}
 .site-header__logo:hover .brand-mark__name{color:var(--rose)}
 
-/* brand lockup: название + строка локации (Da Nang) */
-.brand-mark{display:inline-flex;flex-direction:column;gap:.34em;line-height:1}
+/* brand lockup: знак-лотос + название + строка локации (Da Nang).
+   Высоту лотоса задаёт viewBox при известной ширине — сдвига макета при загрузке нет.
+   Если места не хватает (дровер на экране 320 px), ужимается знак, а не надпись:
+   название — логотип, разрывать его на две строки нельзя. */
+.brand-mark{display:inline-flex;align-items:center;gap:.8rem;line-height:1}
+.brand-mark__lotus{flex:0 1 auto;width:2.9em;height:auto;display:block}
+.brand-mark__text{flex:none;display:inline-flex;flex-direction:column;gap:.34em}
 .brand-mark__name{font-family:var(--font-head);font-size:var(--fs-600);font-weight:600;
-  letter-spacing:.05em;color:var(--ink);transition:color var(--t-fast) var(--ease)}
+  letter-spacing:.05em;white-space:nowrap;color:var(--ink);transition:color var(--t-fast) var(--ease)}
 .brand-mark__loc{display:inline-flex;align-items:center;gap:.55em;align-self:flex-start;
   font-family:var(--font-body);font-size:.6875rem;font-weight:600;letter-spacing:.34em;
   text-transform:uppercase;color:var(--rose-deep);padding-right:.34em}

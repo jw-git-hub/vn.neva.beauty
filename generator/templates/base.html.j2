@@ -16,13 +16,27 @@
   <meta property="og:title" content="{{ page.seo_title }}">
   <meta property="og:description" content="{{ page.seo_desc }}">
   <meta property="og:url" content="{{ site.base_url }}{{ page.url }}">
-  <meta property="og:image" content="{{ site.base_url }}{{ page.og_image | default('/assets/img/hero.jpg') }}">
+  {# Превью ссылки — фирменная карточка 1200×630: это единственная пропорция, которую
+     мессенджеры и соцсети показывают целиком, портретное фото они обрезают. Любая
+     page.og_image должна быть того же размера, иначе width/height ниже соврут. Размеры
+     нужны, чтобы клиент нарисовал превью сразу, не дожидаясь загрузки картинки. #}
+  {% set og_image = site.base_url ~ (page.og_image | default('/assets/img/og-default.jpg')) %}
+  <meta property="og:image" content="{{ og_image }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ site.brand }} — {{ site.brand_location }}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ page.seo_title }}">
   <meta name="twitter:description" content="{{ page.seo_desc }}">
-  <meta name="twitter:image" content="{{ site.base_url }}{{ page.og_image | default('/assets/img/hero.jpg') }}">
+  <meta name="twitter:image" content="{{ og_image }}">
   {% if page.schema_json %}<script type="application/ld+json">{{ page.schema_json }}</script>{% endif %}
+  {# Иконки: .ico для Яндекса и старых клиентов (его же браузер просит по умолчанию),
+     .svg для современных браузеров, apple-touch-icon для «на главный экран» в iOS. #}
+  <link rel="icon" href="{{ base_path }}/favicon.ico" sizes="32x32">
   <link rel="icon" href="{{ base_path }}/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ base_path }}/apple-touch-icon.png">
+  <link rel="manifest" href="{{ base_path }}/site.webmanifest">
+  <meta name="theme-color" content="{{ theme_color }}">
   {% if page.hero_image %}<link rel="preload" as="image" href="{{ base_path }}{{ page.hero_image }}" fetchpriority="high">{% endif %}
   <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/manrope-400-cyrillic.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/cormorant-600-cyrillic.woff2" crossorigin>

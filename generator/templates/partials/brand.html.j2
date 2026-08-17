@@ -1,4 +1,11 @@
+{# Фирменный замок: знак-лотос + название и город. Единственный источник знака для
+   шапки, подвала и мобильного меню — все три включают этот макрос.
+   Лотос помечен aria-hidden: доступное имя ссылки-логотипа даёт её видимый текст
+   (см. комментарий в partials/header.html.j2), знак не должен в него попадать. #}
 {% macro brand_mark(brand, loc) -%}
-<span class="brand-mark__name">{{ brand }}</span>
-<span class="brand-mark__loc">{{ loc }}</span>
+{{ icon('lotus', 'brand-mark__lotus') }}
+<span class="brand-mark__text">
+  <span class="brand-mark__name">{{ brand }}</span>
+  <span class="brand-mark__loc">{{ loc }}</span>
+</span>
 {%- endmacro %}

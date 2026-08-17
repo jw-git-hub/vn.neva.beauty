@@ -1,4 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#B07A72"/>
-  <text x="32" y="45" font-family="Georgia, 'Times New Roman', serif" font-size="40" font-weight="600" text-anchor="middle" fill="#FBF4F0">N</text>
+<!-- Фавикон Neva Beauty. Собран из assets/icons/lotus.svg скриптом
+     generator/make_brand_assets.py; вручную не правим. Непрозрачность лепестков
+     поднята: на 16 px исходные полупрозрачные слои сливаются с фоном. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="317.9 259.0 364.2 364.2">
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity="0.74" transform="rotate(-62 500 586.14)"/>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity="0.74" transform="rotate(62 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity="0.92" transform="rotate(-38 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity="0.92" transform="rotate(38 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity="0.96" transform="rotate(-17 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity="0.96" transform="rotate(17 500 586.14)"/>
+  <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" opacity="1.00" transform="rotate(0 500 586.14)"/>
 </svg>

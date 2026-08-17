@@ -11,6 +11,11 @@ ICONS = OUT / "assets" / "icons"
 
 RELATED_COUNT = 3  # сколько карточек «Смотрите также» показываем на странице услуги
 
+# Фон бренда (токен --bg из assets/css/tokens.css). Один источник для meta theme-color
+# и для манифеста: браузер красит им адресную строку и заставку, и оба должны совпадать
+# с реальным фоном страницы, иначе при запуске видна цветная вспышка.
+THEME_COLOR = "#FBF4F0"
+
 # Порядок каскада для единого bundle.min.css. Все CSS сайта склеиваются в один
 # минифицированный файл → один render-blocking запрос вместо шести, общий кэш на
 # весь сайт. fonts первым (@font-face), затем токены/база, затем постраничные слои.
@@ -37,6 +42,7 @@ def env():
     e.filters["urlencode"] = lambda s: urllib.parse.quote(str(s))
     e.tests["match"] = lambda s, pat: re.match(pat, s) is not None
     e.globals["icon"] = icon
+    e.globals["theme_color"] = THEME_COLOR
     return e
 
 def write(path: Path, html: str):
@@ -198,6 +204,26 @@ def build_llms(site, content):
     return "\n".join(lines)
 
 
+def build_manifest(site, base_path):
+    """site.webmanifest — имя и иконка для «добавить на главный экран» на Android.
+    Собирается, а не лежит статикой: пути внутри должны учитывать base_path, иначе
+    на превью по подпути GitHub Pages манифест уводит на несуществующие иконки.
+    purpose «any maskable» — одна иконка и как есть, и под маску адаптивных иконок:
+    лотос занимает ~55 % кадра и не обрезается ни одной формой маски."""
+    icons = [{"src": f"{base_path}/icon-{size}.png", "sizes": f"{size}x{size}",
+              "type": "image/png", "purpose": "any maskable"} for size in (192, 512)]
+    manifest = {
+        "name": f"{site['brand']} — {site['tagline']}",
+        "short_name": site["brand"],
+        "start_url": f"{base_path}/",
+        "display": "standalone",
+        "background_color": THEME_COLOR,
+        "theme_color": THEME_COLOR,
+        "icons": icons,
+    }
+    return json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
+
+
 def build_nav(categories, services):
     # label — короткая подпись для верхней панели, title — полное название для дровера/страниц
     nav = [{"label": "Главная", "title": "Главная", "url": "/"}]
@@ -303,6 +329,8 @@ def main():
     write(OUT/"sitemap.xml", sitemap)
     # llms.txt — карта сайта для ИИ-ассистентов
     write(OUT/"llms.txt", build_llms(site, content))
+    # site.webmanifest — имя и иконка при добавлении на главный экран
+    write(OUT/"site.webmanifest", build_manifest(site, base_path))
     # CNAME — боевой домен для GitHub Pages. Кладём в артефакт, иначе workflow-деплой
     # каждый раз сбрасывает кастомный домен в настройках Pages. Хост берём из base_url.
     write(OUT/"CNAME", urllib.parse.urlsplit(base_url).netloc + "\n")
