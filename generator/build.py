@@ -45,10 +45,13 @@ def env():
     e.globals["theme_color"] = THEME_COLOR
     return e
 
-def write(path: Path, html: str):
+def write(path: Path, html: str) -> bool:
+    """Пишет файл и возвращает True, если содержимое изменилось (нужно для lastmod в sitemap)."""
     path.parent.mkdir(parents=True, exist_ok=True)
+    changed = not path.exists() or path.read_text(encoding="utf-8") != html
     path.write_text(html, encoding="utf-8")
     print("→", path.relative_to(OUT.parent))
+    return changed
 
 def build_css_bundle():
     """Склеивает CSS-слои в порядке каскада и минифицирует в единый bundle.min.css.
@@ -62,6 +65,28 @@ def build_css_bundle():
     out = css_dir / "bundle.min.css"
     out.write_text(bundle, encoding="utf-8")
     print("→", out.relative_to(OUT.parent), f"({len(bundle) // 1024} KB minified)")
+
+def previous_lastmods(path: Path) -> dict:
+    """Достаёт lastmod из уже собранного sitemap: даты неизменившихся страниц переживают сборку."""
+    if not path.exists():
+        return {}
+    pairs = re.findall(r"<loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>",
+                       path.read_text(encoding="utf-8"))
+    return dict(pairs)
+
+def build_sitemap(base_url: str, urls: list, changed: dict, known: dict) -> str:
+    """Собирает sitemap, обновляя lastmod только у реально изменившихся страниц.
+    Иначе любая сборка (правка CSS, пересборка на CI) сообщала бы поисковикам о правке
+    всего сайта и обесценивала сигнал lastmod."""
+    today = date.today().isoformat()
+    rows = []
+    for url in urls:
+        loc = base_url + url
+        lastmod = today if changed.get(url, True) else known.get(loc, today)
+        rows.append(f"  <url><loc>{loc}</loc><lastmod>{lastmod}</lastmod></url>")
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            + "\n".join(rows) + "\n</urlset>\n")
 
 def enrich_categories(content):
     """Обогащает категории (url, is_page) и переопределяет svc.category — единая таксономия."""
@@ -259,8 +284,8 @@ def main():
     page = {"url":"/", "seo_title": content["home"].get("seo_title","Neva Beauty — центр красоты в Дананге"),
             "seo_desc": content["home"].get("seo_desc",""), "schema_json": home_schema,
             "hero_image": "/assets/img/hero.webp"}  # LCP-элемент → preload в base.html.j2
-    write(OUT/"index.html", e.get_template("home.html.j2").render(
-        site=site, page=page, home=content["home"], categories=content["categories"]))
+    page_changed = {"/": write(OUT/"index.html", e.get_template("home.html.j2").render(
+        site=site, page=page, home=content["home"], categories=content["categories"]))}
     # услуги
     tpl = e.get_template("service.html.j2")
     base_url = site["base_url"]
@@ -289,7 +314,7 @@ def main():
         page = {"url": f"/{slug}/", "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
                 "schema_json": schema.render(site, nodes),
                 "hero_image": f"/assets/img/{svc['hero_image']}.webp"}  # LCP → preload
-        write(OUT/slug/"index.html", tpl.render(
+        page_changed[f"/{slug}/"] = write(OUT/slug/"index.html", tpl.render(
             site=site, page=page, svc=svc, slug=slug, category=cat,
             sections=sections, services=content["services"]))
     # категории (только группы с несколькими услугами)
@@ -309,7 +334,7 @@ def main():
             nodes.append(schema.faq_node(cat["faq"]))
         page = {"url": cat["url"], "seo_title": cat["seo_title"], "seo_desc": cat["seo_desc"],
                 "schema_json": schema.render(site, nodes)}
-        write(OUT/cat["slug"]/"index.html", cat_tpl.render(
+        page_changed[cat["url"]] = write(OUT/cat["slug"]/"index.html", cat_tpl.render(
             site=site, page=page, cat=cat, services=content["services"]))
     # privacy (служебная — не индексируем)
     page = {"url":"/privacy/", "seo_title":"Политика конфиденциальности — Neva Beauty", "seo_desc":"",
@@ -323,10 +348,9 @@ def main():
     cat_urls = [cat["url"] for cat in content["categories"] if cat["is_page"]]
     # /privacy/ и /404.html — noindex, в sitemap не включаем
     urls = ["/"] + [f"/{slug}/" for slug in content["services"]] + cat_urls
-    today = date.today().isoformat()
-    rows = "\n".join(f'  <url><loc>https://vn.neva.beauty{u}</loc><lastmod>{today}</lastmod></url>' for u in urls)
-    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + rows + '\n</urlset>\n'
-    write(OUT/"sitemap.xml", sitemap)
+    sitemap_path = OUT/"sitemap.xml"
+    known_lastmods = previous_lastmods(sitemap_path)  # читаем до перезаписи
+    write(sitemap_path, build_sitemap(base_url, urls, page_changed, known_lastmods))
     # llms.txt — карта сайта для ИИ-ассистентов
     write(OUT/"llms.txt", build_llms(site, content))
     # site.webmanifest — имя и иконка при добавлении на главный экран

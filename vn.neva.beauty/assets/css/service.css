@@ -1,8 +1,8 @@
 /* ===== SERVICE HERO ===== */
 /* Фон прозрачный → сквозь hero течёт единый слой «Аврора»; тёплый фокус даёт .svc-hero__blob. */
 .svc-hero{background:transparent}
-/* Крошки ведут герой: отступ от шапки сверху, снизу гэп даёт padding самого героя. */
-.svc-hero .breadcrumbs{padding-top:var(--sp-8);margin-bottom:0}
+/* Крошки ведут герой: отступ сверху даёт .breadcrumbs--lead, снизу — padding самого героя. */
+.svc-hero .breadcrumbs{margin-bottom:0}
 .svc-hero__inner{display:grid;gap:var(--sp-8);align-items:center;padding-block:var(--sp-12)}
 @media(min-width:768px){.svc-hero__inner{grid-template-columns:1.1fr .9fr;gap:var(--sp-10);padding-block:var(--sp-14)}}
 @media(min-width:1024px){.svc-hero__inner{gap:var(--sp-12);padding-block:var(--sp-16)}}

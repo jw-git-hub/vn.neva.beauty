@@ -195,6 +195,10 @@ body.no-scroll{overflow:hidden}
 .breadcrumbs a:hover{color:var(--rose)}
 .breadcrumbs__sep{color:var(--line)}
 .breadcrumbs [aria-current="page"]{color:var(--ink)}
+/* Крошки открывают страницу: единственный источник отступа от шапки — одинакового
+   на странице услуги и на странице категории. Секция под ними обнуляет свой верхний
+   padding через .section--lead, чтобы отступ не задавался в двух местах. */
+.breadcrumbs--lead{padding-top:var(--sp-8)}
 
 /* ===== FAQ (used by home/category) ===== */
 .faq{display:grid;gap:var(--sp-3);max-width:760px;margin-inline:auto}
