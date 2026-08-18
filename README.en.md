@@ -65,7 +65,7 @@ price accuracy is guarded by an automated test.
 | **Data** | YAML (`site.yml`, `content.yml`) + JSON (`prices.json`) |
 | **SEO / AI data** | JSON-LD (schema.org) `@graph`, `sitemap.xml`, `llms.txt` |
 | **Styling** | Plain CSS, cascade layers, minified into one bundle via `rcssmin` |
-| **Fonts** | Self-hosted Cormorant + Manrope (woff2, cyrillic/latin subsets) |
+| **Fonts** | Self-hosted Cormorant + Manrope (variable woff2, cyrillic/latin subsets) |
 | **Graphics** | SVG icons, `WebP` with `JPG` fallback, decorative canvas backdrop |
 | **Testing** | `check_prices.py` (price parity) and `check_headings.py` (heading outline) on BeautifulSoup4 |
 | **Analytics** | Yandex.Metrica |
@@ -133,7 +133,12 @@ flowchart LR
 
 - **⚡ Performance.** All CSS layers are concatenated into one minified
   `bundle.min.css` (one render-blocking request instead of six), fonts are self-hosted
-  as subsets, and the LCP image is preloaded. Removing render-blocking took production
+  as subsets, and the LCP image is preloaded. The fonts are variable, so one file per
+  subset covers every weight — 4 requests and 94 KB instead of 10 requests and 209 KB
+  spent re-downloading identical bytes under weight-specific names. System fallback
+  metrics are matched to the brand faces (`size-adjust`, `ascent-override`), so the page
+  does not reflow when the real fonts swap in over a slow link.
+  Removing render-blocking took production
   Performance from 75 to 98. Measured on the live domain (Lighthouse 12, mobile and
   desktop): Accessibility 100, SEO 100, Performance 94–98, CLS 0. Best Practices sits at
   78 — third-party cookies from Yandex.Metrica, the deliberate price of having analytics.

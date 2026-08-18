@@ -1,13 +1,24 @@
-/* Самохостинг шрифтов — сгенерировано fetch_fonts.py. Не редактировать вручную. */
-@font-face{font-family:'Cormorant';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/cormorant-500-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
-@font-face{font-family:'Cormorant';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/cormorant-500-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
-@font-face{font-family:'Cormorant';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/cormorant-600-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
-@font-face{font-family:'Cormorant';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/cormorant-600-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/manrope-400-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/manrope-400-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/manrope-500-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/manrope-500-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/manrope-600-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/manrope-600-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/manrope-700-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/manrope-700-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+/* Самохостинг шрифтов Google Fonts. Оба семейства вариативные (ось wght), поэтому один
+   файл на подмножество символов покрывает все начертания: диапазон в font-weight говорит
+   браузеру интерполировать нужный вес из этого же файла.
+   До этого здесь было 12 правил — по одному на каждый вес, — но все они ссылались на
+   один и тот же вариативный файл под разными именами. Браузер видел 12 разных URL и
+   качал одни и те же байты до 10 раз за загрузку страницы: 209 КБ вместо 94 КБ.
+   Именно поэтому на медленной сети текст подолгу висел в системном шрифте. */
+@font-face{font-family:'Cormorant';font-style:normal;font-weight:300 700;font-display:swap;src:url('../fonts/cormorant-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Cormorant';font-style:normal;font-weight:300 700;font-display:swap;src:url('../fonts/cormorant-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:200 800;font-display:swap;src:url('../fonts/manrope-cyrillic.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:200 800;font-display:swap;src:url('../fonts/manrope-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+
+/* Подложка на время загрузки. font-display:swap рисует текст системным шрифтом сразу,
+   и без выравнивания метрик эти первые секунды выглядят чужой страницей: Georgia шире
+   Cormorant на 14%, строки занимают другое число строк и прыгают при подмене.
+   size-adjust — отношение средней ширины символа, замеренное на русском тексте сайта;
+   ascent/descent — метрики фирменного шрифта, поделённые на size-adjust, потому что
+   браузер масштабирует и переопределённые метрики тоже.
+   Если ни один local() не нашёлся, правило просто не применяется и в силу вступает
+   следующий шрифт списка — поведение не хуже прежнего. */
+@font-face{font-family:'Cormorant Fallback';src:local('Georgia'),local('Noto Serif'),local('Times New Roman');
+  size-adjust:88.5%;ascent-override:104.4%;descent-override:32.4%;line-gap-override:0%}
+@font-face{font-family:'Manrope Fallback';src:local('Arial'),local('Roboto'),local('Helvetica Neue');
+  size-adjust:102.7%;ascent-override:103.8%;descent-override:29.2%;line-gap-override:0%}
