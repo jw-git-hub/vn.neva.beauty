@@ -5,6 +5,12 @@ body{font-family:var(--font-body);font-size:var(--fs-400);line-height:var(--lh-b
   color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:var(--font-head);line-height:var(--lh-tight);font-weight:600}
 img,svg{display:block;max-width:100%}
+/* Картинка, чей запрос сорвался: до успешного повтора (retry-скрипт в <head>)
+   на её месте ровная плашка в тоне бренда. Иначе Chromium рисует текст alt —
+   он не подчиняется размерам <img>, вылезает наружу и читается как поломка вёрстки.
+   color:transparent убирает только отрисовку: alt остаётся в дереве доступности. */
+img[data-img-error]{color:transparent;
+  background:linear-gradient(160deg,var(--surface-2),var(--surface))}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:4px}
 /* Прячет элемент визуально, но оставляет его скринридерам и поисковикам —

@@ -4,6 +4,38 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>document.documentElement.classList.add('js')</script>
+  
+  <script>
+  (function () {
+    var DELAYS = [800, 2500, 6000];  // паузы перед повторными попытками, мс
+
+    function rememberSource(img) {
+      // Слушатель вешаем на саму картинку: её событие load, в отличие от error,
+      // до window в фазе capture не доходит — общий обработчик его не увидит.
+      img.dataset.imgSrc = img.src;
+      img.addEventListener('load', function () { delete img.dataset.imgError; }, { once: true });
+    }
+
+    function reloadLater(img) {
+      var attempt = Number(img.dataset.imgRetry || 0);
+      if (attempt >= DELAYS.length) return;
+      if (!img.dataset.imgSrc) rememberSource(img);
+      img.dataset.imgRetry = attempt + 1;
+      var src = img.dataset.imgSrc;
+      setTimeout(function () {
+        // Параметр обязателен: без него браузер отдаёт запомненную ошибку, не запрос.
+        img.src = src + (src.indexOf('?') < 0 ? '?' : '&') + 'retry=' + (attempt + 1);
+      }, DELAYS[attempt]);
+    }
+
+    addEventListener('error', function (event) {
+      var img = event.target;
+      if (!img || img.tagName !== 'IMG') return;
+      img.dataset.imgError = '';
+      reloadLater(img);
+    }, true);
+  })();
+  </script>
   <title>Лифтинг и омоложение лица в Дананге — SMAS · Neva Beauty</title>
   <meta name="description" content="Ультразвуковой SMAS-лифтинг, игольчатый RF Morpheus 8 и фотоомоложение M22 для подтяжки и омоложения лица без операции в центре красоты Neva Beauty, Дананг.">
   <meta name="robots" content="index, follow">

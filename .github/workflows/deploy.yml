@@ -41,6 +41,11 @@ jobs:
       - name: Check heading hierarchy
         run: python generator/check_headings.py
 
+      # Сорвавшийся или битый путь картинки виден только глазами на живом сайте:
+      # hero главной так и не догрузился во встроенном браузере Instagram.
+      - name: Check images
+        run: python generator/check_images.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
