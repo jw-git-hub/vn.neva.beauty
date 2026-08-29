@@ -67,8 +67,10 @@
   <meta name="twitter:image" content="{{ og_image }}">
   {% if page.schema_json %}<script type="application/ld+json">{{ page.schema_json }}</script>{% endif %}
   {# Иконки: .ico для Яндекса и старых клиентов (его же браузер просит по умолчанию),
-     .svg для современных браузеров, apple-touch-icon для «на главный экран» в iOS. #}
-  <link rel="icon" href="{{ base_path }}/favicon.ico" sizes="32x32">
+     .svg для современных браузеров, apple-touch-icon для «на главный экран» в iOS.
+     sizes перечисляет все кадры внутри .ico: Google берёт для сниппета кадр не меньше
+     48 px, и раньше атрибут врал про 32 — самый крупный кадр он просто не видел. #}
+  <link rel="icon" href="{{ base_path }}/favicon.ico" sizes="16x16 32x32 48x48">
   <link rel="icon" href="{{ base_path }}/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="{{ base_path }}/apple-touch-icon.png">
   <link rel="manifest" href="{{ base_path }}/site.webmanifest">
