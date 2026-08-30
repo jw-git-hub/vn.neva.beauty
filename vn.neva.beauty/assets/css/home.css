@@ -32,6 +32,9 @@
 @media(min-width:1024px){.contact-strip{margin-top:0}}
 .contact-strip__item{display:flex;align-items:center;gap:var(--sp-3);color:var(--ink);font-weight:500;justify-content:center}
 .contact-strip__item .icon{width:22px;height:22px;color:var(--rose);flex:none}
+/* Мессенджеры вместо телефона: две кнопки в третьей ячейке полосы. */
+.contact-strip__actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--sp-3)}
+.contact-strip__actions .btn .icon{color:var(--rose)}
 
 /* ===== CATEGORIES ===== */
 .cat-grid{display:grid;gap:var(--sp-6);grid-template-columns:1fr}

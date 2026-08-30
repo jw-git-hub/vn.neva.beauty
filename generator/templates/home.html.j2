@@ -22,7 +22,10 @@
   <div class="contact-strip">
     <div class="contact-strip__item">{{ icon('map-pin') }}<span>{{ site.location }}</span></div>
     <div class="contact-strip__item">{{ icon('clock') }}<span>{{ site.hours }}</span></div>
-    <a class="contact-strip__item" href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener">{{ icon('message-circle') }}<span>+84 357 132 621</span></a>
+    <div class="contact-strip__actions">
+      <a class="btn btn--ghost btn--sm" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }}<span>Telegram</span></a>
+      <a class="btn btn--ghost btn--sm" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }}<span>WhatsApp</span></a>
+    </div>
   </div>
 </section>
 
