@@ -3,7 +3,13 @@
 html{scroll-behavior:smooth;overflow-x:clip}
 body{font-family:var(--font-body);font-size:var(--fs-400);line-height:var(--lh-body);
   color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
-h1,h2,h3,h4{font-family:var(--font-head);line-height:var(--lh-tight);font-weight:600}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:var(--lh-tight);font-weight:600;
+  overflow-wrap:break-word}
+/* Названия услуг содержат длинные слова («Профессиональный»), которые на узком
+   экране не влезают в строку и распирают страницу. Переносим по слогам. */
+@media (max-width:768px){
+  h1,h2,h3,h4{hyphens:auto}
+}
 img,svg{display:block;max-width:100%}
 /* Картинка, чей запрос сорвался: до успешного повтора (retry-скрипт в <head>)
    на её месте ровная плашка в тоне бренда. Иначе Chromium рисует текст alt —

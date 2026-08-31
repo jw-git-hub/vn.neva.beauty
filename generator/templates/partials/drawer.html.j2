@@ -1,6 +1,6 @@
 {% from 'partials/brand.html.j2' import brand_mark %}
 <div class="overlay" data-overlay data-drawer-close aria-hidden="true"></div>
-<aside class="drawer" data-drawer aria-label="Мобильное меню">
+<aside class="drawer" data-drawer role="dialog" aria-modal="true" aria-label="Мобильное меню">
   <div class="drawer__top">
     <span class="drawer__brand brand-mark">{{ brand_mark(site.brand, site.brand_location) }}</span>
     <button class="drawer__close" data-drawer-close aria-label="Закрыть меню">

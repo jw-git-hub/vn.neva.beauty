@@ -20,7 +20,8 @@
   transition:box-shadow var(--t-mid) var(--ease),background var(--t-mid) var(--ease),border-color var(--t-mid) var(--ease)}
 .site-header.is-scrolled{box-shadow:0 6px 26px rgba(74,59,56,.07);
   background:color-mix(in srgb,var(--bg) 88%,transparent);border-bottom-color:var(--line)}
-.site-header__inner{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);min-height:76px}
+.site-header__inner{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:76px}
+@media(min-width:1024px){.site-header__inner{gap:var(--sp-6)}}
 .site-header__logo{color:var(--ink)}
 .site-header__logo:hover .brand-mark__name{color:var(--rose)}
 
@@ -29,7 +30,7 @@
    Если места не хватает (дровер на экране 320 px), ужимается знак, а не надпись:
    название — логотип, разрывать его на две строки нельзя. */
 .brand-mark{display:inline-flex;align-items:center;gap:.8rem;line-height:1}
-.brand-mark__lotus{flex:0 1 auto;width:2.9em;height:auto;display:block}
+.brand-mark__flower{flex:0 1 auto;width:2.9em;height:auto;display:block}
 .brand-mark__text{flex:none;display:inline-flex;flex-direction:column;gap:.34em}
 .brand-mark__name{font-family:var(--font-head);font-size:var(--fs-600);font-weight:600;
   letter-spacing:.05em;white-space:nowrap;color:var(--ink);transition:color var(--t-fast) var(--ease)}
@@ -64,6 +65,12 @@
   padding:var(--sp-2);display:flex;flex-direction:column;gap:2px;z-index:1;
   opacity:0;visibility:hidden;transform:translateY(8px);
   transition:opacity var(--t-fast) var(--ease),visibility var(--t-fast),transform var(--t-fast) var(--ease)}
+/* Крайний справа дропдаун раскрывается влево: панель шириной 248 px от левого
+   края своей группы уходит за окно и даёт странице горизонтальную прокрутку.
+   Привязка к правому краю, а не сдвиг меню целиком: так панель не вылезет и если
+   разделов станет больше. Последний ребёнок `.nav` — ссылка без дропдауна,
+   поэтому `:last-of-type`, а не `:last-child`. */
+.nav__group:last-of-type .nav__menu{left:auto;right:0}
 .nav__group:hover .nav__menu,.nav__group.is-open .nav__menu{opacity:1;visibility:visible;transform:translateY(0)}
 .nav__group:hover .nav__chev,.nav__group.is-open .nav__chev{transform:rotate(180deg)}
 .nav__sub{position:relative;padding:.6rem .75rem .6rem .9rem;border-radius:10px;font-size:var(--fs-300);color:var(--ink);

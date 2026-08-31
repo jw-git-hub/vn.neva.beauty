@@ -3,7 +3,7 @@
 .svc-hero{background:transparent}
 /* Крошки ведут герой: отступ сверху даёт .breadcrumbs--lead, снизу — padding самого героя. */
 .svc-hero .breadcrumbs{margin-bottom:0}
-.svc-hero__inner{display:grid;gap:var(--sp-8);align-items:center;padding-block:var(--sp-12)}
+.svc-hero__inner{display:grid;gap:var(--sp-8);align-items:center;padding-block:var(--sp-8)}
 @media(min-width:768px){.svc-hero__inner{grid-template-columns:1.1fr .9fr;gap:var(--sp-10);padding-block:var(--sp-14)}}
 @media(min-width:1024px){.svc-hero__inner{gap:var(--sp-12);padding-block:var(--sp-16)}}
 .svc-hero__text{max-width:580px}
@@ -43,7 +43,9 @@
 .pricelist__tab{font-family:inherit;font-size:var(--fs-300);font-weight:600;color:var(--muted);
   background:var(--white);border:1px solid var(--line);border-radius:var(--radius-pill);
   padding:.6rem 1.4rem;min-height:44px;cursor:pointer;transition:background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)}
-.pricelist__tab.is-active{background:var(--rose);color:var(--white);border-color:var(--rose)}
+/* Фон активной вкладки — тёмный тон палитры: на --rose подпись давала контраст
+   3,81 при норме 4,5. На --rose-deep проходит с запасом. */
+.pricelist__tab.is-active{background:var(--rose-deep);color:var(--white);border-color:var(--rose-deep)}
 .pricelist__panel{display:none}
 .pricelist__panel.is-active{display:block}
 .pricelist__combos{display:grid;gap:var(--sp-3);grid-template-columns:1fr;margin-bottom:var(--sp-6);

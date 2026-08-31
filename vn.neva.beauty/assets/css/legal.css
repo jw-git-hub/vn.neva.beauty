@@ -6,17 +6,17 @@
 }
 
 .legal-page h1 {
-  font-family: var(--font-display, 'Cormorant', serif);
+  font-family: var(--font-head);
   font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 2rem;
   color: var(--ink);
 }
 
 .legal-page h2 {
-  font-family: var(--font-display, 'Cormorant', serif);
+  font-family: var(--font-head);
   font-size: 1.25rem;
-  font-weight: 500;
+  font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 0.5rem;
   color: var(--ink);
@@ -36,8 +36,16 @@
   margin-bottom: 0.75rem;
 }
 
+/* Таблица из четырёх колонок в 390px не помещается: прокручиваем её саму,
+   а не всю страницу. tabindex делает прокрутку доступной с клавиатуры. */
+.legal-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .legal-page table {
   width: 100%;
+  min-width: 34rem;
   border-collapse: collapse;
   margin: 1rem 0;
   font-size: 0.9rem;
