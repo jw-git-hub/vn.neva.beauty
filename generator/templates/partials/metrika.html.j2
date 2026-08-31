@@ -1,18 +1,51 @@
 {% if site.metrika_id %}
 <!-- Yandex.Metrika counter -->
-<script>
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();
-   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+{#- tag.js весит 110 КБ в gzip и 289 КБ распакованного JS — больше, чем весь
+    остальной фронтенд сайта вместе со шрифтами (CSS 7 КБ + JS 3 КБ + шрифты
+    71 КБ). Разбор такого объёма занимает главный поток ровно тогда, когда
+    браузер должен рисовать первый экран, поэтому счётчик грузится не сразу,
+    а по первому действию посетителя или через 1,2 с после load — что наступит
+    раньше.
 
-   ym({{ site.metrika_id }}, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:true
-   });
+    Вызовы при этом не теряются: заглушка ym() ставится сразу и копит аргументы
+    в очередь ym.a, а приехавший tag.js разбирает её — это штатный механизм
+    самого счётчика, init отработает задним числом.
+
+    Цена решения: визит, оборвавшийся раньше загрузки tag.js, в статистику не
+    попадёт. Если счётчик важнее скорости — убрать обёртку и вернуть прямую
+    вставку из справки Метрики. -#}
+<script>
+(function (w, d) {
+  w.ym = w.ym || function () { (w.ym.a = w.ym.a || []).push(arguments) };
+  w.ym.l = 1 * new Date();
+  ym({{ site.metrika_id }}, "init", {
+       clickmap:true,
+       trackLinks:true,
+       accurateTrackBounce:true,
+       webvisor:true
+  });
+
+  var SRC = "https://mc.yandex.ru/metrika/tag.js";
+  var started = false;
+
+  function start() {
+    if (started) return;
+    started = true;
+    for (var i = 0; i < d.scripts.length; i++) if (d.scripts[i].src === SRC) return;
+    var s = d.createElement("script");
+    s.async = 1;
+    s.src = SRC;
+    d.head.appendChild(s);
+  }
+
+  ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (name) {
+    addEventListener(name, start, { once: true, passive: true });
+  });
+
+  function afterLoad() { setTimeout(start, 1200); }
+  if (d.readyState === "complete") afterLoad();
+  else addEventListener("load", afterLoad, { once: true });
+})(window, document);
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/{{ site.metrika_id }}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
