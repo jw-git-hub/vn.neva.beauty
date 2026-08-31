@@ -40,28 +40,29 @@
 .brand-mark__loc::before{content:"";width:1.6rem;height:1px;flex:none;
   background:linear-gradient(90deg,var(--rose-soft),transparent)}
 
-/* Перелив лепестков — знак в шапке и в мобильном меню слегка «дышит» тоном.
+/* Перелив лепестков — знак в шапке и в мобильном меню «дышит» тоном.
    Тот же приём, что на th.neva.beauty, разница только в самом знаке.
    Анимируется только fill: это paint без layout и композитинга, на элементе ~46 px,
    поэтому кадр стоит доли процента; JS нет, в бандле около 0,5 КБ.
    Периоды — простые числа, поэтому общий цикл семи лепестков выходит в часы и
    рисунок глазом не поймать. Отрицательные задержки стартуют лепестки в середине
    фазы: ни при загрузке, ни при открытии меню знак не «щёлкает» цветом.
-   Вилка — восьмая шага навстречу второму тону лотоса: розовые лепестки уходят
-   к --rose, тёмные к --rose-soft. Оба конца лежат на отрезке между собственными
-   цветами знака, за его палитру перелив не выходит. Ряды здесь разделены opacity
-   (.55/.85/.92/1), поэтому слои читаются даже когда тона сходятся.
+   Размах — около 10% по каналу, и здесь он двусторонний: ряды лотоса разведены
+   не цветом, а opacity (.55/.85/.92/1), поэтому слои читаются даже когда тона
+   сходятся, и лепесток может уходить от своего тона в обе стороны. Оба конца
+   лежат на отрезке между собственными цветами знака и соседним токеном палитры
+   (--rose-deep у тёмных, --rose-soft у розовых), за палитру лотоса не выходим.
    Подвал намеренно не тронут: анимацию включает только правило ниже, а данные в
    :nth-of-type() — просто неиспользуемые переменные для любого другого знака. */
-@keyframes petal-shimmer-soft{0%,100%{fill:#CE9B91}41%{fill:#C6948B}}
-@keyframes petal-shimmer-deep{0%,100%{fill:#92655E}63%{fill:#9A6C64}}
-.brand-mark__flower path:nth-of-type(1){--petal-ramp:petal-shimmer-soft;--petal-dur:17s;--petal-delay:-2s}
-.brand-mark__flower path:nth-of-type(2){--petal-ramp:petal-shimmer-soft;--petal-dur:19s;--petal-delay:-9s}
-.brand-mark__flower path:nth-of-type(3){--petal-ramp:petal-shimmer-soft;--petal-dur:23s;--petal-delay:-14s}
-.brand-mark__flower path:nth-of-type(4){--petal-ramp:petal-shimmer-soft;--petal-dur:13s;--petal-delay:-5s}
-.brand-mark__flower path:nth-of-type(5){--petal-ramp:petal-shimmer-deep;--petal-dur:29s;--petal-delay:-21s}
-.brand-mark__flower path:nth-of-type(6){--petal-ramp:petal-shimmer-deep;--petal-dur:31s;--petal-delay:-11s}
-.brand-mark__flower path:nth-of-type(7){--petal-ramp:petal-shimmer-deep;--petal-dur:37s;--petal-delay:-27s}
+@keyframes petal-shimmer-soft{0%,100%{fill:#CE9B91}33%{fill:#DBAEA3}67%{fill:#C08D82}}
+@keyframes petal-shimmer-deep{0%,100%{fill:#92655E}33%{fill:#A2746C}67%{fill:#7D5650}}
+.brand-mark__flower path:nth-of-type(1){--petal-ramp:petal-shimmer-soft;--petal-dur:11s;--petal-delay:-2s}
+.brand-mark__flower path:nth-of-type(2){--petal-ramp:petal-shimmer-soft;--petal-dur:13s;--petal-delay:-9s}
+.brand-mark__flower path:nth-of-type(3){--petal-ramp:petal-shimmer-soft;--petal-dur:17s;--petal-delay:-5s}
+.brand-mark__flower path:nth-of-type(4){--petal-ramp:petal-shimmer-soft;--petal-dur:7s;--petal-delay:-3s}
+.brand-mark__flower path:nth-of-type(5){--petal-ramp:petal-shimmer-deep;--petal-dur:19s;--petal-delay:-13s}
+.brand-mark__flower path:nth-of-type(6){--petal-ramp:petal-shimmer-deep;--petal-dur:23s;--petal-delay:-8s}
+.brand-mark__flower path:nth-of-type(7){--petal-ramp:petal-shimmer-deep;--petal-dur:29s;--petal-delay:-21s}
 /* В дровере анимация висит на .is-open: пока меню закрыто, ничего не тикает
    (а до 1024 px дровера в вёрстке и вовсе нет — он display:none). */
 .site-header__logo .brand-mark__flower path,
