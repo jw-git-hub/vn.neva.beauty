@@ -45,8 +45,10 @@ def price_number(price):
 
 
 def is_addon(item):
-    """«+350 000 đ» — надбавка к процедуре: в диапазон AggregateOffer не входит."""
-    return item["price"].strip().startswith("+")
+    """Не самостоятельная цена услуги: надбавка «+350 000 đ» или помеченный
+    флагом addon сопутствующий товар вроде костюма для LPG. В AggregateOffer
+    и в OfferCatalog такие позиции не идут — в таблице прайса остаются."""
+    return bool(item.get("addon")) or item["price"].strip().startswith("+")
 
 
 @lru_cache(maxsize=None)
@@ -144,12 +146,22 @@ def rendered_html():
 # ---------- цены в JSON-LD ----------
 
 def expected_offers():
-    """Эталон каталога: все позиции с числовой ценой — включая доплаты."""
+    """Эталон каталога: позиции с числовой ценой, кроме доплат и товаров.
+    Отбор тот же, что у диапазона: цену, которую нельзя заплатить за саму
+    услугу, разметка утверждать не должна. Пустые после отбора разделы
+    выпадают — как в build.offer_sections, иначе разъедутся номера разделов."""
     cnt = Counter()
     for slug, sections in PRICES.items():
-        for index, (_, items) in enumerate(priced_sections(sections)):
-            for name, desc, price, _ in items:
+        index = 0
+        for sec in sections:
+            kept = [(clean(it["name"]), clean(it.get("desc", "")), value)
+                    for it in sec["items"] if not is_addon(it)
+                    and (value := price_number(it["price"])) is not None]
+            if not kept:
+                continue
+            for name, desc, price in kept:
                 cnt[(slug, index, name, desc, price, CURRENCY)] += 1
+            index += 1
     return cnt
 
 

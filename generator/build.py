@@ -167,7 +167,11 @@ def price_value(price):
 
 
 def is_addon(item):
-    return item["price"].strip().startswith(ADDON_MARK)
+    """Позиция, которую нельзя купить как саму услугу: надбавка к процедуре
+    или сопутствующий товар. Часть видна по строке цены («+350 000 đ»), часть —
+    нет: «Костюм для LPG — 400 000 đ» выглядит обычной ценой, но услугой не
+    является. Такие помечены в прайсе флагом addon вручную."""
+    return bool(item.get("addon")) or item["price"].strip().startswith(ADDON_MARK)
 
 
 def price_aggregate(sections, currency):
@@ -198,11 +202,18 @@ def popular_price(prices, slug, name):
 
 def offer_sections(sections):
     """Разделы прайса для JSON-LD: цена числом, название и описание — дословно.
-    Позиции без цифр в цене пропускаем (нечего утверждать о цене)."""
+    Позиции без цифр в цене пропускаем (нечего утверждать о цене).
+
+    Доплаты и сопутствующие товары в каталог не идут. Раньше шли, и надбавка
+    «+350 000 đ» уезжала в разметку как Offer с price 350000: знак «+» теряется,
+    остаётся полноценная цена услуги, которой нет. Описание («Дополнительно
+    к процедурам») этого не лечит — цену читает машина, а не человек. Заодно
+    каталог сходится с AggregateOffer: offerCount считается по тому же отбору."""
     result = []
     for sec in sections:
         items = [{"name": item["name"], "desc": item.get("desc", ""), "price": value}
-                 for item in sec["items"] if (value := price_value(item["price"])) is not None]
+                 for item in sec["items"] if not is_addon(item)
+                 and (value := price_value(item["price"])) is not None]
         if items:
             result.append({"title": sec.get("section") or "Цены", "items": items})
     return result
