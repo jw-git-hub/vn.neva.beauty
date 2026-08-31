@@ -1,0 +1,12 @@
+{# Картинка с набором ширин под точки останова.
+
+   Один макрос на все кадры сайта: браузер выбирает файл по `sizes`, а не тянет
+   самый большой. Ширины, `sizes` и пропорции живут в generator/images.py —
+   там же, откуда make_images.py режет производные, чтобы разметка и файлы
+   не разъехались.
+
+   priority=True ставит fetchpriority="high" вместо ленивой загрузки: так
+   помечается кадр первого экрана, он же LCP-элемент. #}
+{%- macro responsive_img(stem, slot, alt, cls="", priority=False) -%}
+<img{% if cls %} class="{{ cls }}"{% endif %} src="{{ base_path }}/assets/img/{{ stem }}.webp" srcset="{{ srcset(stem, slot) }}" sizes="{{ img_sizes(slot) }}" alt="{{ alt }}" width="{{ img_width(slot) }}" height="{{ img_height(slot) }}" {% if priority %}fetchpriority="high"{% else %}loading="lazy" decoding="async"{% endif %}>
+{%- endmacro -%}

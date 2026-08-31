@@ -1,9 +1,9 @@
-import json, re, urllib.parse, yaml, rcssmin
+import hashlib, json, re, urllib.parse, yaml, rcssmin
 from datetime import date
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import schema
+import images, schema
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT.parent / "vn.neva.beauty"
@@ -65,6 +65,15 @@ def build_css_bundle():
     out = css_dir / "bundle.min.css"
     out.write_text(bundle, encoding="utf-8")
     print("→", out.relative_to(OUT.parent), f"({len(bundle) // 1024} KB minified)")
+
+def asset_url(base_path, path):
+    """Ссылка на ассет с отпечатком содержимого: `?v=1a2b3c4d`.
+
+    Имена файлов постоянные, поэтому без отпечатка вернувшийся посетитель после
+    деплоя получает из кэша старый CSS. Отпечаток меняется вместе с файлом
+    и заставляет браузер скачать новую версию."""
+    digest = hashlib.sha1((OUT / path.lstrip("/")).read_bytes()).hexdigest()[:8]
+    return f"{base_path}{path}?v={digest}"
 
 def previous_lastmods(path: Path) -> dict:
     """Достаёт lastmod из уже собранного sitemap: даты неизменившихся страниц переживают сборку."""
@@ -266,7 +275,15 @@ def main():
     # "/vn.neva.beauty" для превью на GitHub Pages по подпути проекта. SEO-URL (base_url) не трогает.
     base_path = site.get("base_path", "").rstrip("/")
     e.globals["base_path"] = base_path
+    # Адаптивные картинки: ширины, sizes и пропорции берутся из images.py — оттуда же
+    # make_images.py режет производные, поэтому разметка и файлы не разъезжаются.
+    e.globals["srcset"] = lambda stem, slot: images.srcset(stem, slot, base_path)
+    e.globals["img_sizes"] = images.sizes
+    e.globals["img_width"] = images.width
+    e.globals["img_height"] = images.height
+    e.globals["card_image"] = images.related_stem
     build_css_bundle()  # единый минифицированный bundle.min.css
+    e.globals["asset"] = lambda path: asset_url(base_path, path)  # после сборки bundle
     enrich_categories(content)
     fill_related(content)
     site["nav"] = build_nav(content["categories"], content["services"])
@@ -283,7 +300,8 @@ def main():
         item["price"] = popular_price(prices, item["slug"], item["name"])
     page = {"url":"/", "seo_title": content["home"].get("seo_title","Neva Beauty — центр красоты в Дананге"),
             "seo_desc": content["home"].get("seo_desc",""), "schema_json": home_schema,
-            "hero_image": "/assets/img/hero.webp"}  # LCP-элемент → preload в base.html.j2
+            "hero_image": "/assets/img/hero.webp",  # LCP-элемент → preload в base.html.j2
+            "hero_stem": "hero", "hero_slot": "home_hero"}
     page_changed = {"/": write(OUT/"index.html", e.get_template("home.html.j2").render(
         site=site, page=page, home=content["home"], categories=content["categories"]))}
     # услуги
@@ -313,7 +331,8 @@ def main():
             nodes.append(schema.faq_node(svc["faq"]))
         page = {"url": f"/{slug}/", "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
                 "schema_json": schema.render(site, nodes),
-                "hero_image": f"/assets/img/{svc['hero_image']}.webp"}  # LCP → preload
+                "hero_image": f"/assets/img/{svc['hero_image']}.webp",  # LCP → preload
+                "hero_stem": svc["hero_image"], "hero_slot": "service_hero"}
         page_changed[f"/{slug}/"] = write(OUT/slug/"index.html", tpl.render(
             site=site, page=page, svc=svc, slug=slug, category=cat,
             sections=sections, services=content["services"]))

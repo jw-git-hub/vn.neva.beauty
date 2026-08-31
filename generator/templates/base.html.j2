@@ -7,9 +7,11 @@
      Schema.org. Пока её JSON не разобран, сканер предзагрузки о стилях не знает:
      на мобильном канале HTML приезжает несколькими порциями, и запрос CSS уходил
      на круг-другой позже. #}
-  <link rel="stylesheet" href="{{ base_path }}/assets/css/bundle.min.css">
+  <link rel="stylesheet" href="{{ asset('/assets/css/bundle.min.css') }}">
   {% block extra_css %}{% endblock %}
-  {% if page.hero_image %}<link rel="preload" as="image" href="{{ base_path }}{{ page.hero_image }}" fetchpriority="high">{% endif %}
+  {# imagesrcset повторяет набор ширин самой картинки: без него предзагрузка
+     тянет самый большой файл, а вёрстка потом просит другой — два запроса вместо одного. #}
+  {% if page.hero_image %}<link rel="preload" as="image" href="{{ base_path }}{{ page.hero_image }}" imagesrcset="{{ srcset(page.hero_stem, page.hero_slot) }}" imagesizes="{{ img_sizes(page.hero_slot) }}" fetchpriority="high">{% endif %}
   {# Manrope собран одним вариативным файлом, поэтому один preload закрывает все
      веса. Отдельными файлами веса 500/600/700 находились только после разбора CSS,
      и жирный текст первого экрана до тех пор стоял системным шрифтом. #}

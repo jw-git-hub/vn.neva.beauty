@@ -1,4 +1,5 @@
 {% extends "base.html.j2" %}
+{% from "partials/picture.html.j2" import responsive_img %}
 {% block content %}
 <section class="section section--lead container">
   <nav class="breadcrumbs breadcrumbs--lead" aria-label="Хлебные крошки">
@@ -10,7 +11,7 @@
   <div class="related-grid" data-reveal-children>
     {% for slug in cat.services %}{% set r = services.get(slug) %}{% if r %}
     <a class="related-card card" href="{{ base_path }}/{{ slug }}/">
-      <div class="related-card__media"><img src="{{ base_path }}/assets/img/{{ r.hero_image }}.webp" alt="{{ r.title }} — {{ cat.title }} в Neva Beauty, Дананг" width="400" height="300" loading="lazy"></div>
+      <div class="related-card__media">{{ responsive_img(card_image(r.hero_image), 'related_card', r.title ~ ' — ' ~ cat.title ~ ' в Neva Beauty, Дананг') }}</div>
       {# h2, а не h3: на странице-категории услуги и есть разделы страницы — под h1
          без промежуточного h2 уровень бы «прыгал». В «Смотрите также» на странице
          услуги та же карточка идёт h3, потому что там над ней есть свой h2. #}

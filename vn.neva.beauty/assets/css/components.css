@@ -18,8 +18,13 @@
   backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
   border-bottom:1px solid transparent;
   transition:box-shadow var(--t-mid) var(--ease),background var(--t-mid) var(--ease),border-color var(--t-mid) var(--ease)}
+/* Прокрученная шапка — непрозрачная и без размытия. Липкий элемент с
+   backdrop-filter заставляет браузер пересобирать подложку под ним на каждом
+   кадре скролла, а видно её там всё равно не было: фон закрывал 88%. Наверху
+   страницы, где под шапкой только градиент и никто не скроллит, стекло осталось. */
 .site-header.is-scrolled{box-shadow:0 6px 26px rgba(74,59,56,.07);
-  background:color-mix(in srgb,var(--bg) 88%,transparent);border-bottom-color:var(--line)}
+  background:var(--bg);border-bottom-color:var(--line);
+  backdrop-filter:none;-webkit-backdrop-filter:none}
 .site-header__inner{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:76px}
 @media(min-width:1024px){.site-header__inner{gap:var(--sp-6)}}
 .site-header__logo{color:var(--ink)}

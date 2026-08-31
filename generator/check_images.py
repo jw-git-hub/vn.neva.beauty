@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from bs4 import BeautifulSoup
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent
 SITE = ROOT.parent / "vn.neva.beauty"
@@ -38,16 +39,58 @@ def missing_file(page, src):
     return None if target.is_file() else target
 
 
+def srcset_problems(page, soup):
+    """Каждый файл из srcset есть на диске, и ширина в дескрипторе — настоящая.
+
+    Набор ширин собирается из имён файлов, поэтому опечатка в лестнице или
+    незапущенный make_images.py дают 404 ровно на тех экранах, где браузер
+    выберет пропавший вариант, — на своём мониторе этого не увидишь."""
+    for img in soup.select("img[srcset]"):
+        for candidate in img["srcset"].split(","):
+            src, _, descriptor = candidate.strip().rpartition(" ")
+            if missing_file(page, src):
+                yield f"нет файла из srcset: {src}"
+                continue
+            with Image.open(SITE / unquote(urlsplit(src).path).lstrip("/")) as frame:
+                if f"{frame.width}w" != descriptor:
+                    yield (f"ширина в srcset ({descriptor}) не совпадает "
+                           f"с файлом ({frame.width}w): {src}")
+
+
+def preload_problems(soup):
+    """Предзагруженный кадр первого экрана есть в разметке, помечен приоритетным,
+    и его набор ширин совпадает с набором самой картинки.
+
+    Расхождение imagesrcset и srcset тихое и дорогое: браузер качает один файл
+    по предзагрузке и второй по разметке — вместо ускорения выходит лишний вес."""
+    preload = soup.select_one('link[rel="preload"][as="image"]')
+    if not preload:
+        return
+    href = preload.get("href", "")
+    img = soup.select_one(f'img[src="{href}"]')
+    if img is None:
+        yield f"предзагружено изображение, которого нет в разметке: {href}"
+        return
+    if img.get("fetchpriority") != "high":
+        yield f'у предзагруженного изображения нет fetchpriority="high": {href}'
+    for preload_attr, img_attr in (("imagesrcset", "srcset"), ("imagesizes", "sizes")):
+        if preload.get(preload_attr, "") != img.get(img_attr, ""):
+            yield f"{preload_attr} предзагрузки не совпадает с {img_attr} картинки: {href}"
+
+
 def check(page):
     """Нарушения на одной странице."""
     name = page.relative_to(SITE.parent)
     html = page.read_text(encoding="utf-8")
+    soup = BeautifulSoup(html, "html.parser")
     errors = []
     if RETRY_MARKER not in html:
         errors.append(f"{name}: нет скрипта повторной загрузки картинок")
-    for src in local_sources(BeautifulSoup(html, "html.parser")):
+    for src in local_sources(soup):
         if target := missing_file(page, src):
             errors.append(f"{name}: <img src=\"{src}\"> — файла нет: {target.relative_to(SITE.parent)}")
+    errors += [f"{name}: {problem}" for problem in srcset_problems(page, soup)]
+    errors += [f"{name}: {problem}" for problem in preload_problems(soup)]
     return errors
 
 

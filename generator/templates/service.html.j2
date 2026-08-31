@@ -1,4 +1,5 @@
 {% extends "base.html.j2" %}
+{% from "partials/picture.html.j2" import responsive_img %}
 {% block content %}
 <section class="svc-hero">
   <div class="container">
@@ -20,7 +21,7 @@
       </div>
       <div class="svc-hero__media">
         <span class="svc-hero__blob" aria-hidden="true"></span>
-        <img src="{{ base_path }}/assets/img/{{ svc.hero_image }}.webp" alt="{{ svc.title }} — Neva Beauty, Дананг" width="520" height="650">
+        {{ responsive_img(svc.hero_image, 'service_hero', svc.title ~ ' — Neva Beauty, Дананг', priority=True) }}
       </div>
     </div>
   </div>
@@ -134,7 +135,7 @@
   <div class="related-grid" data-reveal-children>
     {% for rslug in svc.related %}{% set r = services.get(rslug) %}{% if r %}
     <a class="related-card card" href="{{ base_path }}/{{ rslug }}/">
-      <div class="related-card__media"><img src="{{ base_path }}/assets/img/{{ r.hero_image }}.webp" alt="{{ r.title }}" width="400" height="300" loading="lazy"></div>
+      <div class="related-card__media">{{ responsive_img(card_image(r.hero_image), 'related_card', r.title) }}</div>
       <div class="related-card__body"><h3>{{ r.title }}</h3><span class="related-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
     </a>
     {% endif %}{% endfor %}
