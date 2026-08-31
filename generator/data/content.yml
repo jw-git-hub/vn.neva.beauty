@@ -1,6 +1,7 @@
 home:
   seo_title: "Центр красоты и косметологии в Дананге — Neva Beauty"
   seo_desc: "Neva Beauty — центр красоты в Дананге: аппаратная косметология, лазерная эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. Приём по записи."
+  booking_title: "Запись в Neva Beauty в Дананге"
   hero_kicker: "Сияние, заложенное в вас"
   hero_title_lines: ["Центр красоты", "Neva Beauty", "в Дананге"]
   hero_sub: "Аппаратная косметология, лазерная эпиляция и уход на современных аппаратах в самом сердце Дананга."
@@ -37,6 +38,7 @@ categories:
   - slug: korrekciya-figury
     title: "Коррекция фигуры"
     nav_label: "Фигура"
+    booking_title: "Запись на коррекцию фигуры в Дананге"
     image: "cat-apparat"
     seo_title: "Коррекция фигуры в Дананге — LPG, кавитация · Neva Beauty"
     seo_desc: "LPG-массаж, эндосфера-терапия и ультразвуковая кавитация для стройности, лимфодренажа и упругости кожи в центре красоты Neva Beauty, Дананг."
@@ -63,6 +65,7 @@ categories:
   - slug: lifting-i-omolozhenie
     title: "Лифтинг и омоложение"
     nav_label: "Омоложение"
+    booking_title: "Запись на лифтинг и омоложение"
     image: "cat-lift"
     seo_title: "Лифтинг и омоложение лица в Дананге — SMAS · Neva Beauty"
     seo_desc: "Ультразвуковой SMAS-лифтинг, игольчатый RF Morpheus 8 и фотоомоложение M22 для подтяжки и омоложения лица без операции в центре красоты Neva Beauty, Дананг."
@@ -89,6 +92,7 @@ categories:
   - slug: lazernye-procedury
     title: "Лазерные процедуры"
     nav_label: "Лазер"
+    booking_title: "Запись на лазерную процедуру в Дананге"
     image: "cat-epil"
     seo_title: "Лазерные процедуры в Дананге — эпиляция, тату · Neva Beauty"
     seo_desc: "Лазерная эпиляция, удаление татуировок и перманентного макияжа на современных лазерах в центре красоты Neva Beauty, Дананг. Бережно к коже, приём по записи."
@@ -126,6 +130,7 @@ services:
   lazernaya-epilyaciya:
     title: "Лазерная эпиляция"
     category: "Эпиляция"
+    booking_title: "Запись на лазерную эпиляцию в Дананге"
     seo_title: "Лазерная эпиляция всех зон в Дананге — Neva Beauty"
     seo_desc: "Лазерная эпиляция любых зон лица и тела для женщин и мужчин в центре красоты Neva Beauty, Дананг. Бережно к коже даже в жару, приём по записи."
     hero_image: "epilyaciya-hero"
@@ -154,6 +159,7 @@ services:
   lpg-massazh:
     title: "LPG-массаж"
     category: "Аппаратная косметология"
+    booking_title: "Запись на LPG-массаж"
     seo_title: "LPG-массаж для тела и лица в Дананге — Neva Beauty"
     seo_desc: "Вакуумно-роликовый LPG-массаж для коррекции фигуры и лифтинга лица в центре красоты Neva Beauty, Дананг: лимфодренаж, целлюлит и отёки. Приём по записи."
     hero_image: "lpg-massazh"
@@ -184,6 +190,7 @@ services:
   endosfera-terapiya:
     title: "Эндосфера-терапия"
     category: "Аппаратная косметология"
+    booking_title: "Запись на эндосфера-терапию"
     seo_title: "Эндосфера-терапия для тела и лица в Дананге — Neva Beauty"
     seo_desc: "Компрессионно-микровибрационная эндосфера-терапия для коррекции тела и омоложения лица в Neva Beauty, Дананг: лимфодренаж, целлюлит и отёки. Приём по записи."
     hero_image: "endosfera-terapiya"
@@ -215,6 +222,7 @@ services:
   ultrazvukovaya-kavitaciya:
     title: "Ультразвуковая кавитация"
     category: "Аппаратная косметология"
+    booking_title: "Запись на ультразвуковую кавитацию"
     seo_title: "Ультразвуковая кавитация тела в Дананге — Neva Beauty"
     seo_desc: "Ультразвуковая кавитация в Neva Beauty (Дананг): ультразвук воздействует на жировые клетки и уменьшает локальные объёмы тела — живот, бёдра, руки. По записи."
     hero_image: "ultrazvukovaya-kavitaciya"
@@ -246,6 +254,7 @@ services:
   smas-lifting:
     title: "Ультразвуковой SMAS-лифтинг"
     category: "Аппаратная косметология"
+    booking_title: "Запись на SMAS-лифтинг в Дананге"
     seo_title: "Ультразвуковой SMAS-лифтинг в Дананге — Neva Beauty"
     seo_desc: "Ультразвуковой SMAS-лифтинг в Neva Beauty (Дананг): безоперационная подтяжка овала лица, шеи и декольте воздействием на глубокий SMAS-слой. Приём по записи."
     hero_image: "smas-lifting"
@@ -279,6 +288,7 @@ services:
   udalenie-tatuirovok-lazerom:
     title: "Лазерное удаление татуировок"
     category: "Аппаратная косметология"
+    booking_title: "Запись на удаление татуировки лазером"
     seo_title: "Лазерное удаление татуировок в Дананге — Neva Beauty"
     seo_desc: "Лазерное удаление татуировок любого размера и цвета в Neva Beauty (Дананг): лазер дробит пигмент, кожа очищается без шрамов и реабилитации. Приём по записи."
     hero_image: "udalenie-tatuirovok-lazerom"
@@ -310,6 +320,7 @@ services:
   udalenye-permanentnogo-makiyazha:
     title: "Удаление перманентного макияжа"
     category: "Аппаратная косметология"
+    booking_title: "Запись на удаление перманентного макияжа"
     seo_title: "Удаление перманентного макияжа в Дананге — Neva Beauty"
     seo_desc: "Лазерное удаление перманентного макияжа любого цвета в Neva Beauty (Дананг): лазер дробит пигмент, кожа очищается без шрамов и реабилитации. Приём по записи."
     hero_image: "udalenye-permanentnogo-makiyazha"
@@ -342,6 +353,7 @@ services:
   morpheus-8-rf-lifting:
     title: "Игольчатый RF-лифтинг Morpheus 8"
     category: "Аппаратная косметология"
+    booking_title: "Запись на RF-лифтинг Morpheus 8"
     seo_title: "Игольчатый RF-лифтинг Morpheus 8 в Дананге — Neva Beauty"
     seo_desc: "RF-лифтинг Morpheus 8 в Neva Beauty (Дананг): микроиглы и радиочастота уплотняют кожу, разглаживают морщины, работают с постакне и рубцами. Приём по записи."
     hero_image: "morpheus-8-rf-lifting"
@@ -374,6 +386,7 @@ services:
   fotoomolozhenie-m22:
     title: "Фотоомоложение M22"
     category: "Аппаратная косметология"
+    booking_title: "Запись на фотоомоложение M22"
     seo_title: "Фотоомоложение M22 в Дананге — ровный тон кожи, Neva Beauty"
     seo_desc: "Фотоомоложение на платформе M22 в Neva Beauty (Дананг): свет выравнивает тон, убирает пигментацию и сосудистые несовершенства, помогает при акне. По записи."
     hero_image: "fotoomolozhenie-m22"
@@ -406,6 +419,7 @@ services:
   esteticheskaya-kosmetologiya-i-uhod:
     title: "Эстетическая косметология и уход"
     category: "Уход"
+    booking_title: "Запись к косметологу в Дананге"
     seo_title: "Эстетическая косметология и уход в Дананге — Neva Beauty"
     seo_desc: "Эстетический уход за кожей лица в Neva Beauty (Дананг): чистки, пилинги, HydraFacial и карбокситерапия. Программу подбирают индивидуально, приём по записи."
     hero_image: "esteticheskaya-kosmetologiya-i-uhod"

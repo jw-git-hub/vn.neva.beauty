@@ -36,7 +36,12 @@
 
 <section class="section">
   <div class="container booking">
-    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>Запишитесь на консультацию</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
+    {#- Заголовок приходит от страницы. Один и тот же h2 на 14 страницах не
+       говорил ни клиенту, ни роботу, о чём именно блок, и место в структуре
+       страницы тратилось впустую. Дубли ловит check_headings.py.
+       Подводка намеренно осталась общей: заказчик разрешил править только
+       заголовки, остальной текст vn — отдельным решением. #}
+    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>{{ cat.booking_title }}</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
     <div class="booking__actions">
       <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ cat.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
       <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
