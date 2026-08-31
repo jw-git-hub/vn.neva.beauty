@@ -3,6 +3,9 @@ beautifulsoup4==4.12.3
 PyYAML==6.0.2
 requests==2.32.3
 rcssmin==1.2.2
+# Нарезка производных картинок (make_images.py) и сверка ширин в srcset
+# с настоящими файлами (check_images.py).
+Pillow==11.0.0
 # Подрезка шрифтов (make_fonts.py) и проверка покрытия знаков (check_fonts.py).
 # Версия ниже, чем у th.neva.beauty (4.63.0): здесь venv на Python 3.9,
 # а более новые fonttools требуют 3.10+. API инстансирования и подрезки тот же.
