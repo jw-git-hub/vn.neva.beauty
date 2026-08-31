@@ -40,34 +40,43 @@
 .brand-mark__loc::before{content:"";width:1.6rem;height:1px;flex:none;
   background:linear-gradient(90deg,var(--rose-soft),transparent)}
 
-/* Перелив лепестков — знак в шапке и в мобильном меню «дышит» тоном.
+/* Перелив лепестков — лепестки в шапке и в мобильном меню обмениваются цветами.
    Тот же приём, что на th.neva.beauty, разница только в самом знаке.
-   Анимируется только fill: это paint без layout и композитинга, на элементе ~46 px,
-   поэтому кадр стоит доли процента; JS нет, в бандле около 0,5 КБ.
-   Периоды — простые числа, поэтому общий цикл семи лепестков выходит в часы и
-   рисунок глазом не поймать. Отрицательные задержки стартуют лепестки в середине
-   фазы: ни при загрузке, ни при открытии меню знак не «щёлкает» цветом.
-   Размах — около 10% по каналу, и здесь он двусторонний: ряды лотоса разведены
-   не цветом, а opacity (.55/.85/.92/1), поэтому слои читаются даже когда тона
-   сходятся, и лепесток может уходить от своего тона в обе стороны. Оба конца
-   лежат на отрезке между собственными цветами знака и соседним токеном палитры
-   (--rose-deep у тёмных, --rose-soft у розовых), за палитру лотоса не выходим.
-   Подвал намеренно не тронут: анимацию включает только правило ниже, а данные в
-   :nth-of-type() — просто неиспользуемые переменные для любого другого знака. */
-@keyframes petal-shimmer-soft{0%,100%{fill:#CE9B91}33%{fill:#DBAEA3}67%{fill:#C08D82}}
-@keyframes petal-shimmer-deep{0%,100%{fill:#92655E}33%{fill:#A2746C}67%{fill:#7D5650}}
-.brand-mark__flower path:nth-of-type(1){--petal-ramp:petal-shimmer-soft;--petal-dur:11s;--petal-delay:-2s}
-.brand-mark__flower path:nth-of-type(2){--petal-ramp:petal-shimmer-soft;--petal-dur:13s;--petal-delay:-9s}
-.brand-mark__flower path:nth-of-type(3){--petal-ramp:petal-shimmer-soft;--petal-dur:17s;--petal-delay:-5s}
-.brand-mark__flower path:nth-of-type(4){--petal-ramp:petal-shimmer-soft;--petal-dur:7s;--petal-delay:-3s}
-.brand-mark__flower path:nth-of-type(5){--petal-ramp:petal-shimmer-deep;--petal-dur:19s;--petal-delay:-13s}
-.brand-mark__flower path:nth-of-type(6){--petal-ramp:petal-shimmer-deep;--petal-dur:23s;--petal-delay:-8s}
-.brand-mark__flower path:nth-of-type(7){--petal-ramp:petal-shimmer-deep;--petal-dur:29s;--petal-delay:-21s}
+   Палитра не расширяется ни на тон: в обороте те же два цвета лотоса, меняется
+   только то, какой лепесток какой из них несёт. Прозрачность не анимируется —
+   .55/.85/.92/1 задают глубину слоёв, это геометрия знака, а не его цвет.
+   Анимируется один fill — paint без layout и композитинга на элементе ~46 px;
+   JS нет, в бандле около 0,5 КБ.
+
+   Цвета едут по кольцу из 14 позиций, семь лепестков сдвинуты по фазе ровно на
+   1/7 оборота. Сдвиг фиксированный, а не «каждому лепестку свой период»: при
+   независимых периодах лепестки рано или поздно сходятся в одном тоне и лотос
+   теряет тёмную сердцевину. При шаге в 1/7 кольца состав сохраняется в любой
+   момент — ровно четыре лепестка розовых и три тёмных, как в исходном знаке.
+
+   Случайность зашита в саму последовательность, а не в тайминг. Кольцо
+   AAADAAADDADADD подобрано перебором: даёт все 14 раскладок из 14 положений,
+   нигде не даёт одноцветного цветка и не держит лепесток без изменений дольше
+   трёх шагов. На нулевой фазе раскладка совпадает с исходным знаком — страница
+   и меню открываются каноническим логотипом и расходятся уже потом.
+
+   Подвал намеренно не тронут: анимацию включает только правило ниже, а
+   --petal-delay в :nth-of-type() — просто неиспользуемая переменная. */
+@keyframes petal-ring{
+  0%,7.143%,14.286%,28.571%,35.714%,42.857%,64.286%,78.571%,100%{fill:#CE9B91}
+  21.429%,50%,57.143%,71.429%,85.714%,92.857%{fill:#92655E}
+}
+.brand-mark__flower path:nth-of-type(2){--petal-delay:-8s}
+.brand-mark__flower path:nth-of-type(3){--petal-delay:-16s}
+.brand-mark__flower path:nth-of-type(4){--petal-delay:-24s}
+.brand-mark__flower path:nth-of-type(5){--petal-delay:-32s}
+.brand-mark__flower path:nth-of-type(6){--petal-delay:-40s}
+.brand-mark__flower path:nth-of-type(7){--petal-delay:-48s}
 /* В дровере анимация висит на .is-open: пока меню закрыто, ничего не тикает
    (а до 1024 px дровера в вёрстке и вовсе нет — он display:none). */
 .site-header__logo .brand-mark__flower path,
 .drawer.is-open .drawer__brand .brand-mark__flower path{
-  animation:var(--petal-ramp) var(--petal-dur) ease-in-out var(--petal-delay) infinite}
+  animation:petal-ring 56s ease-in-out var(--petal-delay,0s) infinite}
 @media(prefers-reduced-motion:reduce){
   .site-header__logo .brand-mark__flower path,
   .drawer.is-open .drawer__brand .brand-mark__flower path{animation:none}
