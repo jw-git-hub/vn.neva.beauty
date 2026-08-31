@@ -76,10 +76,12 @@
   <link rel="manifest" href="{{ base_path }}/site.webmanifest">
   <meta name="theme-color" content="{{ theme_color }}">
   {% if page.hero_image %}<link rel="preload" as="image" href="{{ base_path }}{{ page.hero_image }}" fetchpriority="high">{% endif %}
-  {# Все четыре файла нужны на первом экране любой страницы, поэтому качаем их сразу,
-     не дожидаясь разбора CSS. Латиница здесь не роскошь: ею набран логотип в шапке
-     и слово «Neva Beauty» внутри заголовка — раньше она приезжала последней. #}
-  {% for font in ('cormorant-cyrillic', 'manrope-cyrillic', 'cormorant-latin', 'manrope-latin') %}
+  {# Два файла на первый экран: Cormorant 600 — заголовки, Manrope 400 — основной
+     текст. Оба уже содержат оба алфавита, поэтому логотип и «Neva Beauty» внутри
+     заголовка приезжают вместе с кириллицей, отдельная латиница больше не нужна.
+     Остальные веса Manrope (500/600/700) на первом экране не участвуют и грузятся
+     по мере разбора CSS — предзагружать их значит отнимать канал у hero. #}
+  {% for font in ('cormorant-600', 'manrope-400') %}
   <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/{{ font }}.woff2" crossorigin>
   {%- endfor %}
   <link rel="stylesheet" href="{{ base_path }}/assets/css/bundle.min.css">

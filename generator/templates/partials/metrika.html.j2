@@ -18,11 +18,16 @@
 (function (w, d) {
   w.ym = w.ym || function () { (w.ym.a = w.ym.a || []).push(arguments) };
   w.ym.l = 1 * new Date();
+  {#- webvisor выключен осознанно. Вебвизор — запись сессий: он постоянно
+      сериализует DOM, пишет движения мыши и прокрутку и шлёт это на сервер всё
+      время, пока страница открыта. Это самая тяжёлая часть Метрики уже ПОСЛЕ
+      загрузки, и заказчик записями не пользуется. Карта кликов, отслеживание
+      ссылок и точный показатель отказов остаются — они почти ничего не стоят. #}
   ym({{ site.metrika_id }}, "init", {
        clickmap:true,
        trackLinks:true,
        accurateTrackBounce:true,
-       webvisor:true
+       webvisor:false
   });
 
   var SRC = "https://mc.yandex.ru/metrika/tag.js";
