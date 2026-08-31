@@ -30,10 +30,21 @@ SRC_DIR = ROOT / "sources" / "fonts"
 OUT_DIR = ROOT.parent / "vn.neva.beauty" / "assets" / "fonts"
 CSS_PATH = ROOT.parent / "vn.neva.beauty" / "assets" / "css" / "fonts.css"
 
-# Начертания: какой файл-мастер, какие веса и под какую роль в вёрстке.
+# Как собирать семейство.
+# VARIABLE — один файл на весь диапазон весов. Браузер достаёт из него любое
+# начертание, поэтому хватает одного запроса и одного preload. Раньше веса
+# 500/600/700 лежали отдельными файлами, ссылки на них появлялись только после
+# разбора CSS, и жирный текст первого экрана до тех пор стоял системным шрифтом.
+# STATIC — обычный шрифт фиксированного веса. Семейству с единственным
+# начертанием вариативный файл добавил бы только вес служебных таблиц.
+VARIABLE = "variable"
+STATIC = "static"
+
+# Начертания: файл-мастер, режим сборки, веса.
+# У VARIABLE веса — границы диапазона, у STATIC — перечисление.
 FACES = [
-    ("Manrope", "Manrope[wght].ttf", (400, 500, 600, 700)),
-    ("Cormorant", "Cormorant[wght].ttf", (600,)),
+    ("Manrope", "Manrope[wght].ttf", VARIABLE, (400, 700)),
+    ("Cormorant", "Cormorant[wght].ttf", STATIC, (600,)),
 ]
 
 # Подложка на время загрузки. font-display:swap рисует текст системным шрифтом сразу,
@@ -84,13 +95,32 @@ def subset(font):
     return font
 
 
-def build_face(family, master, weight):
-    font = subset(instance_of(SRC_DIR / master, weight))
+def clip_weights(font, low, high):
+    """Оставляет в вариативном шрифте только нужный сайту участок оси веса.
+
+    Строго после subset(): на полном наборе знаков instancer спотыкается о
+    неразрывный пробел (KeyError 'uni00A0' в таблице gvar).
+    """
+    return instancer.instantiateVariableFont(
+        font, {"wght": (low, low, high)}, inplace=False)
+
+
+def save_face(font, filename):
     font.flavor = "woff2"
-    path = OUT_DIR / f"{family.lower()}-{weight}.woff2"
+    path = OUT_DIR / filename
     font.save(path)
     print(f"→ {path.name} {path.stat().st_size // 1024} КБ")
-    return path.name
+    return filename
+
+
+def build_variable_face(family, master, low, high):
+    font = clip_weights(subset(TTFont(SRC_DIR / master)), low, high)
+    return save_face(font, f"{family.lower()}-var.woff2")
+
+
+def build_static_face(family, master, weight):
+    font = subset(instance_of(SRC_DIR / master, weight))
+    return save_face(font, f"{family.lower()}-{weight}.woff2")
 
 
 def css_rule(family, weight, filename):
@@ -104,12 +134,27 @@ def fallback_rule(family, locals_, metrics):
     return f"@font-face{{font-family:'{family}';src:{sources};{metrics}}}"
 
 
+def build_family(family, master, mode, weights):
+    """CSS-правила семейства: один файл на диапазон весов либо файл на каждый вес."""
+    if mode == VARIABLE:
+        low, high = weights
+        return [css_rule(family, f"{low} {high}", build_variable_face(family, master, low, high))]
+    return [css_rule(family, weight, build_static_face(family, master, weight))
+            for weight in weights]
+
+
+def clean_output():
+    """Убирает woff2 от прошлой сборки: иначе файлы снятых весов остаются в деплое."""
+    for stale in OUT_DIR.glob("*.woff2"):
+        stale.unlink()
+
+
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    clean_output()
     rules = ["/* Самохостинг шрифтов — сгенерировано make_fonts.py. Не редактировать вручную. */"]
-    for family, master, weights in FACES:
-        for weight in weights:
-            rules.append(css_rule(family, weight, build_face(family, master, weight)))
+    for family, master, mode, weights in FACES:
+        rules.extend(build_family(family, master, mode, weights))
     rules.append("/* Подложка на время загрузки: системный шрифт с метриками фирменного. */")
     rules.extend(fallback_rule(*fallback) for fallback in FALLBACKS)
     CSS_PATH.write_text("\n".join(rules) + "\n", encoding="utf-8")

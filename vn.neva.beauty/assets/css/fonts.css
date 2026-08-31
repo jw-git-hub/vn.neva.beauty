@@ -1,8 +1,5 @@
 /* Самохостинг шрифтов — сгенерировано make_fonts.py. Не редактировать вручную. */
-@font-face{font-family:'Manrope';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/manrope-400.woff2') format('woff2')}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/manrope-500.woff2') format('woff2')}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/manrope-600.woff2') format('woff2')}
-@font-face{font-family:'Manrope';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/manrope-700.woff2') format('woff2')}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:400 700;font-display:swap;src:url('../fonts/manrope-var.woff2') format('woff2')}
 @font-face{font-family:'Cormorant';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/cormorant-600.woff2') format('woff2')}
 /* Подложка на время загрузки: системный шрифт с метриками фирменного. */
 @font-face{font-family:'Cormorant Fallback';src:local('Georgia'),local('Noto Serif'),local('Times New Roman');size-adjust:88.5%;ascent-override:104.4%;descent-override:32.4%;line-gap-override:0%}

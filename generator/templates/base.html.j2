@@ -3,6 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {# Ссылки на то, без чего страница не рисуется, — первыми в head, до разметки
+     Schema.org. Пока её JSON не разобран, сканер предзагрузки о стилях не знает:
+     на мобильном канале HTML приезжает несколькими порциями, и запрос CSS уходил
+     на круг-другой позже. #}
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/bundle.min.css">
+  {% block extra_css %}{% endblock %}
+  {% if page.hero_image %}<link rel="preload" as="image" href="{{ base_path }}{{ page.hero_image }}" fetchpriority="high">{% endif %}
+  {# Manrope собран одним вариативным файлом, поэтому один preload закрывает все
+     веса. Отдельными файлами веса 500/600/700 находились только после разбора CSS,
+     и жирный текст первого экрана до тех пор стоял системным шрифтом. #}
+  <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/manrope-var.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/cormorant-600.woff2" crossorigin>
   <script>document.documentElement.classList.add('js')</script>
   {# Сорвавшийся запрос картинки (обрыв связи, таймаут узкого канала — так не
      догрузился hero во встроенном браузере Instagram) браузер сам не повторяет:
@@ -75,17 +87,6 @@
   <link rel="apple-touch-icon" href="{{ base_path }}/apple-touch-icon.png">
   <link rel="manifest" href="{{ base_path }}/site.webmanifest">
   <meta name="theme-color" content="{{ theme_color }}">
-  {% if page.hero_image %}<link rel="preload" as="image" href="{{ base_path }}{{ page.hero_image }}" fetchpriority="high">{% endif %}
-  {# Два файла на первый экран: Cormorant 600 — заголовки, Manrope 400 — основной
-     текст. Оба уже содержат оба алфавита, поэтому логотип и «Neva Beauty» внутри
-     заголовка приезжают вместе с кириллицей, отдельная латиница больше не нужна.
-     Остальные веса Manrope (500/600/700) на первом экране не участвуют и грузятся
-     по мере разбора CSS — предзагружать их значит отнимать канал у hero. #}
-  {% for font in ('cormorant-600', 'manrope-400') %}
-  <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/{{ font }}.woff2" crossorigin>
-  {%- endfor %}
-  <link rel="stylesheet" href="{{ base_path }}/assets/css/bundle.min.css">
-  {% block extra_css %}{% endblock %}
 </head>
 <body>
   {% include 'partials/aurora.html.j2' %}
