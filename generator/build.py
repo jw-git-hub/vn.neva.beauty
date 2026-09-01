@@ -365,7 +365,8 @@ def main():
         page = {"url": cat["url"], "seo_title": cat["seo_title"], "seo_desc": cat["seo_desc"],
                 "schema_json": schema.render(site, nodes)}
         page_changed[cat["url"]] = write(OUT/cat["slug"]/"index.html", cat_tpl.render(
-            site=site, page=page, cat=cat, services=content["services"]))
+            site=site, page=page, cat=cat, services=content["services"],
+            categories=content["categories"]))
     # privacy (служебная — не индексируем)
     page = {"url":"/privacy/", "seo_title":"Политика конфиденциальности — Neva Beauty", "seo_desc":"",
             "schema_json": base_schema, "noindex": True}
