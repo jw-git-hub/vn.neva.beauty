@@ -41,6 +41,8 @@ function setDrawer(open){
   if (!drawer || drawer.classList.contains('is-open') === open) return;
   drawer.classList.toggle('is-open', open);
   overlay?.classList.toggle('is-open', open);
+  // Замок вешаем и на <html>: с одного <body> он не доходит до окна, см. CSS.
+  document.documentElement.classList.toggle('no-scroll', open);
   document.body.classList.toggle('no-scroll', open);
   openBtn?.setAttribute('aria-expanded', String(open));
   open ? moveFocusIntoDrawer() : restoreFocusAfterDrawer();

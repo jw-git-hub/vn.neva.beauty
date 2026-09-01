@@ -215,7 +215,9 @@
 .drawer__close:hover{background:var(--surface);color:var(--ink)}
 
 /* scrollable nav region */
+/* contain: докрутив список до конца, палец не должен утаскивать за собой страницу. */
 .drawer__nav{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
   display:flex;flex-direction:column;gap:2px;padding:var(--sp-4) var(--sp-5) var(--sp-2)}
 .drawer__group{display:flex;flex-direction:column;gap:2px;padding-top:var(--sp-4);margin-top:var(--sp-2);
   border-top:1px solid var(--line)}
@@ -258,7 +260,13 @@
 .drawer.is-open .drawer__nav > *{opacity:1;transform:none;
   transition-delay:calc(var(--i,0) * 45ms + 90ms)}
 
-body.no-scroll{overflow:hidden}
+/* Замок фона под открытым меню. <html> в селекторе не для симметрии: overflow
+   с <body> переносится на окно, только когда у <html> он visible, а там стоит
+   overflow-x:clip. Без этой строки страница под меню продолжала прокручиваться,
+   прокрутка прятала и показывала панель браузера, от неё пересчитывался 100dvh —
+   и меню дёргалось вместе с ней. overscroll-behavior гасит сцепку прокрутки
+   и вытягивание страницы на обновление. */
+html.no-scroll,body.no-scroll{overflow:hidden;overscroll-behavior:none}
 @media(min-width:1024px){.drawer,.overlay{display:none}}
 @media(prefers-reduced-motion:reduce){
   .drawer__nav > *{opacity:1;transform:none;transition:none}
