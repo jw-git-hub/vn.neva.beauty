@@ -1,0 +1,51 @@
+{# Два салона бренда, два сайта. Список берётся из site.locations и одинаков на
+   обоих доменах: отличается только флаг current. Ссылка текущего салона ведёт
+   на его же главную, чужого — на второй домен целиком.
+
+   Макросов два, потому что мест два и они решают разные задачи:
+   loc_switch — переключатель в шапке, для того, кто открыл не ту страну и
+   должен уйти сразу; loc_list — строчки в подвале, для того, кто дочитал
+   и только теперь узнаёт, что салон есть и во второй стране. #}
+
+{% macro _href(place, base_path) -%}
+{{ (base_path ~ '/') if place.current else place.url }}
+{%- endmacro %}
+
+{# Переключатель в шапке. Строка города под названием и так стояла в фирменном
+   замке — она и становится кнопкой: ширины шапке добавляет только галочка, а
+   свободного места там 47 px на 1024 (см. комментарий у .site-header__cta). #}
+{% macro loc_switch(site, base_path, brand_icon) -%}
+<div class="brand-mark site-header__logo loc" data-loc>
+  {{ icon(brand_icon, 'brand-mark__flower') }}
+  <span class="brand-mark__text">
+    <a class="brand-mark__name" href="{{ base_path }}/">{{ site.brand }}</a>
+    <button class="brand-mark__loc loc__toggle" data-loc-toggle aria-expanded="false" aria-haspopup="true">{{ site.brand_location }}<svg class="loc__chev" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  </span>
+  <div class="loc__menu">
+    <p class="loc__lead">Наши салоны</p>
+    {% for place in site.locations %}
+    <a class="loc__item{% if place.current %} is-active{% endif %}" href="{{ _href(place, base_path) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
+      {{ icon('map-pin', 'loc__pin') }}
+      <span class="loc__place"><span class="loc__city">{{ place.city }}</span><span class="loc__country">{{ place.country }}</span></span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{%- endmacro %}
+
+{# Строчки в подвале — под фирменным замком, в колонке, где до сих пор был
+   только знак и пустое место. #}
+{% macro loc_list(site, base_path) -%}
+<div class="site-footer__places">
+  <h2 class="site-footer__title">Наши салоны</h2>
+  {% for place in site.locations %}
+  <a class="site-footer__place{% if place.current %} is-current{% endif %}" href="{{ _href(place, base_path) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
+    {{ icon('map-pin', 'site-footer__place-pin') }}
+    <span>{{ place.city }}, {{ place.country }}</span>
+    {%- if place.current %}<span class="site-footer__place-here">вы здесь</span>
+    {%- else %}<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg>
+    {%- endif %}
+  </a>
+  {% endfor %}
+</div>
+{%- endmacro %}

@@ -1,4 +1,5 @@
-// nav.js — мобильный drawer, дропдауны по клику, тень хедера при скролле
+// nav.js — мобильный drawer, дропдауны по клику, переключатель салонов,
+// тень хедера при скролле, уборка отработавшего якоря из адреса
 const header = document.querySelector('[data-header]');
 const openBtn = document.querySelector('[data-drawer-open]');
 const drawer = document.querySelector('[data-drawer]');
@@ -50,6 +51,7 @@ document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   setDrawer(false);
   closeDropdowns();
+  setLocMenu(false);
 });
 
 // подсветка текущей страницы в меню (drawer + десктоп)
@@ -84,10 +86,59 @@ navToggles.forEach(btn => {
     e.preventDefault();
     const open = btn.getAttribute('aria-expanded') === 'true';
     closeDropdowns(btn);
+    setLocMenu(false);
     setDropdown(btn, !open);
   });
 });
 
 document.addEventListener('click', e => {
   if (!e.target.closest('.nav__group')) closeDropdowns();
+  if (!e.target.closest('.loc')) setLocMenu(false);
 });
+
+// ===== переключатель салонов =====
+// Кнопка стоит в строке города фирменного замка, а не отдельным пунктом меню:
+// свободного места в шапке нет, причина — в комментарии к .site-header__cta.
+const locGroup = document.querySelector('[data-loc]');
+const locToggle = locGroup?.querySelector('[data-loc-toggle]');
+
+function setLocMenu(open){
+  if (!locGroup) return;
+  locGroup.classList.toggle('is-open', open);
+  locToggle?.setAttribute('aria-expanded', String(open));
+}
+
+locToggle?.addEventListener('click', () => {
+  const open = locToggle.getAttribute('aria-expanded') === 'true';
+  closeDropdowns();
+  setLocMenu(!open);
+});
+
+// ===== отработавший якорь =====
+// Браузер оставляет #services в адресе навсегда: кликнув «Услуги» и дочитав до
+// вопросов и ответов, гость видит адрес, который обещает совсем другой блок.
+// Стираем хэш, когда его секция ушла из окна, — и только после того, как она
+// хотя бы раз была видна, иначе уборка опередила бы сам переход по ссылке.
+// replaceState, а не pushState: лишняя запись в истории заставила бы «Назад»
+// возвращать на ту же страницу.
+let hashObserver = null;
+
+function forgetHashWhenOffscreen(){
+  hashObserver?.disconnect();
+  hashObserver = null;
+  const id = decodeURIComponent(location.hash.slice(1));
+  const target = id && document.getElementById(id);
+  if (!target) return;
+  let wasVisible = false;
+  hashObserver = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) { wasVisible = true; return; }
+    if (!wasVisible) return;
+    hashObserver.disconnect();
+    hashObserver = null;
+    history.replaceState(null, '', location.pathname + location.search);
+  });
+  hashObserver.observe(target);
+}
+
+window.addEventListener('hashchange', forgetHashWhenOffscreen);
+forgetHashWhenOffscreen();

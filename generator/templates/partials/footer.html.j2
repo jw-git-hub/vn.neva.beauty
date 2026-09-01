@@ -1,8 +1,10 @@
 {% from 'partials/brand.html.j2' import brand_mark %}
+{% from 'partials/locations.html.j2' import loc_list %}
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="site-footer__col site-footer__brand">
       <span class="site-footer__logo brand-mark">{{ brand_mark(site.brand, site.brand_location) }}</span>
+      {{ loc_list(site, base_path) }}
     </div>
     <nav class="site-footer__col" aria-label="Услуги">
       <h2 class="site-footer__title">Услуги</h2>

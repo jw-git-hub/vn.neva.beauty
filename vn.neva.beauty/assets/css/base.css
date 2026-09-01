@@ -1,6 +1,12 @@
 *,*::before,*::after{box-sizing:border-box}
 *{margin:0}
 html{scroll-behavior:smooth;overflow-x:clip}
+/* Шапка липкая и высотой 76 px, а браузер ставит цель якоря вплотную к верху
+   окна — верхняя строка секции уезжала под неё. scroll-margin отодвигает точку
+   остановки, на саму вёрстку не влияя. Правило общее для всех id: якорь может
+   появиться у любого блока, и отступ не должен зависеть от того, вспомнили ли
+   про него в конкретном шаблоне. */
+[id]{scroll-margin-top:calc(76px + var(--sp-4))}
 body{font-family:var(--font-body);font-size:var(--fs-400);line-height:var(--lh-body);
   color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:var(--font-head);line-height:var(--lh-tight);font-weight:600;

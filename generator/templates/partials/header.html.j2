@@ -1,9 +1,10 @@
-{% from 'partials/brand.html.j2' import brand_mark %}
+{% from 'partials/locations.html.j2' import loc_switch %}
 <header class="site-header" data-header>
   <div class="container site-header__inner">
-    {# Без aria-label: имя ссылке даёт её же видимый текст («Neva Beauty Da Nang»).
-       Атрибут добавлял тире, из-за чего доступное имя не совпадало с видимым. #}
-    <a class="site-header__logo brand-mark" href="{{ base_path }}/">{{ brand_mark(site.brand, site.brand_location) }}</a>
+    {# Замок здесь собран не макросом brand_mark, а loc_switch: строка города —
+       кнопка переключателя салонов, а кнопка не может стоять внутри ссылки.
+       В подвале и дровере город ничего не открывает, там остаётся brand_mark. #}
+    {{ loc_switch(site, base_path, 'lotus') }}
     <nav class="nav" aria-label="Основная навигация">
       {% for item in site.nav %}
         {% if item.children %}

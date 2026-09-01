@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <link rel="stylesheet" href="/assets/css/bundle.min.css?v=dbe88725">
+  <link rel="stylesheet" href="/assets/css/bundle.min.css?v=b0e6a782">
   
   
   <link rel="preload" as="image" href="/assets/img/endosfera-terapiya.webp" imagesrcset="/assets/img/endosfera-terapiya-320.webp 320w, /assets/img/endosfera-terapiya-480.webp 480w, /assets/img/endosfera-terapiya-560.webp 560w, /assets/img/endosfera-terapiya.webp 760w" imagesizes="(min-width:768px) 360px, (min-width:420px) 290px, calc((100vw - 48px) * 0.78)" fetchpriority="high">
@@ -309,7 +309,8 @@
 <header class="site-header" data-header>
   <div class="container site-header__inner">
     
-    <a class="site-header__logo brand-mark" href="/"><svg class="brand-mark__flower"
+    <div class="brand-mark site-header__logo loc" data-loc>
+  <svg class="brand-mark__flower"
   xmlns="http://www.w3.org/2000/svg"
   viewBox="332 279.5 336 323"
   aria-hidden="true"
@@ -324,10 +325,53 @@
   <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" transform="rotate(0 500 586.14)"/>
 </svg>
 
-<span class="brand-mark__text">
-  <span class="brand-mark__name">Neva Beauty</span>
-  <span class="brand-mark__loc">Da Nang</span>
-</span></a>
+  <span class="brand-mark__text">
+    <a class="brand-mark__name" href="/">Neva Beauty</a>
+    <button class="brand-mark__loc loc__toggle" data-loc-toggle aria-expanded="false" aria-haspopup="true">Da Nang<svg class="loc__chev" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  </span>
+  <div class="loc__menu">
+    <p class="loc__lead">Наши салоны</p>
+    
+    <a class="loc__item" href="https://th.neva.beauty" rel="noopener">
+      <svg class="loc__pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+      <span class="loc__place"><span class="loc__city">Самуи</span><span class="loc__country">Таиланд</span></span>
+    </a>
+    
+    <a class="loc__item is-active" href="/" aria-current="page">
+      <svg class="loc__pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+      <span class="loc__place"><span class="loc__city">Дананг</span><span class="loc__country">Вьетнам</span></span>
+    </a>
+    
+  </div>
+</div>
     <nav class="nav" aria-label="Основная навигация">
       
         
@@ -786,6 +830,7 @@
 
 </main>
   
+
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="site-footer__col site-footer__brand">
@@ -808,6 +853,48 @@
   <span class="brand-mark__name">Neva Beauty</span>
   <span class="brand-mark__loc">Da Nang</span>
 </span></span>
+      <div class="site-footer__places">
+  <h2 class="site-footer__title">Наши салоны</h2>
+  
+  <a class="site-footer__place" href="https://th.neva.beauty" rel="noopener">
+    <svg class="site-footer__place-pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+    <span>Самуи, Таиланд</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg>
+  </a>
+  
+  <a class="site-footer__place is-current" href="/" aria-current="page">
+    <svg class="site-footer__place-pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+    <span>Дананг, Вьетнам</span><span class="site-footer__place-here">вы здесь</span>
+  </a>
+  
+</div>
     </div>
     <nav class="site-footer__col" aria-label="Услуги">
       <h2 class="site-footer__title">Услуги</h2>

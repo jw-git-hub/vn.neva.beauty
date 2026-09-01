@@ -28,7 +28,7 @@
 .site-header__inner{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:76px}
 @media(min-width:1024px){.site-header__inner{gap:var(--sp-6)}}
 .site-header__logo{color:var(--ink)}
-.site-header__logo:hover .brand-mark__name{color:var(--rose)}
+.brand-mark__name:hover{color:var(--rose)}
 
 /* brand lockup: знак-лотос + название + строка локации (Da Nang).
    Высоту лотоса задаёт viewBox при известной ширине — сдвига макета при загрузке нет.
@@ -44,6 +44,43 @@
   text-transform:uppercase;color:var(--rose-deep);padding-right:.34em}
 .brand-mark__loc::before{content:"";width:1.6rem;height:1px;flex:none;
   background:linear-gradient(90deg,var(--rose-soft),transparent)}
+
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ САЛОНОВ ===== */
+/* Строка города в замке — единственное место в шапке, где переключателю хватило
+   места: втроём логотип, меню и кнопка записи требуют 1077 px из 1024 доступных
+   (см. .site-header__cta), и отдельный пункт шапку бы сломал. Галочка добавляет
+   к строке 10 px и не выходит за ширину названия над ней. */
+.loc{position:relative}
+/* position:relative обязателен: без него ::after ниже считает координаты от
+   .loc — то есть от всего замка — и накрывает собой ссылку-логотип. */
+.loc__toggle{position:relative;background:none;border:0;padding:0 .34em 0 0;cursor:pointer;
+  gap:.55em;color:var(--rose-deep);transition:color var(--t-fast) var(--ease)}
+.loc__toggle:hover{color:var(--rose)}
+/* Строка набрана шрифтом в 11 px — пальцем в неё не попасть. Зона нажатия
+   расширена псевдоэлементом: он не занимает места в потоке и не двигает замок.
+   Вверх — ровно на просвет до названия (иначе зона накрыла бы нижний край
+   ссылки-логотипа), вниз — на свободные 14 px внутри шапки высотой 76 px. */
+.loc__toggle::after{content:"";position:absolute;left:-.35rem;right:-.35rem;top:-.3rem;bottom:-.85rem}
+.loc__chev{flex:none;color:var(--rose-soft);transition:transform var(--t-fast) var(--ease)}
+.loc.is-open .loc__chev{transform:rotate(180deg)}
+.loc__menu{position:absolute;top:calc(100% + 10px);left:0;min-width:232px;z-index:1;
+  background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);
+  box-shadow:0 18px 48px rgba(74,59,56,.14);padding:var(--sp-2);
+  display:flex;flex-direction:column;gap:2px;
+  opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity var(--t-fast) var(--ease),visibility var(--t-fast),transform var(--t-fast) var(--ease)}
+.loc.is-open .loc__menu{opacity:1;visibility:visible;transform:translateY(0)}
+.loc__lead{padding:.3rem .75rem .55rem;margin:0 0 var(--sp-2);border-bottom:1px solid var(--line);
+  font-size:var(--fs-200);letter-spacing:.14em;text-transform:uppercase;color:var(--rose)}
+.loc__item{display:flex;align-items:center;gap:.65rem;padding:.6rem .75rem;border-radius:10px;
+  color:var(--ink);transition:background var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.loc__item:hover{background:var(--surface);color:var(--rose)}
+.loc__item.is-active{background:var(--surface);color:var(--rose-deep)}
+.loc__pin{flex:none;width:16px;height:16px;color:var(--rose-soft)}
+.loc__place{display:flex;flex-direction:column;gap:.15em;line-height:1.15}
+.loc__city{font-size:var(--fs-300);font-weight:600}
+.loc__country{font-size:var(--fs-200);color:var(--muted)}
+.loc__item.is-active .loc__country{color:var(--rose)}
 
 /* Перелив лепестков — лепестки знака обмениваются цветами во всех трёх местах,
    где он стоит: в шапке, в мобильном меню и в подвале.
@@ -234,6 +271,16 @@ body.no-scroll{overflow:hidden}
 .site-footer__inner{display:grid;grid-template-columns:1fr;gap:var(--sp-8);padding-bottom:var(--sp-12)}
 @media(min-width:768px){.site-footer__inner{grid-template-columns:1.4fr 1fr 1fr}}
 .site-footer__logo{margin-bottom:var(--sp-3)}
+.site-footer__places{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-6)}
+.site-footer__place{display:flex;align-items:center;gap:.5rem;font-size:var(--fs-300);color:var(--ink);
+  transition:color var(--t-fast) var(--ease)}
+.site-footer__place:hover{color:var(--rose)}
+.site-footer__place-pin{flex:none;width:15px;height:15px;color:var(--rose-soft)}
+.site-footer__place:hover .lead-arrow{transform:translateX(3px);color:var(--rose-deep)}
+/* Текущий салон остаётся ссылкой на свою же главную, но подписан: иначе строки
+   выглядят одинаково и непонятно, на чьём сайте гость сейчас. */
+.site-footer__place-here{font-size:var(--fs-200);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--rose);border:1px solid var(--line);border-radius:var(--radius-pill);padding:.1rem .5rem}
 .site-footer__title{font-family:var(--font-body);font-size:var(--fs-200);letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted);margin-bottom:var(--sp-3);font-weight:600}
 .site-footer__col{display:flex;flex-direction:column;gap:var(--sp-2)}
