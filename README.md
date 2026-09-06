@@ -26,19 +26,19 @@
 <table>
   <tr>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-apparat-700.webp" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-apparat-700.webp" alt="Аппарат ультразвуковой кавитации" width="100%"><br>
       <sub><b>Коррекция фигуры</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-lift-700.webp" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-lift-700.webp" alt="Аппарат SMAS-лифтинга Doublo" width="100%"><br>
       <sub><b>Лифтинг и омоложение</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-epil-700.webp" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-epil-700.webp" alt="Лазерная эпиляция, аппарат 800 нм" width="100%"><br>
       <sub><b>Лазерные процедуры</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-care-700.webp" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-care-700.webp" alt="Уходовая процедура с маской для лица" width="100%"><br>
       <sub><b>Уход и косметология</b></sub>
     </td>
   </tr>

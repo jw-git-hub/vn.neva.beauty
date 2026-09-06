@@ -105,24 +105,46 @@ def is_repo_path(link):
     return bool(link) and not urlsplit(link).scheme and not link.startswith(("//", "#"))
 
 
-def readme_links(text):
-    """Ссылки README на файлы репозитория: HTML-атрибуты и markdown-ссылки.
-    Блоки кода вырезаем: пути в примерах команд и в схеме сборки — не ссылки."""
-    prose = FENCED_CODE.sub("", text)
+def readme_prose(name):
+    """Текст README без блоков кода: пути в примерах команд и в схеме сборки —
+    не ссылки, и разметка в них не разметка."""
+    return FENCED_CODE.sub("", (REPO / name).read_text(encoding="utf-8"))
+
+
+def repo_links(prose):
+    """Ссылки внутрь репозитория: HTML-атрибуты и markdown-ссылки."""
     found = MARKUP_LINK.findall(prose) + MARKDOWN_LINK.findall(prose)
     return [link for link in found if is_repo_path(link)]
 
 
+def missing_targets(prose):
+    """Ссылки, ведущие на несуществующий путь."""
+    for link in repo_links(prose):
+        if not (REPO / unquote(urlsplit(link).path).lstrip("/")).exists():
+            yield f"ссылка ведёт в никуда — файла нет: {link}"
+
+
+def images_without_alt(prose):
+    """Картинки на файлы репозитория с пустым или отсутствующим alt.
+
+    Зачем: alt читает скринридер и показывает GitHub, когда файл не отдался, —
+    ровно в тот момент, когда картинки уже нет. Подпись под картинкой его не
+    заменяет: она называет раздел, а alt описывает кадр, и копия подписи в alt
+    заставила бы скринридер прочитать одно и то же дважды."""
+    for img in BeautifulSoup(prose, "html.parser").find_all("img"):
+        if is_repo_path(img.get("src", "")) and not img.get("alt", "").strip():
+            yield f"картинка без alt: {img.get('src')}"
+
+
 def readme_problems(name):
-    """Каждая ссылка README на файл репозитория ведёт на существующий путь.
+    """Ссылки README на файлы репозитория целы, и у каждой картинки есть alt.
 
     Зачем: переименование картинки правит сайт, но не README — на GitHub вместо
     плитки направлений остаются иконки битых изображений, и узнаёшь об этом
     последним. Так же тихо ломаются docs/ и перекрёстные ссылки языковых версий."""
-    for link in readme_links((REPO / name).read_text(encoding="utf-8")):
-        target = REPO / unquote(urlsplit(link).path).lstrip("/")
-        if not target.exists():
-            yield f"{name}: ссылка ведёт в никуда — файла нет: {link}"
+    prose = readme_prose(name)
+    for problem in (*missing_targets(prose), *images_without_alt(prose)):
+        yield f"{name}: {problem}"
 
 
 site_pages = pages()
@@ -130,5 +152,6 @@ errors = [error for page in site_pages for error in check(page)]
 errors += [problem for name in READMES for problem in readme_problems(name)]
 print(f"страниц проверено: {len(site_pages)}, README: {len(READMES)}")
 print("\n".join(errors) if errors
-      else "IMAGES OK — пути картинок целы, повтор загрузки на месте, ссылки README живы")
+      else "IMAGES OK — пути картинок целы, повтор загрузки на месте, "
+           "ссылки README живы, картинки подписаны")
 sys.exit(1 if errors else 0)
