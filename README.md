@@ -26,19 +26,19 @@
 <table>
   <tr>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-apparat.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-apparat-700.webp" width="100%"><br>
       <sub><b>Коррекция фигуры</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-lift.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-lift-700.webp" width="100%"><br>
       <sub><b>Лифтинг и омоложение</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-epil.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-epil-700.webp" width="100%"><br>
       <sub><b>Лазерные процедуры</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-care.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-care-700.webp" width="100%"><br>
       <sub><b>Уход и косметология</b></sub>
     </td>
   </tr>

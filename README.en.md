@@ -26,19 +26,19 @@ from scratch to fix both halves of that.
 <table>
   <tr>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-apparat.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-apparat-700.webp" width="100%"><br>
       <sub><b>Body contouring</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-lift.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-lift-700.webp" width="100%"><br>
       <sub><b>Lifting &amp; rejuvenation</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-epil.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-epil-700.webp" width="100%"><br>
       <sub><b>Laser procedures</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="vn.neva.beauty/assets/img/cat-care.jpg" width="100%"><br>
+      <img src="vn.neva.beauty/assets/img/cat-care-700.webp" width="100%"><br>
       <sub><b>Skincare &amp; cosmetology</b></sub>
     </td>
   </tr>
