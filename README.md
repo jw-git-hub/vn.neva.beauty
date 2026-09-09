@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.svg" alt="Neva Beauty — центр красоты в Дананге" width="100%">
+  <img src="docs/home.jpg" alt="Главная страница сайта Neva Beauty" width="100%">
 </p>
 
 <p align="center">
