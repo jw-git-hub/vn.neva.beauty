@@ -12,7 +12,7 @@
 
 ---
 
-## A beauty center website that got 6× more enquiries
+## A beauty center website that got 5.75× more messenger clicks
 
 **Neva Beauty** is a beauty and hardware-cosmetology center in Da Nang, Vietnam:
 laser hair removal, lifting and rejuvenation, body contouring and facial care.
@@ -50,15 +50,15 @@ from scratch to fix both halves of that.
 
 Two periods of equal length: the old builder-based site and the new one.
 
-**Enquiries — the headline:**
+**Messenger clicks — the headline:**
 
 | Metric | Old site<br><sub>1 Apr — 7 May 2026</sub> | New site<br><sub>1 Aug — 6 Sep 2026</sub> |
 |---|---|---|
-| **Visits ending in a messenger enquiry** | **8** | **46** |
-| **Enquiry conversion rate** | **2.5 %** | **8.8 %** |
+| **Visits with a messenger click** | **8** | **46** |
+| **Share of visits with a click** | **2.5 %** | **8.8 %** |
 | Clicks through to WhatsApp and Telegram | 13 | 54 |
 
-**5.75× more enquiries, and conversion rose 3.5×.** The second number matters more
+**5.75× more messenger clicks, and their share rose 3.5×.** The second number matters more
 than the first: the site got three times better at turning a visitor into someone
 who actually writes.
 
@@ -85,9 +85,11 @@ traffic is cold search. Click-throughs to social media fell from 8.4 % to 5.0 %:
 old site worked as a shop window people left to finish the conversation on Instagram,
 whereas now they write directly.
 
-<sub>Traffic and conversion figures come from the center's Yandex.Metrica (enquiries
-via the "messenger click" auto-goal, active across both periods). Speed and
-accessibility — Lighthouse 12 against the production domain.</sub>
+<sub>Traffic and conversion figures come from the center's Yandex.Metrica: clicks are
+counted by the "messenger click" auto-goal, which catches clicks on every WhatsApp and
+Telegram link and was active across both periods. How many of those people went on to
+book and to pay, Metrica does not know. Speed and accessibility — Lighthouse 12 against
+the production domain.</sub>
 
 ---
 
@@ -110,9 +112,11 @@ result cards out of that. The site is also readable by AI assistants — a dedic
 machine-readable map is published for them.
 
 **Fast on a phone.** Pages are built in advance and served ready-made, with no
-database and no engine in between. Lighthouse performance went from 75 to 98 out
-of 100; accessibility and technical SEO score 100; the page does not shift while
-loading.
+database and no engine in between. The site opens almost instantly even on a phone
+on a weak connection: by Google's measurement the score went from 75 to 98 out of 100.
+Pages work with screen magnifiers and voice assistants, and search engines
+parse them without a single complaint — 100 out of 100 on both. And the page does
+not shift while loading: your finger does not miss the button.
 
 **Prices cannot drift from the price list.** All prices live in one file. Before
 every publish, automation checks every figure on the site against it — and if even
@@ -133,8 +137,8 @@ the right site instead of closing the tab.
 | **Hosting** | 0 — static pages are served for free |
 | **Builder subscription** | none |
 | **Price updates** | edit one line; the site rebuilds and verifies itself |
-| **New service** | one entry in a list: page, menu, breadcrumbs, cross-links and markup appear automatically |
-| **Shelf life** | no database, plugins or engine that need updating |
+| **New service** | two lines in one file — the service itself and its place in a section; page, menu, breadcrumbs and markup appear on their own |
+| **Shelf life** | no database, plugins or engine that need updating; only the builder that applies your edits ages over time |
 
 ---
 
@@ -160,7 +164,6 @@ the right site instead of closing the tab.
   <img src="https://img.shields.io/badge/SEO-JSON--LD%20/%20schema.org-FF9900" alt="JSON-LD">
   <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions">
   <img src="https://img.shields.io/badge/Hosting-GitHub%20Pages-222?logo=github&logoColor=white" alt="GitHub Pages">
-  <img src="https://img.shields.io/badge/Lighthouse-A11y%20100%20%C2%B7%20SEO%20100%20%C2%B7%20Perf%2094--98-0CCE6B?logo=lighthouse&logoColor=white" alt="Lighthouse: A11y 100, SEO 100, Performance 94-98">
 </p>
 
 Technically this is **not a CMS or a page builder**, but a custom static site
