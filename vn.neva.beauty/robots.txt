@@ -2,7 +2,9 @@
 User-agent: *
 Allow: /
 
-# ИИ-краулеры (явно разрешены — цель: попадать в ответы ИИ-поиска)
+# ИИ-краулеры (явно разрешены — цель: попадать в ответы ИИ-поиска).
+# Блоки дублируют общее правило намеренно: явное разрешение читается человеком
+# как решение, а не как недосмотр, и переживает ужесточение правила выше.
 User-agent: GPTBot
 Allow: /
 
@@ -18,10 +20,24 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: Perplexity-User
+Allow: /
+
 User-agent: ClaudeBot
 Allow: /
 
+User-agent: Claude-SearchBot
+Allow: /
+
 User-agent: Claude-Web
+Allow: /
+
+# Яндекс: секция с именем Yandex действует на все его роботы,
+# YandexAdditional отвечает за отдельные сервисы и указывается явно.
+User-agent: Yandex
+Allow: /
+
+User-agent: YandexAdditional
 Allow: /
 
 Sitemap: https://vn.neva.beauty/sitemap.xml

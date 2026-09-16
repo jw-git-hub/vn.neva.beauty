@@ -29,7 +29,10 @@
 
 {% if svc.benefits %}
 <section class="section container">
-  <div class="section-head" data-reveal><p class="eyebrow">Преимущества</p><h2>Почему это работает</h2></div>
+  {#- Заголовок блока переопределяется из content.yml: где задан benefits_title,
+     стоит вопрос, как его задаёт аудитория, и ответ идёт первым предложением
+     под каждым пунктом. Где не задан — прежний заголовок. #}
+  <div class="section-head" data-reveal><p class="eyebrow">{{ svc.benefits_eyebrow or 'Преимущества' }}</p><h2>{{ svc.benefits_title or 'Почему это работает' }}</h2></div>
   <div class="svc-benefits" data-reveal-children>
     {% for b in svc.benefits %}
     <div class="svc-benefit"><span class="svc-benefit__icon">{{ icon(b.icon) }}</span><h3>{{ b.title }}</h3><p>{{ b.text }}</p></div>
@@ -40,7 +43,9 @@
 
 <section class="section pricelist-section">
   <div class="container">
-    <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>Цены</h2><p>Указаны во вьетнамских донгах (đ).</p></div>
+    {#- price_lead приходит из content.yml с уже подставленной ценой из прайса
+       (build.fill_tokens): под заголовком-вопросом первым идёт прямой ответ. #}
+    <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>{{ svc.price_title or 'Цены' }}</h2><p>{{ svc.price_lead or 'Указаны во вьетнамских донгах (đ).' }}</p></div>
     <div class="pricelist" data-pricelist>
       {% set tabbed = sections|length > 1 %}
       {% if tabbed %}
@@ -98,6 +103,41 @@
   </div>
 </section>
 
+{%- if svc.compare %}
+{#- Сравнение с соседними услугами: настоящая <table>, строки и цены собраны
+   в build.compare_rows из content.yml и prices.json. Классы прайс-листа
+   переиспользуются намеренно — таблица выглядит как остальные на сайте
+   и не требует своего CSS. Панели прайса (.pricelist__panel) здесь нет:
+   она скрыта до активации и в неё же смотрит парити-тест цен. #}
+<section class="section container">
+  <div class="section-head" data-reveal><p class="eyebrow">{{ svc.compare.eyebrow }}</p><h2>{{ svc.compare.title }}</h2><p>{{ svc.compare.lead }}</p></div>
+  <div class="pricelist" data-reveal>
+    <div class="pricelist__rows">
+      <table class="pricelist__table compare__table">
+        <caption class="visually-hidden">{{ svc.compare.caption }}</caption>
+        <thead>
+          <tr>
+            <th scope="col"><span class="visually-hidden">Процедура и с чем она работает</span></th>
+            <th scope="col"><span class="visually-hidden">Цена</span></th>
+          </tr>
+        </thead>
+        {#- Названия без ссылок: единственный стиль ссылки в тексте — .faq__a a,
+           внутри таблицы ссылка была бы неотличима от обычного текста. На эти же
+           услуги ведут ссылки из ответа FAQ под таблицей. #}
+        <tbody>
+          {% for row in svc.compare.rows %}
+          <tr class="pricelist__row">
+            <th class="pricelist__name" scope="row">{{ row.title }}<span class="pricelist__desc">{{ row.task }}</span></th>
+            <td class="pricelist__price">{{ row.price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{%- endif %}
+
 {% if svc.faq %}
 <section class="section container" id="faq">
   <div class="section-head" data-reveal><p class="eyebrow">Вопросы и ответы</p><h2>Частые вопросы — {{ svc.title }}</h2></div>
@@ -143,4 +183,7 @@
 </section>
 {% endif %}
 {% endblock %}
-{% block extra_js %}<script src="{{ base_path }}/assets/js/price-tabs.js" defer></script>{% endblock %}
+{# Скрипт нужен только там, где вкладки есть: условие то же, что у самих вкладок
+   (`tabbed` выше). При одном разделе прайса он находил ноль вкладок и уходил
+   ни с чем — лишний запрос на 9 страницах услуг из 11. #}
+{% block extra_js %}{% if sections|length > 1 %}<script src="{{ base_path }}/assets/js/price-tabs.js" defer></script>{% endif %}{% endblock %}

@@ -13,8 +13,11 @@ _TAG_RE = re.compile(r"<[^>]+>")
 
 
 def _plain(text):
-    """Чистый текст без HTML-тегов — для answer в JSON-LD (ссылки в разметке не нужны)."""
-    return _TAG_RE.sub("", text)
+    """Чистый текст без HTML-тегов и лишних пробелов — для JSON-LD.
+
+    Пробелы схлопываются: intro приходит свёрнутым YAML-скаляром и тащит за собой
+    перенос строки в конце, а он уезжал прямо в description разметки."""
+    return " ".join(_TAG_RE.sub("", text).split())
 
 ORG_ID = "#organization"
 BUSINESS_ID = "#business"
@@ -195,12 +198,36 @@ def offer_catalog_node(name, sections, currency):
     return {"@type": "OfferCatalog", "name": name, "itemListElement": elements}
 
 
+def _offers_node(aggregate):
+    """Цены услуги для Service.offers из {low, high, count, currency}.
+
+    Одна позиция в прайсе — обычный Offer. AggregateOffer с совпадающими
+    lowPrice/highPrice и offerCount 1 формально валиден, но утверждает диапазон
+    цен там, где цена ровно одна: потребитель разметки читает «от 1 100 000 до
+    1 100 000» и «предложений: 1». Диапазон осмысленен от двух позиций."""
+    if aggregate["count"] == 1:
+        return {
+            "@type": "Offer",
+            "price": aggregate["low"],
+            "priceCurrency": aggregate["currency"],
+        }
+    return {
+        "@type": "AggregateOffer",
+        "priceCurrency": aggregate["currency"],
+        "lowPrice": aggregate["low"],
+        "highPrice": aggregate["high"],
+        "offerCount": aggregate["count"],
+    }
+
+
 def service_node(name, description, provider_ref, area_name,
-                 aggregate_offer=None, offer_catalog=None):
+                 aggregate_offer=None, offer_catalog=None,
+                 url=None, image=None, service_type=None):
     """Service — профильная услуга страницы. provider ссылается на узел бизнеса,
-    areaServed — город. Если передан aggregate_offer {low, high, count, currency},
-    добавляется AggregateOffer с диапазоном цен; offer_catalog — готовый узел
-    OfferCatalog с позициями прайса (числа и там и там считаются из прайса)."""
+    areaServed — город. url даёт узлу стабильный @id и адрес страницы, image —
+    её главный кадр, service_type — направление из таксономии сайта. Если передан
+    aggregate_offer {low, high, count, currency}, добавляются цены (см. _offers_node);
+    offer_catalog — готовый узел OfferCatalog с позициями прайса."""
     node = {
         "@type": "Service",
         "name": name,
@@ -208,14 +235,17 @@ def service_node(name, description, provider_ref, area_name,
         "provider": provider_ref,
         "areaServed": {"@type": "City", "name": area_name},
     }
+    if url:
+        # @id делает услугу адресуемой сущностью: на неё можно сослаться из других
+        # узлов графа, и потребитель разметки не склеивает одноимённые услуги сайтов.
+        node["@id"] = url + "#service"
+        node["url"] = url
+    if image:
+        node["image"] = image
+    if service_type:
+        node["serviceType"] = service_type
     if aggregate_offer:
-        node["offers"] = {
-            "@type": "AggregateOffer",
-            "priceCurrency": aggregate_offer["currency"],
-            "lowPrice": aggregate_offer["low"],
-            "highPrice": aggregate_offer["high"],
-            "offerCount": aggregate_offer["count"],
-        }
+        node["offers"] = _offers_node(aggregate_offer)
     if offer_catalog:
         node["hasOfferCatalog"] = offer_catalog
     return node

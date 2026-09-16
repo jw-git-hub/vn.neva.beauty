@@ -128,20 +128,41 @@ def fill_related(content):
                     related.append(candidate)
         svc["related"] = related[:RELATED_COUNT]
 
-def render_faq_contacts(faq, contacts, base_path=""):
-    """Финализирует HTML-ответы FAQ: подставляет URL мессенджеров вместо плейсхолдеров
-    {whatsapp}/{telegram}/{instagram} (единый источник — site.yml) и префиксует внутренние
-    ссылки href="/..." на base_path — чтобы они работали и на превью по подпути."""
+PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price)\}")
+
+
+def content_tokens(contacts, price=None):
+    """Плейсхолдеры, доступные в текстах content.yml: URL мессенджеров из site.yml
+    и цена услуги из prices.json. Единый источник у каждого значения ровно один,
+    поэтому текст не может разойтись ни с контактами, ни с прайсом."""
     tokens = {
         "{whatsapp}": contacts["whatsapp_url"],
         "{telegram}": contacts["telegram_url"],
         "{instagram}": contacts["instagram_url"],
     }
+    if price:
+        tokens["{price}"] = price
+    return tokens
+
+
+def fill_tokens(text, tokens):
+    """Подставляет значения плейсхолдеров. Нераскрытый плейсхолдер — ошибка сборки:
+    иначе фигурная скобка уезжает в текст страницы и её видит посетитель."""
+    for token, value in tokens.items():
+        text = text.replace(token, value)
+    if PLACEHOLDER_RE.search(text):
+        raise ValueError(f"Нераскрытый плейсхолдер в тексте content.yml: {text[:80]!r}")
+    return text
+
+
+def render_faq_contacts(faq, contacts, base_path="", price=None):
+    """Финализирует HTML-ответы FAQ: подставляет значения плейсхолдеров (см. content_tokens)
+    и префиксует внутренние ссылки href="/..." на base_path — чтобы они работали
+    и на превью по подпути."""
+    tokens = content_tokens(contacts, price)
     result = []
     for item in faq:
-        answer = item["a"]
-        for token, url in tokens.items():
-            answer = answer.replace(token, url)
+        answer = fill_tokens(item["a"], tokens)
         if base_path:
             answer = answer.replace('href="/', f'href="{base_path}/')
         result.append({"q": item["q"], "a": answer})
@@ -186,6 +207,37 @@ def price_aggregate(sections, currency):
             "count": len(values), "currency": currency}
 
 
+def price_hint(sections):
+    """Цена услуги одной строкой — для мест вне прайса: сравнительной таблицы,
+    подводки к ценам, llms.txt. Одна цена на всю услугу — показываем её, несколько
+    разных — «от <минимальной>», как на карточках «Популярное». Доплаты не в счёт:
+    надбавку нельзя заплатить вместо услуги. Нет цен — None."""
+    values = [item["price"].strip() for sec in sections for item in sec["items"]
+              if not is_addon(item) and price_value(item["price"]) is not None]
+    if not values:
+        return None
+    if len(set(values)) == 1:
+        return values[0]
+    return f"от {min(values, key=price_value)}"
+
+
+def compare_rows(rows, services, prices):
+    """Строки сравнительной таблицы: название и адрес услуги берутся из content.yml,
+    цена — из prices.json. Второго источника цен не появляется, поэтому таблица
+    не расходится с прайсом. Неизвестный слаг или услуга без цены — ошибка сборки:
+    пустая строка в таблице хуже упавшей сборки."""
+    result = []
+    for row in rows:
+        slug = row["slug"]
+        if slug not in services:
+            raise ValueError(f"Сравнительная таблица: в content.yml нет услуги {slug!r}")
+        hint = price_hint(prices.get(slug, []))
+        if hint is None:
+            raise ValueError(f"Сравнительная таблица: у услуги {slug!r} нет цены в прайсе")
+        result.append({"title": services[slug]["title"], "task": row["task"], "price": hint})
+    return result
+
+
 def popular_price(prices, slug, name):
     """Цена для карточки «Популярное» на главной. Одноимённые позиции есть в разных
     разделах прайса с разной ценой (эпиляция у женщин и мужчин) — тогда показываем
@@ -219,28 +271,47 @@ def offer_sections(sections):
     return result
 
 
-def build_llms(site, content):
+LLMS_SUMMARY = ("> Центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная "
+                "эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. "
+                "Обслуживание на русском языке для русскоязычных клиентов.")
+
+
+def llms_about_lines(site):
+    """Факты о центре для llms.txt — ровно те, что опубликованы на сайте.
+    Точного адреса среди них нет: заказчик даёт его при записи."""
+    return [
+        f"- Город: {site['location']}. Точный адрес выдаётся при записи",
+        "- Приём: по предварительной записи",
+        "- Языки обслуживания: русский и английский",
+        f"- Валюта цен: вьетнамский донг (đ, {site['business']['currency']})",
+    ]
+
+
+def llms_service_lines(base, services, prices):
+    """Услуги для llms.txt: ссылка, краткое описание страницы и цена из прайса.
+    Без описания и цены ассистенту приходится открывать все одиннадцать страниц,
+    чтобы ответить «сколько стоит» — а карта сайта нужна как раз чтобы не пришлось."""
+    lines = []
+    for slug, svc in services.items():
+        hint = price_hint(prices.get(slug, []))
+        price = f" Цена: {hint}." if hint else ""
+        lines.append(f"- [{svc['title']}]({base}/{slug}/): {svc['seo_desc']}{price}")
+    return lines
+
+
+def build_llms(site, content, prices):
     """llms.txt — краткая карта сайта для ИИ-ассистентов (llmstxt.org)."""
     base = site["base_url"]
     c = site["contacts"]
-    lines = [
-        f"# {site['brand']}",
-        "",
-        "> Центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная "
-        "эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. "
-        "Обслуживание на русском языке для русскоязычных клиентов.",
-        "",
-        "## Направления",
-    ]
-    for cat in content["categories"]:
-        lines.append(f"- [{cat['title']}]({base}{cat['url']})")
+    lines = [f"# {site['brand']}", "", LLMS_SUMMARY, "", "## О центре"]
+    lines += llms_about_lines(site)
+    lines += ["", "## Направления"]
+    lines += [f"- [{cat['title']}]({base}{cat['url']})" for cat in content["categories"]]
     lines += ["", "## Услуги"]
-    for slug, svc in content["services"].items():
-        lines.append(f"- [{svc['title']}]({base}/{slug}/)")
+    lines += llms_service_lines(base, content["services"], prices)
     lines += [
         "",
         "## Контакты",
-        f"- Локация: {site['location']}",
         f"- WhatsApp: {c['whatsapp_url']}",
         f"- Telegram: {c['telegram_url']}",
         f"- Instagram: {c['instagram_url']}",
@@ -335,10 +406,20 @@ def main():
         nodes = [
             schema.breadcrumb_node(crumbs),
             schema.service_node(svc["title"], svc["intro"], provider_ref, area_name,
-                                price_aggregate(sections, currency), catalog),
+                                price_aggregate(sections, currency), catalog,
+                                url=f"{base_url}/{slug}/",
+                                image=f"{base_url}/assets/img/{svc['hero_image']}.webp",
+                                service_type=cat["title"]),
         ]
+        hint = price_hint(sections)
+        if svc.get("price_lead"):
+            svc["price_lead"] = fill_tokens(svc["price_lead"],
+                                            content_tokens(site["contacts"], hint))
+        if svc.get("compare"):
+            svc["compare"]["rows"] = compare_rows(svc["compare"]["rows"],
+                                                  content["services"], prices)
         if svc.get("faq"):
-            svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"], base_path)
+            svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"], base_path, hint)
             nodes.append(schema.faq_node(svc["faq"]))
         page = {"url": f"/{slug}/", "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
                 "schema_json": schema.render(site, nodes),
@@ -383,7 +464,7 @@ def main():
     known_lastmods = previous_lastmods(sitemap_path)  # читаем до перезаписи
     write(sitemap_path, build_sitemap(base_url, urls, page_changed, known_lastmods))
     # llms.txt — карта сайта для ИИ-ассистентов
-    write(OUT/"llms.txt", build_llms(site, content))
+    write(OUT/"llms.txt", build_llms(site, content, prices))
     # site.webmanifest — имя и иконка при добавлении на главный экран
     write(OUT/"site.webmanifest", build_manifest(site, base_path))
     # CNAME — боевой домен для GitHub Pages. Кладём в артефакт, иначе workflow-деплой

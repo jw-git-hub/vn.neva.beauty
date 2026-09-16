@@ -531,6 +531,18 @@
       ]
     }
   ],
+  "karbonovyy-lazernyy-piling": [
+    {
+      "section": "Цены",
+      "items": [
+        {
+          "name": "Карбоновый лазерный пилинг",
+          "desc": "",
+          "price": "1 100 000 đ"
+        }
+      ]
+    }
+  ],
   "morpheus-8-rf-lifting": [
     {
       "section": "Цены",

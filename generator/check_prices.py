@@ -1,5 +1,6 @@
 """Парити-тест цен: сверяет data/prices.json (источник истины) с ценами в
-сгенерированном HTML и в JSON-LD (OfferCatalog + AggregateOffer). Падает (exit 1)
+сгенерированном HTML (прайс-лист, карточки «Популярное», сравнительные таблицы)
+и в JSON-LD (OfferCatalog + AggregateOffer). Падает (exit 1)
 при любом расхождении — защищает требование 100% точности цен.
 Сверяются не только цифры, но и раздел прайса, описание позиции и валюта:
 в прайсе есть одноимённые позиции с разными ценами («Лоб» у женщин и мужчин),
@@ -49,6 +50,16 @@ def is_addon(item):
     флагом addon сопутствующий товар вроде костюма для LPG. В AggregateOffer
     и в OfferCatalog такие позиции не идут — в таблице прайса остаются."""
     return bool(item.get("addon")) or item["price"].strip().startswith("+")
+
+
+def price_hint(sections):
+    """Цена услуги одной строкой: точная, если в прайсе она одна, иначе «от <минимальной>».
+    Так цена услуги показывается вне прайс-листа — в сравнительной таблице."""
+    values = [clean(it["price"]) for sec in sections for it in sec["items"]
+              if not is_addon(it) and price_number(it["price"]) is not None]
+    if not values:
+        return None
+    return values[0] if len(set(values)) == 1 else f"от {min(values, key=price_number)}"
 
 
 @lru_cache(maxsize=None)
@@ -203,6 +214,37 @@ def rendered_popular():
             for card in soup.select(".popular-card")}
 
 
+# ---------- цены в сравнительных таблицах ----------
+
+def expected_compare():
+    """Эталон сравнительной таблицы: [(название услуги, цена одной строкой)]
+    в порядке строк из content.yml."""
+    result = {}
+    for slug, svc in CONTENT["services"].items():
+        rows = (svc.get("compare") or {}).get("rows")
+        if rows:
+            result[slug] = [(clean(CONTENT["services"][row["slug"]]["title"]),
+                             price_hint(PRICES.get(row["slug"], []))) for row in rows]
+    return result
+
+
+def rendered_compare():
+    """Факт — строки сравнительных таблиц на собранных страницах услуг."""
+    result = {}
+    for slug in PRICES:
+        rows = []
+        for row in BeautifulSoup(page_html(slug), "html.parser").select(".compare__table tbody tr"):
+            name = row.select_one(".pricelist__name")
+            desc = name.select_one(".pricelist__desc")
+            if desc:
+                desc.extract()
+            rows.append((clean(name.get_text()),
+                         clean(row.select_one(".pricelist__price").get_text())))
+        if rows:
+            result[slug] = rows
+    return result
+
+
 def expected_aggregates():
     """Эталон диапазона: min/max/кол-во по позициям без доплат."""
     result = {}
@@ -215,13 +257,23 @@ def expected_aggregates():
 
 
 def rendered_aggregates():
-    """Факт — AggregateOffer из JSON-LD страницы услуги."""
+    """Факт — цены услуги из Service.offers: AggregateOffer с диапазоном либо
+    обычный Offer, если позиция в прайсе одна. Обе формы приводим к общему виду
+    (min, max, count, валюта) — тогда подмена одной формы другой всё равно всплывёт
+    как расхождение с прайсом: у Offer count всегда 1, у диапазона — число позиций."""
     result = {}
     for slug in PRICES:
         offers = service_node(slug).get("offers")
-        if offers:
+        if not offers:
+            continue
+        kind = offers.get("@type")
+        if kind == "Offer":
+            result[slug] = (offers["price"], offers["price"], 1, offers["priceCurrency"])
+        elif kind == "AggregateOffer":
             result[slug] = (offers["lowPrice"], offers["highPrice"],
                             offers["offerCount"], offers["priceCurrency"])
+        else:
+            sys.exit(f"{slug}: Service.offers неизвестного типа {kind!r}")
     return result
 
 
@@ -235,6 +287,7 @@ new_offers, desc_mismatch = rendered_offers()
 exp_aggr, new_aggr = expected_aggregates(), rendered_aggregates()
 
 exp_popular, new_popular = expected_popular(), rendered_popular()
+exp_compare, new_compare = expected_compare(), rendered_compare()
 
 ok = report("HTML", exp_html, new_html)
 ok &= report("JSON-LD", exp_offers, new_offers)
@@ -245,6 +298,12 @@ if exp_popular != new_popular:
         if exp_popular.get(name) != new_popular.get(name):
             print(f"POPULAR MISMATCH «{name}»: ожидалось {exp_popular.get(name)!r}, "
                   f"на главной {new_popular.get(name)!r}")
+
+for slug in sorted(set(exp_compare) | set(new_compare)):
+    if exp_compare.get(slug) != new_compare.get(slug):
+        ok = False
+        print(f"COMPARE MISMATCH {slug}: prices.json={exp_compare.get(slug)} "
+              f"на странице={new_compare.get(slug)}")
 
 for slug, name, desc in desc_mismatch:
     ok = False
@@ -268,6 +327,7 @@ for slug, sections in PRICES.items():
               f"JSON-LD={new_aggr.get(slug)} (low, high, count, currency)")
 
 print(f"html_items={sum(new_html.values())} jsonld_offers={sum(new_offers.values())} "
-      f"aggregates={len(new_aggr)} popular={len(new_popular)} currency={CURRENCY}")
+      f"aggregates={len(new_aggr)} popular={len(new_popular)} "
+      f"compare_rows={sum(len(rows) for rows in new_compare.values())} currency={CURRENCY}")
 print("PRICE PARITY OK" if ok else "PRICE PARITY FAILED")
 sys.exit(0 if ok else 1)

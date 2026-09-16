@@ -95,10 +95,10 @@ the production domain.</sub>
 
 ## 🎯 What the site solves for the business
 
-**Every service is findable on its own.** Four categories, ten services, each with
-its own page carrying a description, prices and answers to common questions.
-A search for "SMAS lifting Da Nang" now lands on exactly that page — not on a line
-item in a general service list.
+**Every service is findable on its own.** Four categories, eleven services,
+each with its own page carrying a description, prices and answers to common
+questions. A search for "SMAS lifting Da Nang" now lands on exactly that page —
+not on a line item in a general service list.
 
 **Writing in is possible from any page.** A booking block sits on every service
 page with its own heading — someone reading about laser hair removal writes from
@@ -144,13 +144,13 @@ the right site instead of closing the tab.
 
 ## 🧭 What's on the site
 
-**4 categories · 10 services**, pages generated from the taxonomy automatically:
+**4 categories · 11 services**, pages generated from the taxonomy automatically:
 
 | Category | Services |
 |---|---|
 | **Body contouring** | LPG massage · endosphere therapy · ultrasonic cavitation |
 | **Lifting & rejuvenation** | SMAS lifting · Morpheus 8 (RF) · M22 photorejuvenation |
-| **Laser procedures** | laser hair removal · tattoo removal · permanent makeup removal |
+| **Laser procedures** | laser hair removal · tattoo removal · permanent makeup removal · carbon laser peel |
 | **Skincare & cosmetology** | aesthetic cosmetology and facial care |
 
 ---
