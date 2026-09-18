@@ -25,6 +25,15 @@
 .site-header.is-scrolled{box-shadow:0 6px 26px rgba(74,59,56,.07);
   background:var(--bg);border-bottom-color:var(--line);
   backdrop-filter:none;-webkit-backdrop-filter:none}
+/* Полоса цвета шапки над её верхним краем — закрывает щель над прилипшей
+   шапкой во встроенных браузерах. Telegram на iPhone рисует страницу и под
+   своей свёрнутой панелью (54 px, плашка с адресом), а шапка прилипает ниже
+   панели — в щели просвечивал текст. 120 px — с запасом на развёрнутую панель.
+   Ограничение: WebKit с Liquid Glass (iOS 26) обрезает липкие слои по краю
+   окна страницы, и там полосы не видно. Safari это не мешает: зону под своими
+   панелями он закрашивает цветом шапки сам. */
+.site-header::before{content:"";position:absolute;left:0;right:0;bottom:100%;
+  height:120px;background:inherit;pointer-events:none}
 .site-header__inner{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:76px}
 @media(min-width:1024px){.site-header__inner{gap:var(--sp-6)}}
 .site-header__logo{color:var(--ink)}
