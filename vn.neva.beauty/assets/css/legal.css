@@ -36,16 +36,8 @@
   margin-bottom: 0.75rem;
 }
 
-/* Таблица из четырёх колонок в 390px не помещается: прокручиваем её саму,
-   а не всю страницу. tabindex делает прокрутку доступной с клавиатуры. */
-.legal-table {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
 .legal-page table {
   width: 100%;
-  min-width: 34rem;
   border-collapse: collapse;
   margin: 1rem 0;
   font-size: 0.9rem;
@@ -64,4 +56,52 @@
   font-weight: 600;
   color: var(--ink);
   background: rgba(0,0,0,0.03);
+}
+
+/* Четыре колонки уже 768 px не помещаются, а прокрутка вбок прятала последнюю
+   за край экрана. Здесь строка таблицы становится карточкой: первая ячейка —
+   заголовком, под ней «подпись — значение» из data-label. Шапка скрыта: её слова
+   уже стоят в подписях, и скринридер читает их вместе со значением. */
+@media (max-width: 767.98px) {
+  .legal-page table,
+  .legal-page tbody,
+  .legal-page tr,
+  .legal-page td {
+    display: block;
+  }
+
+  .legal-page thead {
+    display: none;
+  }
+
+  .legal-page tr {
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 0.5rem 0.75rem;
+  }
+
+  .legal-page tr + tr {
+    margin-top: 0.75rem;
+  }
+
+  .legal-page table td {
+    border: none;
+    padding: 0.25rem 0;
+  }
+
+  /* Заголовок карточки — полосой, как шапка таблицы на широком экране:
+     иначе он сливается с подписями, набранными тем же весом. */
+  .legal-page table td[role="rowheader"] {
+    margin: -0.5rem -0.75rem 0.25rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: rgba(0,0,0,0.03);
+  }
+
+  .legal-page td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 600;
+    color: var(--ink);
+  }
 }
