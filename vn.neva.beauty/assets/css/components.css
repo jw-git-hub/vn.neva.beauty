@@ -213,8 +213,17 @@
 .drawer{position:fixed;top:0;right:0;height:100dvh;width:min(86vw,360px);z-index:var(--z-drawer);
   background:var(--bg);box-shadow:-20px 0 60px rgba(74,59,56,.18);overflow:hidden;
   display:flex;flex-direction:column;
-  transform:translateX(100%);transition:transform var(--t-mid) var(--ease)}
-.drawer.is-open{transform:translateX(0)}
+  /* Закрытое меню стоит вплотную за правым краем, а его тень — 20 px сдвига
+     и 60 px размытия — ложилась на страницу тёмной полосой вдоль края на всех
+     ширинах с бургером. visibility убирает закрытое меню целиком: вместе с тенью
+     и со ссылками, на которые иначе попадал Tab. При закрытии оно прячется
+     после выезда, поэтому выезд виден. */
+  visibility:hidden;transform:translateX(100%);
+  transition:transform var(--t-mid) var(--ease),visibility var(--t-mid)}
+/* У открытого меню visibility не анимируется: в первый миг перехода значение
+   ещё hidden, и nav.js, который сразу ставит фокус на первую ссылку, промахивался. */
+.drawer.is-open{visibility:visible;transform:translateX(0);
+  transition:transform var(--t-mid) var(--ease)}
 .drawer__top{flex:none;display:flex;align-items:center;justify-content:space-between;
   padding:var(--sp-6) var(--sp-6) var(--sp-4);border-bottom:1px solid var(--line)}
 .drawer__brand{display:inline-flex}
