@@ -20,7 +20,7 @@
         {% endif %}
       {% endfor %}
     </nav>
-    <a class="btn btn--primary site-header__cta" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_generic') | urlencode }}" target="_blank" rel="noopener">{{ t('cta.book') }}</a>
+    <a class="btn btn--primary site-header__cta" {{ contact('whatsapp', 'header', page) }}>{{ t('cta.book') }}</a>
     <button class="burger" data-drawer-open aria-label="{{ t('nav.open_menu') }}" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </header>

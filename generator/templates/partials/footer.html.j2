@@ -16,9 +16,9 @@
     </nav>
     <div class="site-footer__col">
       <h2 class="site-footer__title">{{ t('footer.contacts_title') }}</h2>
-      <a class="site-footer__link" href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
-      <a class="site-footer__link" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">Telegram</a>
-      <a class="site-footer__link" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
+      <a class="site-footer__link" {{ contact('whatsapp', 'footer', page) }}>WhatsApp</a>
+      <a class="site-footer__link" {{ contact('telegram', 'footer', page) }}>Telegram</a>
+      <a class="site-footer__link" {{ contact('instagram', 'footer', page) }}>Instagram</a>
     </div>
   </div>
   <div class="site-footer__bottom container">

@@ -44,9 +44,9 @@
        заголовки, остальной текст vn — отдельным решением. #}
     <div class="section-head" data-reveal><p class="eyebrow">{{ t('booking.eyebrow') }}</p><h2>{{ cat.booking_title }}</h2><p>{{ t('booking.lead') }}</p></div>
     <div class="booking__actions">
-      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_page', title=cat.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
-      <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
-      <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
+      <a class="btn btn--primary" {{ contact('whatsapp', 'booking', page) }}>{{ icon('message-circle') }} WhatsApp</a>
+      <a class="btn btn--ghost" {{ contact('telegram', 'booking', page) }}>{{ icon('send') }} Telegram</a>
+      <a class="btn btn--ghost" {{ contact('instagram', 'booking', page) }}>{{ icon('instagram') }} Instagram</a>
     </div>
     <p class="booking__loc">{{ icon('map-pin') }} {{ site.location }}</p>
   </div>

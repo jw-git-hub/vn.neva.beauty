@@ -1,5 +1,7 @@
 import copy
+import re
 import unittest
+import urllib.parse
 from dataclasses import replace
 from unittest import mock
 
@@ -83,3 +85,51 @@ class LoadXDefaultLocaleTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+CONTACT_HREF_RE = re.compile(r'href="(https://(?:wa\.me|t\.me)/[^"]*)"')
+
+
+def contact_texts(html):
+    """Тексты обращения во всех ссылках WhatsApp и Telegram страницы."""
+    return {urllib.parse.parse_qs(urllib.parse.urlsplit(url).query).get("text", [""])[0]
+            for url in CONTACT_HREF_RE.findall(html)}
+
+
+class ContactLinksInBuiltPagesTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        site, content, prices = build.load()
+        locale = load_locale("ru")
+        routes = Routes([locale], taxonomy.page_ids(content), site["base_url"], "ru")
+        written = {}
+        with mock.patch("build.write",
+                        side_effect=lambda path, html: written.update({path: html})):
+            build.build_locale(site, content, prices, locale, routes, "")
+        cls.pages = {path.relative_to(build.OUT).as_posix(): html
+                     for path, html in written.items()}
+
+    def test_service_page_links_carry_service_title(self):
+        self.assertEqual(contact_texts(self.pages["lpg-massazh/index.html"]),
+                         {"Здравствуйте! Хочу записаться на: LPG-массаж"})
+
+    def test_home_links_carry_generic_text(self):
+        self.assertEqual(contact_texts(self.pages["index.html"]),
+                         {"Здравствуйте! Хочу записаться"})
+
+    def test_every_contact_link_is_tagged(self):
+        html = self.pages["lpg-massazh/index.html"]
+        links = re.findall(r'<a [^>]*href="https://(?:wa\.me|t\.me|instagram\.com)/[^>]*>', html)
+        self.assertTrue(links)
+        for link in links:
+            self.assertIn("data-contact=", link)
+            self.assertIn("data-place=", link)
+
+    def test_faq_links_are_tagged_and_carry_text(self):
+        html = self.pages["lpg-massazh/index.html"]
+        self.assertIn('data-place="faq"', html)
+        faq_links = re.findall(r'<a href="(https://wa\.me/[^"]*)" data-contact="whatsapp" '
+                               r'data-place="faq"', html)
+        self.assertTrue(faq_links)
+        self.assertEqual(contact_texts(" ".join(f'href="{url}"' for url in faq_links)),
+                         {"Здравствуйте! Хочу записаться на: LPG-массаж"})

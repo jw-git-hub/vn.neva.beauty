@@ -2,6 +2,7 @@
 import re
 from dataclasses import dataclass
 
+import contacts
 import pricing
 import schema
 import taxonomy
@@ -56,13 +57,20 @@ def fill_tokens(text, tokens):
     return text
 
 
-def render_faq(ctx, faq, price=None):
-    """Финализирует HTML-ответы FAQ: подставляет плейсхолдеры (см. content_tokens)
-    и переводит внутренние ссылки href="/<идентификатор>/" в адреса языка страницы."""
-    tokens = content_tokens(ctx.site["contacts"], price)
-    return [{"q": item["q"],
-             "a": ctx.routes.localize_links(ctx.locale, fill_tokens(item["a"], tokens))}
-            for item in faq]
+def render_faq(ctx, faq, price=None, page_title=None):
+    """Финализирует HTML-ответы FAQ: ссылки на мессенджеры получают текст страницы
+    и метки (contacts.fill_contact_links), остальные плейсхолдеры подставляются
+    (см. content_tokens), внутренние ссылки href="/<идентификатор>/" переводятся
+    в адреса языка страницы."""
+    site_contacts = ctx.site["contacts"]
+    message = contacts.contact_message(ctx.locale, page_title)
+    tokens = content_tokens(site_contacts, price)
+
+    def finish(answer):
+        answer = contacts.fill_contact_links(answer, site_contacts, message)
+        return ctx.routes.localize_links(ctx.locale, fill_tokens(answer, tokens))
+
+    return [{"q": item["q"], "a": finish(item["a"])} for item in faq]
 
 
 def build_home(ctx):
@@ -115,7 +123,7 @@ def _prepare_service_texts(ctx, svc, hint):
         svc["compare"]["rows"] = pricing.compare_rows(
             svc["compare"]["rows"], ctx.content["services"], ctx.prices, ctx.locale.format_from)
     if svc.get("faq"):
-        svc["faq"] = render_faq(ctx, svc["faq"], hint)
+        svc["faq"] = render_faq(ctx, svc["faq"], hint, svc["title"])
 
 
 def build_service(ctx, service_id):
@@ -127,7 +135,7 @@ def build_service(ctx, service_id):
     _prepare_service_texts(ctx, svc, pricing.price_hint(sections, ctx.locale.format_from))
     if svc.get("faq"):
         nodes.append(schema.faq_node(svc["faq"]))
-    page = {"id": service_id, "url": ctx.path(service_id),
+    page = {"id": service_id, "url": ctx.path(service_id), "contact_title": svc["title"],
             "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
             "schema_json": schema.render(ctx.site, nodes),
             "hero_image": f"/assets/img/{svc['hero_image']}.webp",  # LCP → preload
@@ -143,9 +151,10 @@ def build_category(ctx, cat):
     service_urls = [ctx.url(service_id) for service_id in cat["services"]]
     nodes = [schema.breadcrumb_node(crumbs), schema.item_list_node(cat["title"], service_urls)]
     if cat.get("faq"):
-        cat["faq"] = render_faq(ctx, cat["faq"])
+        cat["faq"] = render_faq(ctx, cat["faq"], page_title=cat["title"])
         nodes.append(schema.faq_node(cat["faq"]))
-    page = {"id": cat["page_id"], "url": cat["url"], "seo_title": cat["seo_title"],
+    page = {"id": cat["page_id"], "url": cat["url"], "contact_title": cat["title"],
+            "seo_title": cat["seo_title"],
             "seo_desc": cat["seo_desc"], "schema_json": schema.render(ctx.site, nodes)}
     return ctx.env.get_template("category.html.j2").render(
         site=ctx.site, page=page, cat=cat, services=ctx.content["services"],
