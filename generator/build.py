@@ -6,8 +6,6 @@ import images, pages, schema, sitewide, taxonomy
 from locales import load_locale, load_privacy, localized_site
 from routes import Routes
 
-DEFAULT_LOCALES = ["ru"]  # если в site.yml список языков не задан
-
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT.parent / "vn.neva.beauty"
 ICONS = OUT / "assets" / "icons"
@@ -30,6 +28,14 @@ def load():
     content = yaml.safe_load((ROOT/"data/content.yml").read_text(encoding="utf-8"))
     prices = json.loads((ROOT/"data/prices.json").read_text(encoding="utf-8"))
     return site, content, prices
+
+def load_locales(site):
+    """Языки сайта в порядке site.yml; первый — основной. Список обязателен: молчаливое
+    значение по умолчанию спрятало бы опечатку и расходилось бы с check_prices.py."""
+    codes = site.get("locales")
+    if not codes:
+        raise ValueError("В site.yml не задан список языков locales (первый — основной)")
+    return [load_locale(code) for code in codes]
 
 def write(path: Path, html: str) -> bool:
     """Пишет файл и возвращает True, если содержимое изменилось (нужно для lastmod в sitemap)."""
@@ -92,7 +98,7 @@ def main():
     # Префикс пути для ссылок на ассеты/страницы: пусто на боевом домене (сайт в корне),
     # "/vn.neva.beauty" для превью на GitHub Pages по подпути проекта. SEO-URL не трогает.
     base_path = site.get("base_path", "").rstrip("/")
-    locales = [load_locale(code) for code in site.get("locales", DEFAULT_LOCALES)]
+    locales = load_locales(site)
     routes = Routes(locales, taxonomy.page_ids(content), site["base_url"], base_path)
     sitewide.build_css_bundle(OUT)  # до страниц: отпечаток бандла стоит в каждой
     changed, urls, contents = {}, [], {}
