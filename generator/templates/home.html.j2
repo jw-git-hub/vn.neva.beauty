@@ -34,7 +34,7 @@
   <div class="section-head" data-reveal><p class="eyebrow">Услуги</p><h2>Направления красоты</h2><p>Аппаратные и уходовые процедуры под ваши задачи.</p></div>
   <div class="cat-grid" data-reveal-children>
     {% for c in categories %}
-    <a class="cat-card card" href="{{ base_path }}{{ c.url }}">
+    <a class="cat-card card" href="{{ c.href }}">
       <div class="cat-card__media">{{ responsive_img(c.image, 'category_cover', c.title) }}</div>
       <div class="cat-card__body"><h3>{{ c.title }}</h3><span class="cat-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
     </a>

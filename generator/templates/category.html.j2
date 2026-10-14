@@ -60,7 +60,7 @@
   <div class="section-head" data-reveal><p class="eyebrow">Другие направления</p><h2>Что ещё делают в Neva Beauty кроме раздела «{{ cat.title }}»</h2></div>
   <nav class="cat-links" aria-label="Другие направления">
     {% for other in siblings %}
-    <a class="cat-links__item" href="{{ base_path }}{{ other.url }}">{{ other.title }} {{ icon('arrow-right') }}</a>
+    <a class="cat-links__item" href="{{ other.href }}">{{ other.title }} {{ icon('arrow-right') }}</a>
     {% endfor %}
   </nav>
 </section>

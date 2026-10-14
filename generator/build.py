@@ -1,26 +1,21 @@
-import hashlib, json, re, urllib.parse, yaml, rcssmin
-from datetime import date
+import copy, json, re, urllib.parse, yaml
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import images, pricing, schema
+import images, pages, schema, sitewide, taxonomy
+from locales import load_locale, load_privacy, localized_site
+from routes import Routes
+
+DEFAULT_LOCALES = ["ru"]  # если в site.yml список языков не задан
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT.parent / "vn.neva.beauty"
 ICONS = OUT / "assets" / "icons"
 
-RELATED_COUNT = 3  # сколько карточек «Смотрите также» показываем на странице услуги
-
 # Фон бренда (токен --bg из assets/css/tokens.css). Один источник для meta theme-color
 # и для манифеста: браузер красит им адресную строку и заставку, и оба должны совпадать
 # с реальным фоном страницы, иначе при запуске видна цветная вспышка.
 THEME_COLOR = "#FBF4F0"
-
-# Порядок каскада для единого bundle.min.css. Все CSS сайта склеиваются в один
-# минифицированный файл → один render-blocking запрос вместо шести, общий кэш на
-# весь сайт. fonts первым (@font-face), затем токены/база, затем постраничные слои.
-CSS_BUNDLE_ORDER = ["fonts", "tokens", "base", "components",
-                    "aurora", "reveal", "home", "service", "legal"]
 
 def icon(name, cls="icon"):
     svg = (ICONS / f"{name}.svg").read_text(encoding="utf-8")
@@ -36,15 +31,6 @@ def load():
     prices = json.loads((ROOT/"data/prices.json").read_text(encoding="utf-8"))
     return site, content, prices
 
-def env():
-    e = Environment(loader=FileSystemLoader(ROOT/"templates"),
-                    autoescape=select_autoescape(["html","j2"]))
-    e.filters["urlencode"] = lambda s: urllib.parse.quote(str(s))
-    e.tests["match"] = lambda s, pat: re.match(pat, s) is not None
-    e.globals["icon"] = icon
-    e.globals["theme_color"] = THEME_COLOR
-    return e
-
 def write(path: Path, html: str) -> bool:
     """Пишет файл и возвращает True, если содержимое изменилось (нужно для lastmod в sitemap)."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -53,326 +39,68 @@ def write(path: Path, html: str) -> bool:
     print("→", path.relative_to(OUT.parent))
     return changed
 
-def build_css_bundle():
-    """Склеивает CSS-слои в порядке каскада и минифицирует в единый bundle.min.css.
-    Один render-blocking запрос вместо шести; относительные url() внутри (../fonts,
-    ../img) работают и на превью по подпути, и на боевом домене."""
-    css_dir = OUT / "assets" / "css"
-    parts = [f.read_text(encoding="utf-8")
-             for name in CSS_BUNDLE_ORDER
-             if (f := css_dir / f"{name}.css").exists()]
-    bundle = rcssmin.cssmin("\n".join(parts))
-    out = css_dir / "bundle.min.css"
-    out.write_text(bundle, encoding="utf-8")
-    print("→", out.relative_to(OUT.parent), f"({len(bundle) // 1024} KB minified)")
+def make_env(locale, routes, base_path):
+    """Окружение Jinja одного языка: строки интерфейса и адреса берутся из языка."""
+    e = Environment(loader=FileSystemLoader(ROOT/"templates"),
+                    autoescape=select_autoescape(["html","j2"]))
+    e.filters["urlencode"] = lambda s: urllib.parse.quote(str(s))
+    e.globals.update(
+        icon=icon, theme_color=THEME_COLOR, base_path=base_path, locale=locale,
+        t=locale.t, href=lambda page_id: routes.href(locale, page_id),
+        # Адаптивные картинки: ширины, sizes и пропорции берутся из images.py — оттуда же
+        # make_images.py режет производные, поэтому разметка и файлы не разъезжаются.
+        srcset=lambda stem, slot: images.srcset(stem, slot, base_path),
+        img_sizes=images.sizes, img_width=images.width, img_height=images.height,
+        card_image=images.related_stem,
+        asset=lambda path: sitewide.asset_url(OUT, base_path, path),
+    )
+    return e
 
-def asset_url(base_path, path):
-    """Ссылка на ассет с отпечатком содержимого: `?v=1a2b3c4d`.
+def build_locale(site, content, prices, locale, routes, base_path):
+    """Собирает все страницы одного языка. Возвращает ({путь: изменилась ли страница},
+    контент языка). Контент копируется: сборка подставляет в тексты цены и ссылки,
+    и следующий язык должен получить исходник, а не раскрытые плейсхолдеры."""
+    site = localized_site(site, locale)
+    content = copy.deepcopy(content)
+    taxonomy.enrich_categories(content, routes, locale)
+    taxonomy.fill_related(content)
+    site["nav"] = taxonomy.build_nav(content, routes, locale)
+    ctx = pages.BuildContext(site, content, prices, locale, routes,
+                             make_env(locale, routes, base_path), schema.render(site))
+    changed = {}
+    for page_id, html in pages.build_all(ctx, load_privacy(locale.code)):
+        changed[routes.path(locale, page_id)] = write(OUT / routes.out_file(locale, page_id), html)
+    return changed, content
 
-    Имена файлов постоянные, поэтому без отпечатка вернувшийся посетитель после
-    деплоя получает из кэша старый CSS. Отпечаток меняется вместе с файлом
-    и заставляет браузер скачать новую версию."""
-    digest = hashlib.sha1((OUT / path.lstrip("/")).read_bytes()).hexdigest()[:8]
-    return f"{base_path}{path}?v={digest}"
-
-def previous_lastmods(path: Path) -> dict:
-    """Достаёт lastmod из уже собранного sitemap: даты неизменившихся страниц переживают сборку."""
-    if not path.exists():
-        return {}
-    pairs = re.findall(r"<loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>",
-                       path.read_text(encoding="utf-8"))
-    return dict(pairs)
-
-def build_sitemap(base_url: str, urls: list, changed: dict, known: dict) -> str:
-    """Собирает sitemap, обновляя lastmod только у реально изменившихся страниц.
-    Иначе любая сборка (правка CSS, пересборка на CI) сообщала бы поисковикам о правке
-    всего сайта и обесценивала сигнал lastmod."""
-    today = date.today().isoformat()
-    rows = []
-    for url in urls:
-        loc = base_url + url
-        lastmod = today if changed.get(url, True) else known.get(loc, today)
-        rows.append(f"  <url><loc>{loc}</loc><lastmod>{lastmod}</lastmod></url>")
-    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-            + "\n".join(rows) + "\n</urlset>\n")
-
-def enrich_categories(content):
-    """Обогащает категории (url, is_page) и переопределяет svc.category — единая таксономия."""
-    categories = content["categories"]
-    category_title_by_slug = {}
-    for cat in categories:
-        cat["is_page"] = len(cat["services"]) > 1
-        cat["url"] = f"/{cat['slug']}/" if cat["is_page"] else f"/{cat['services'][0]}/"
-        for svc_slug in cat["services"]:
-            category_title_by_slug[svc_slug] = cat["title"]
-    for slug, svc in content["services"].items():
-        svc["category"] = category_title_by_slug[slug]
-
-def fill_related(content):
-    """Гарантирует ровно RELATED_COUNT связанных услуг: кураторский список,
-    затем соседи по категории, затем прочие услуги — чтобы блок «Смотрите также»
-    никогда не был короче остальных страниц."""
-    services = content["services"]
-    siblings_by_slug = {
-        slug: [s for s in cat["services"] if s != slug]
-        for cat in content["categories"] for slug in cat["services"]
-    }
-    for slug, svc in services.items():
-        related = [r for r in dict.fromkeys(svc.get("related", [])) if r != slug and r in services]
-        for pool in (siblings_by_slug.get(slug, []), services):
-            for candidate in pool:
-                if len(related) >= RELATED_COUNT:
-                    break
-                if candidate != slug and candidate not in related:
-                    related.append(candidate)
-        svc["related"] = related[:RELATED_COUNT]
-
-PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price)\}")
-
-
-def content_tokens(contacts, price=None):
-    """Плейсхолдеры, доступные в текстах content.yml: URL мессенджеров из site.yml
-    и цена услуги из prices.json. Единый источник у каждого значения ровно один,
-    поэтому текст не может разойтись ни с контактами, ни с прайсом."""
-    tokens = {
-        "{whatsapp}": contacts["whatsapp_url"],
-        "{telegram}": contacts["telegram_url"],
-        "{instagram}": contacts["instagram_url"],
-    }
-    if price:
-        tokens["{price}"] = price
-    return tokens
-
-
-def fill_tokens(text, tokens):
-    """Подставляет значения плейсхолдеров. Нераскрытый плейсхолдер — ошибка сборки:
-    иначе фигурная скобка уезжает в текст страницы и её видит посетитель."""
-    for token, value in tokens.items():
-        text = text.replace(token, value)
-    if PLACEHOLDER_RE.search(text):
-        raise ValueError(f"Нераскрытый плейсхолдер в тексте content.yml: {text[:80]!r}")
-    return text
-
-
-def render_faq_contacts(faq, contacts, base_path="", price=None):
-    """Финализирует HTML-ответы FAQ: подставляет значения плейсхолдеров (см. content_tokens)
-    и префиксует внутренние ссылки href="/..." на base_path — чтобы они работали
-    и на превью по подпути."""
-    tokens = content_tokens(contacts, price)
-    result = []
-    for item in faq:
-        answer = fill_tokens(item["a"], tokens)
-        if base_path:
-            answer = answer.replace('href="/', f'href="{base_path}/')
-        result.append({"q": item["q"], "a": answer})
-    return result
-
-
-def format_from_ru(price):
-    return f"от {price}"
-
-
-LLMS_SUMMARY = ("> Центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная "
-                "эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. "
-                "Обслуживание на русском языке для русскоязычных клиентов.")
-
-
-def llms_about_lines(site):
-    """Факты о центре для llms.txt — ровно те, что опубликованы на сайте.
-    Точного адреса среди них нет: заказчик даёт его при записи."""
-    return [
-        f"- Город: {site['location']}. Точный адрес выдаётся при записи",
-        "- Приём: по предварительной записи",
-        "- Языки обслуживания: русский и английский",
-        f"- Валюта цен: вьетнамский донг (đ, {site['business']['currency']})",
-    ]
-
-
-def llms_service_lines(base, services, prices):
-    """Услуги для llms.txt: ссылка, краткое описание страницы и цена из прайса.
-    Без описания и цены ассистенту приходится открывать все одиннадцать страниц,
-    чтобы ответить «сколько стоит» — а карта сайта нужна как раз чтобы не пришлось."""
-    lines = []
-    for slug, svc in services.items():
-        hint = pricing.price_hint(prices.get(slug, []), format_from_ru)
-        price = f" Цена: {hint}." if hint else ""
-        lines.append(f"- [{svc['title']}]({base}/{slug}/): {svc['seo_desc']}{price}")
-    return lines
-
-
-def build_llms(site, content, prices):
-    """llms.txt — краткая карта сайта для ИИ-ассистентов (llmstxt.org)."""
-    base = site["base_url"]
-    c = site["contacts"]
-    lines = [f"# {site['brand']}", "", LLMS_SUMMARY, "", "## О центре"]
-    lines += llms_about_lines(site)
-    lines += ["", "## Направления"]
-    lines += [f"- [{cat['title']}]({base}{cat['url']})" for cat in content["categories"]]
-    lines += ["", "## Услуги"]
-    lines += llms_service_lines(base, content["services"], prices)
-    lines += [
-        "",
-        "## Контакты",
-        f"- WhatsApp: {c['whatsapp_url']}",
-        f"- Telegram: {c['telegram_url']}",
-        f"- Instagram: {c['instagram_url']}",
-        "",
-    ]
-    return "\n".join(lines)
-
-
-def build_manifest(site, base_path):
-    """site.webmanifest — имя и иконка для «добавить на главный экран» на Android.
-    Собирается, а не лежит статикой: пути внутри должны учитывать base_path, иначе
-    на превью по подпути GitHub Pages манифест уводит на несуществующие иконки.
-    purpose «any maskable» — одна иконка и как есть, и под маску адаптивных иконок:
-    лотос занимает ~55 % кадра и не обрезается ни одной формой маски."""
-    icons = [{"src": f"{base_path}/icon-{size}.png", "sizes": f"{size}x{size}",
-              "type": "image/png", "purpose": "any maskable"} for size in (192, 512)]
-    manifest = {
-        "name": f"{site['brand']} — {site['tagline']}",
-        "short_name": site["brand"],
-        "start_url": f"{base_path}/",
-        "display": "standalone",
-        "background_color": THEME_COLOR,
-        "theme_color": THEME_COLOR,
-        "icons": icons,
-    }
-    return json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
-
-
-def build_nav(categories, services):
-    # label — короткая подпись для верхней панели, title — полное название для дровера/страниц
-    nav = [{"label": "Главная", "title": "Главная", "url": "/"}]
-    for cat in categories:
-        item = {"label": cat.get("nav_label", cat["title"]), "title": cat["title"], "url": cat["url"]}
-        if cat["is_page"]:
-            item["children"] = [{"label": services[svc_slug]["title"], "slug": svc_slug} for svc_slug in cat["services"]]
-        nav.append(item)
-    return nav
+def write_sitewide(site, contents, prices, locales, routes, changed, urls, base_path):
+    """Файлы уровня сайта. llms.txt и манифест пока строятся по основному языку."""
+    main_locale = locales[0]
+    main_site = localized_site(site, main_locale)
+    sitemap_path = OUT/"sitemap.xml"
+    known_lastmods = sitewide.previous_lastmods(sitemap_path)  # читаем до перезаписи
+    write(sitemap_path, sitewide.build_sitemap(site["base_url"], urls, changed, known_lastmods))
+    write(OUT/"llms.txt", sitewide.build_llms(main_site, contents[main_locale.code], prices,
+                                              main_locale, routes))
+    write(OUT/"site.webmanifest", sitewide.build_manifest(main_site, base_path, THEME_COLOR))
+    # CNAME — боевой домен для GitHub Pages. Кладём в артефакт, иначе workflow-деплой
+    # каждый раз сбрасывает кастомный домен в настройках Pages. Хост берём из base_url.
+    write(OUT/"CNAME", urllib.parse.urlsplit(site["base_url"]).netloc + "\n")
 
 def main():
     site, content, prices = load()
-    e = env()
     # Префикс пути для ссылок на ассеты/страницы: пусто на боевом домене (сайт в корне),
-    # "/vn.neva.beauty" для превью на GitHub Pages по подпути проекта. SEO-URL (base_url) не трогает.
+    # "/vn.neva.beauty" для превью на GitHub Pages по подпути проекта. SEO-URL не трогает.
     base_path = site.get("base_path", "").rstrip("/")
-    e.globals["base_path"] = base_path
-    # Адаптивные картинки: ширины, sizes и пропорции берутся из images.py — оттуда же
-    # make_images.py режет производные, поэтому разметка и файлы не разъезжаются.
-    e.globals["srcset"] = lambda stem, slot: images.srcset(stem, slot, base_path)
-    e.globals["img_sizes"] = images.sizes
-    e.globals["img_width"] = images.width
-    e.globals["img_height"] = images.height
-    e.globals["card_image"] = images.related_stem
-    build_css_bundle()  # единый минифицированный bundle.min.css
-    e.globals["asset"] = lambda path: asset_url(base_path, path)  # после сборки bundle
-    enrich_categories(content)
-    fill_related(content)
-    site["nav"] = build_nav(content["categories"], content["services"])
-    base_schema = schema.render(site)  # общий граф бизнеса — на всех страницах
-    # главная
-    home_faq = content["home"].get("faq", [])
-    if home_faq:
-        home_faq = render_faq_contacts(home_faq, site["contacts"], base_path)
-        content["home"]["faq"] = home_faq
-        home_schema = schema.render(site, [schema.faq_node(home_faq)])
-    else:
-        home_schema = base_schema
-    for item in content["home"].get("popular", []):
-        item["price"] = pricing.popular_price(prices, item["slug"], item["name"], format_from_ru)
-    page = {"url":"/", "seo_title": content["home"].get("seo_title","Neva Beauty — центр красоты в Дананге"),
-            "seo_desc": content["home"].get("seo_desc",""), "schema_json": home_schema,
-            "hero_image": "/assets/img/hero.webp",  # LCP-элемент → preload в base.html.j2
-            "hero_stem": "hero", "hero_slot": "home_hero"}
-    page_changed = {"/": write(OUT/"index.html", e.get_template("home.html.j2").render(
-        site=site, page=page, home=content["home"], categories=content["categories"]))}
-    # услуги
-    tpl = e.get_template("service.html.j2")
-    base_url = site["base_url"]
-    provider_ref = {"@id": base_url + "/" + schema.BUSINESS_ID}
-    area_name = site["business"]["address"]["locality"]
-    currency = site["business"].get("currency")
-    category_by_slug = {slug: cat for cat in content["categories"] for slug in cat["services"]}
-    for slug, svc in content["services"].items():
-        sections = prices.get(slug, [])
-        cat = category_by_slug[slug]
-        crumbs = [{"name": "Главная", "url": base_url + "/"}]
-        if cat["is_page"]:
-            crumbs.append({"name": cat["title"], "url": base_url + cat["url"]})
-        crumbs.append({"name": svc["title"], "url": base_url + f"/{slug}/"})
-        offers = pricing.offer_sections(sections, "Цены")
-        catalog = (schema.offer_catalog_node(f"{svc['title']} — цены", offers, currency)
-                   if offers else None)
-        nodes = [
-            schema.breadcrumb_node(crumbs),
-            schema.service_node(svc["title"], svc["intro"], provider_ref, area_name,
-                                pricing.price_aggregate(sections, currency), catalog,
-                                url=f"{base_url}/{slug}/",
-                                image=f"{base_url}/assets/img/{svc['hero_image']}.webp",
-                                service_type=cat["title"]),
-        ]
-        hint = pricing.price_hint(sections, format_from_ru)
-        if svc.get("price_lead"):
-            svc["price_lead"] = fill_tokens(svc["price_lead"],
-                                            content_tokens(site["contacts"], hint))
-        if svc.get("compare"):
-            svc["compare"]["rows"] = pricing.compare_rows(svc["compare"]["rows"],
-                                                          content["services"], prices,
-                                                          format_from_ru)
-        if svc.get("faq"):
-            svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"], base_path, hint)
-            nodes.append(schema.faq_node(svc["faq"]))
-        page = {"url": f"/{slug}/", "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
-                "schema_json": schema.render(site, nodes),
-                "hero_image": f"/assets/img/{svc['hero_image']}.webp",  # LCP → preload
-                "hero_stem": svc["hero_image"], "hero_slot": "service_hero"}
-        page_changed[f"/{slug}/"] = write(OUT/slug/"index.html", tpl.render(
-            site=site, page=page, svc=svc, slug=slug, category=cat,
-            sections=sections, services=content["services"]))
-    # категории (только группы с несколькими услугами)
-    cat_tpl = e.get_template("category.html.j2")
-    for cat in content["categories"]:
-        if not cat["is_page"]:
-            continue
-        nodes = [
-            schema.breadcrumb_node([
-                {"name": "Главная", "url": base_url + "/"},
-                {"name": cat["title"], "url": base_url + cat["url"]},
-            ]),
-            schema.item_list_node(cat["title"], [f"{base_url}/{slug}/" for slug in cat["services"]]),
-        ]
-        if cat.get("faq"):
-            cat["faq"] = render_faq_contacts(cat["faq"], site["contacts"], base_path)
-            nodes.append(schema.faq_node(cat["faq"]))
-        page = {"url": cat["url"], "seo_title": cat["seo_title"], "seo_desc": cat["seo_desc"],
-                "schema_json": schema.render(site, nodes)}
-        page_changed[cat["url"]] = write(OUT/cat["slug"]/"index.html", cat_tpl.render(
-            site=site, page=page, cat=cat, services=content["services"],
-            categories=content["categories"]))
-    # privacy (служебная — не индексируем)
-    page = {"url":"/privacy/", "seo_title":"Политика конфиденциальности — Neva Beauty", "seo_desc":"",
-            "schema_json": base_schema, "noindex": True}
-    write(OUT/"privacy"/"index.html", e.get_template("privacy.html.j2").render(site=site, page=page))
-    # 404 (служебная — не индексируем)
-    page = {"url": "/404.html", "seo_title": "Страница не найдена — Neva Beauty", "seo_desc": "",
-            "schema_json": base_schema, "noindex": True}
-    write(OUT/"404.html", e.get_template("404.html.j2").render(site=site, page=page))
-    # sitemap
-    cat_urls = [cat["url"] for cat in content["categories"] if cat["is_page"]]
-    # /privacy/ и /404.html — noindex, в sitemap не включаем
-    urls = ["/"] + [f"/{slug}/" for slug in content["services"]] + cat_urls
-    sitemap_path = OUT/"sitemap.xml"
-    known_lastmods = previous_lastmods(sitemap_path)  # читаем до перезаписи
-    write(sitemap_path, build_sitemap(base_url, urls, page_changed, known_lastmods))
-    # llms.txt — карта сайта для ИИ-ассистентов
-    write(OUT/"llms.txt", build_llms(site, content, prices))
-    # site.webmanifest — имя и иконка при добавлении на главный экран
-    write(OUT/"site.webmanifest", build_manifest(site, base_path))
-    # CNAME — боевой домен для GitHub Pages. Кладём в артефакт, иначе workflow-деплой
-    # каждый раз сбрасывает кастомный домен в настройках Pages. Хост берём из base_url.
-    write(OUT/"CNAME", urllib.parse.urlsplit(base_url).netloc + "\n")
+    locales = [load_locale(code) for code in site.get("locales", DEFAULT_LOCALES)]
+    routes = Routes(locales, taxonomy.page_ids(content), site["base_url"], base_path)
+    sitewide.build_css_bundle(OUT)  # до страниц: отпечаток бандла стоит в каждой
+    changed, urls, contents = {}, [], {}
+    for locale in locales:
+        locale_changed, contents[locale.code] = build_locale(
+            site, content, prices, locale, routes, base_path)
+        changed.update(locale_changed)
+        urls += sitewide.sitemap_paths(contents[locale.code], routes, locale)
+    write_sitewide(site, contents, prices, locales, routes, changed, urls, base_path)
 
 if __name__ == "__main__":
     main()

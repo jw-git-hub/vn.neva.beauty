@@ -9,8 +9,8 @@
     <nav class="site-footer__col" aria-label="Услуги">
       <h2 class="site-footer__title">Услуги</h2>
       {% for item in site.nav %}
-        {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="{{ base_path }}/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
-        {% elif item.url and item.url != "/" %}<a class="site-footer__link" href="{{ base_path }}{{ item.url }}">{{ item.label }}</a>
+        {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="{{ c.href }}">{{ c.label }}</a>{% endfor %}
+        {% elif not item.is_home %}<a class="site-footer__link" href="{{ item.href }}">{{ item.label }}</a>
         {% endif %}
       {% endfor %}
     </nav>

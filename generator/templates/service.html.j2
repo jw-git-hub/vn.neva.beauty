@@ -7,7 +7,7 @@
       <a href="{{ base_path }}/">Главная</a>
       {% if category.is_page %}
       <span class="breadcrumbs__sep" aria-hidden="true">/</span>
-      <a href="{{ base_path }}{{ category.url }}">{{ category.title }}</a>
+      <a href="{{ category.href }}">{{ category.title }}</a>
       {% endif %}
       <span class="breadcrumbs__sep" aria-hidden="true">/</span>
       <span aria-current="page">{{ svc.title }}</span>
@@ -61,8 +61,8 @@
       {% endif %}
       {% for sec in sections %}
       <div class="pricelist__panel{{ ' is-active' if loop.first }}"{% if tabbed %} id="price-panel-{{ loop.index0 }}" role="tabpanel" aria-labelledby="price-tab-{{ loop.index0 }}" tabindex="0"{% endif %}>
-        {% set combos = sec['items'] | selectattr('name','match','^(КОМБО|Комбо)') | list %}
-        {% set rows = sec['items'] | rejectattr('name','match','^(КОМБО|Комбо)') | list %}
+        {% set combos = sec['items'] | selectattr('is_combo') | list %}
+        {% set rows = sec['items'] | rejectattr('is_combo') | list %}
         {% if combos %}
         <ul class="pricelist__combos">
           {% for c in combos %}

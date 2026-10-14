@@ -11,12 +11,12 @@
         <div class="nav__group">
           <button class="nav__link nav__toggle" aria-expanded="false">{{ item.label }}<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="nav__menu">
-            <a class="nav__lead" href="{{ base_path }}{{ item.url }}"><span>{{ item.title }}</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
-            {% for c in item.children %}<a class="nav__sub" href="{{ base_path }}/{{ c.slug }}/">{{ c.label }}</a>{% endfor %}
+            <a class="nav__lead" href="{{ item.href }}"><span>{{ item.title }}</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            {% for c in item.children %}<a class="nav__sub" href="{{ c.href }}">{{ c.label }}</a>{% endfor %}
           </div>
         </div>
         {% else %}
-        <a class="nav__link" href="{{ base_path }}{{ item.url }}">{{ item.label }}</a>
+        <a class="nav__link" href="{{ item.href }}">{{ item.label }}</a>
         {% endif %}
       {% endfor %}
     </nav>
