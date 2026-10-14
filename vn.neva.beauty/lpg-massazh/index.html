@@ -946,6 +946,18 @@
        accurateTrackBounce:true,
        webvisor:false
   });
+  var PAGE = "lpg-massazh";
+  function reportContact(event) {
+    var link = event.target.closest && event.target.closest("[data-contact]");
+    if (!link) return;
+    ym(106778458, "reachGoal", "contact", {
+      channel: link.getAttribute("data-contact"),
+      lang: d.documentElement.lang,
+      page: PAGE,
+      place: link.getAttribute("data-place")
+    });
+  }
+  d.addEventListener("click", reportContact);
 
   var SRC = "https://mc.yandex.ru/metrika/tag.js";
   var started = false;

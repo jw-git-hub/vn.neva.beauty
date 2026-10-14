@@ -133,3 +133,9 @@ class ContactLinksInBuiltPagesTest(unittest.TestCase):
         self.assertTrue(faq_links)
         self.assertEqual(contact_texts(" ".join(f'href="{url}"' for url in faq_links)),
                          {"Здравствуйте! Хочу записаться на: LPG-массаж"})
+
+    def test_metrika_reports_contact_with_page_id(self):
+        html = self.pages["lpg-massazh/index.html"]
+        self.assertIn('var PAGE = "lpg-massazh";', html)
+        self.assertIn('"reachGoal", "contact"', html)
+        self.assertIn('d.addEventListener("click", reportContact);', html)
