@@ -58,6 +58,11 @@ jobs:
       - name: Check images
         run: python generator/check_images.py
 
+      # Ссылка связи, написанная в шаблоне руками, выглядит на странице так же, но
+      # выпадает из статистики обращений, а в чат приходит без названия услуги.
+      - name: Check contact links
+        run: python generator/check_contacts.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
