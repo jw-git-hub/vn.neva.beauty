@@ -60,7 +60,7 @@
   <link rel="canonical" href="{{ site.base_url }}{{ page.url }}">
   {#- Служебные страницы (политика, 404) пока держат прежний hreflang: их закроет отдельный шаг. #}
   {%- if page.noindex %}
-  <link rel="alternate" hreflang="ru" href="{{ site.base_url }}{{ page.url }}">
+  <link rel="alternate" hreflang="{{ locale.html_lang }}" href="{{ site.base_url }}{{ page.url }}">
   <link rel="alternate" hreflang="x-default" href="{{ site.base_url }}{{ page.url }}">
   {%- else %}
   {%- for html_lang, address in alternates(page.id).items() %}
