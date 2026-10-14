@@ -3,6 +3,7 @@
 Ядро сборки не знает языков по имени. Язык описан файлом data/locales/<код>.yml;
 новый язык — новый файл, без правок в коде.
 """
+import copy
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -70,9 +71,42 @@ def load_locale(code, directory=LOCALES_DIR):
     return locale
 
 
+def _merge_dicts(base, override, path):
+    merged = copy.deepcopy(base)
+    for key, value in override.items():
+        key_path = f"{path}.{key}" if path else key
+        if key not in base:
+            raise ValueError(f"В настройках языка нет такого поля в site.yml: {key_path}")
+        merged[key] = merge_overrides(base[key], value, key_path)
+    return merged
+
+
+def _merge_lists(base, override, path):
+    both_of_dicts = all(isinstance(item, dict) for item in base + override)
+    if not both_of_dicts or not base:
+        return copy.deepcopy(override)
+    if len(base) != len(override):
+        raise ValueError(f"{path}: в site.yml {len(base)} элементов, в языке {len(override)}")
+    return [merge_overrides(item, patch, f"{path}[{index}]")
+            for index, (item, patch) in enumerate(zip(base, override))]
+
+
+def merge_overrides(base, override, path=""):
+    """Накладывает настройки языка на site.yml, не копируя его целиком.
+
+    Словари сливаются по ключам, списки словарей — поэлементно, остальное
+    заменяется. Ключ, которого нет в основе, — ошибка: опечатка в en.yml не должна
+    молча добавлять лишнее поле. Исходные данные не меняются."""
+    if isinstance(base, dict) and isinstance(override, dict):
+        return _merge_dicts(base, override, path)
+    if isinstance(base, list) and isinstance(override, list):
+        return _merge_lists(base, override, path)
+    return copy.deepcopy(override)
+
+
 def localized_site(site, locale):
     """site.yml с переопределениями языка: слоган, локация, названия салонов."""
-    return {**site, **locale.site}
+    return merge_overrides(site, locale.site)
 
 
 def load_privacy(code, directory=LOCALES_DIR):

@@ -1,6 +1,8 @@
 import unittest
 
-from locales import load_locale, localized_site, parse_locale
+import copy
+
+from locales import load_locale, localized_site, merge_overrides, parse_locale
 
 RAW = {
     "code": "ru", "html_lang": "ru", "og_locale": "ru_RU", "url_prefix": "",
@@ -59,6 +61,46 @@ class LocalizedSiteTest(unittest.TestCase):
         self.assertEqual(localized_site(site, locale),
                          {"brand": "Neva Beauty", "hours": "By appointment"})
         self.assertEqual(site["hours"], "Приём по записи")
+
+
+class MergeOverridesTest(unittest.TestCase):
+    def test_nested_dict_is_merged_by_key(self):
+        base = {"business": {"currency": "VND", "city": "Нячанг"}, "brand": "Neva"}
+        merged = merge_overrides(base, {"business": {"city": "Nha Trang"}})
+        self.assertEqual(merged, {"business": {"currency": "VND", "city": "Nha Trang"},
+                                  "brand": "Neva"})
+
+    def test_list_of_dicts_is_merged_item_by_item(self):
+        base = {"locations": [{"name": "Один", "url": "/a"}, {"name": "Два", "url": "/b"}]}
+        merged = merge_overrides(base, {"locations": [{"name": "One"}, {"name": "Two"}]})
+        self.assertEqual(merged["locations"], [{"name": "One", "url": "/a"},
+                                               {"name": "Two", "url": "/b"}])
+
+    def test_list_of_dicts_with_other_length_is_error(self):
+        base = {"locations": [{"name": "Один"}, {"name": "Два"}]}
+        with self.assertRaisesRegex(ValueError, "locations"):
+            merge_overrides(base, {"locations": [{"name": "One"}]})
+
+    def test_plain_list_is_replaced_whole(self):
+        merged = merge_overrides({"tags": ["а", "б"]}, {"tags": ["x"]})
+        self.assertEqual(merged["tags"], ["x"])
+
+    def test_unknown_key_is_error_with_path(self):
+        base = {"business": {"city": "Нячанг"}}
+        with self.assertRaisesRegex(ValueError, "business.sity"):
+            merge_overrides(base, {"business": {"sity": "Nha Trang"}})
+
+    def test_unknown_key_inside_list_item_names_the_index(self):
+        base = {"locations": [{"name": "Один"}]}
+        with self.assertRaisesRegex(ValueError, r"locations\[0\].nmae"):
+            merge_overrides(base, {"locations": [{"nmae": "One"}]})
+
+    def test_base_is_not_mutated(self):
+        base = {"business": {"city": "Нячанг"}, "locations": [{"name": "Один"}]}
+        snapshot = copy.deepcopy(base)
+        merge_overrides(base, {"business": {"city": "Nha Trang"},
+                               "locations": [{"name": "One"}]})
+        self.assertEqual(base, snapshot)
 
 
 class RussianLocaleFileTest(unittest.TestCase):
