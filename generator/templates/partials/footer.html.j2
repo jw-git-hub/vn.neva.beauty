@@ -6,8 +6,8 @@
       <span class="site-footer__logo brand-mark">{{ brand_mark(site.brand, site.brand_location) }}</span>
       {{ loc_list(site, base_path) }}
     </div>
-    <nav class="site-footer__col" aria-label="Услуги">
-      <h2 class="site-footer__title">Услуги</h2>
+    <nav class="site-footer__col" aria-label="{{ t('footer.services_title') }}">
+      <h2 class="site-footer__title">{{ t('footer.services_title') }}</h2>
       {% for item in site.nav %}
         {% if item.children %}{% for c in item.children %}<a class="site-footer__link" href="{{ c.href }}">{{ c.label }}</a>{% endfor %}
         {% elif not item.is_home %}<a class="site-footer__link" href="{{ item.href }}">{{ item.label }}</a>
@@ -15,14 +15,14 @@
       {% endfor %}
     </nav>
     <div class="site-footer__col">
-      <h2 class="site-footer__title">Контакты</h2>
+      <h2 class="site-footer__title">{{ t('footer.contacts_title') }}</h2>
       <a class="site-footer__link" href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
       <a class="site-footer__link" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">Telegram</a>
       <a class="site-footer__link" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
     </div>
   </div>
   <div class="site-footer__bottom container">
-    <span>© Neva Beauty — Da Nang, Vietnam</span>
-    <a href="{{ base_path }}/privacy/">Политика конфиденциальности</a>
+    <span>{{ t('footer.copyright') }}</span>
+    <a href="{{ href('privacy') }}">{{ t('footer.privacy') }}</a>
   </div>
 </footer>

@@ -1,9 +1,9 @@
 {% from 'partials/brand.html.j2' import brand_mark %}
 <div class="overlay" data-overlay data-drawer-close aria-hidden="true"></div>
-<aside class="drawer" data-drawer role="dialog" aria-modal="true" aria-label="Мобильное меню">
+<aside class="drawer" data-drawer role="dialog" aria-modal="true" aria-label="{{ t('nav.drawer_label') }}">
   <div class="drawer__top">
     <span class="drawer__brand brand-mark">{{ brand_mark(site.brand, site.brand_location) }}</span>
-    <button class="drawer__close" data-drawer-close aria-label="Закрыть меню">
+    <button class="drawer__close" data-drawer-close aria-label="{{ t('nav.close_menu') }}">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
@@ -20,7 +20,7 @@
     {% endfor %}
   </nav>
   <div class="drawer__footer">
-    <a class="btn btn--primary drawer__cta" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">Записаться</a>
+    <a class="btn btn--primary drawer__cta" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_generic') | urlencode }}" target="_blank" rel="noopener">{{ t('cta.book') }}</a>
     <div class="drawer__socials">
       <a href="{{ site.contacts.whatsapp_url }}" target="_blank" rel="noopener" aria-label="WhatsApp">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 1.8a8.2 8.2 0 0 1 6.9 12.6l.7 2.5-2.6-.7A8.2 8.2 0 1 1 12 3.8zm-3 3.6c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.3s1 2.6 1.1 2.8c.1.2 2 3.1 4.9 4.2 2.4 1 2.9.8 3.4.8.5-.1 1.6-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3-.3-.2-1.6-.8-1.9-.9-.2-.1-.4-.1-.6.1-.2.3-.6.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.8-.1-.3 0-.4.1-.5l.4-.5c.2-.1.2-.3.3-.4.1-.2 0-.3 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4z"/></svg>

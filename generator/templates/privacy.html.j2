@@ -1,4 +1,7 @@
 {% extends "base.html.j2" %}
 {% block content %}
+{# Роли ARIA в таблице политики (data/locales/<код>/privacy.html) дублируют родные намеренно:
+   уже 768 px CSS складывает строки в блоки, и Safari без явных ролей перестаёт считать
+   это таблицей. data-label — подпись колонки, которую на узком экране выводит ::before. -#}
 {{ privacy_body }}
 {% endblock %}

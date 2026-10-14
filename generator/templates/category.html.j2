@@ -2,20 +2,20 @@
 {% from "partials/picture.html.j2" import responsive_img %}
 {% block content %}
 <section class="section section--lead container">
-  <nav class="breadcrumbs breadcrumbs--lead" aria-label="Хлебные крошки">
-    <a href="{{ base_path }}/">Главная</a>
+  <nav class="breadcrumbs breadcrumbs--lead" aria-label="{{ t('nav.breadcrumbs_label') }}">
+    <a href="{{ href('home') }}">{{ t('nav.home') }}</a>
     <span class="breadcrumbs__sep" aria-hidden="true">/</span>
     <span aria-current="page">{{ cat.title }}</span>
   </nav>
-  <div class="section-head" data-reveal><p class="eyebrow">Направление</p><h1>{{ cat.title }}</h1><p>{{ cat.intro }}</p></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('category.eyebrow') }}</p><h1>{{ cat.title }}</h1><p>{{ cat.intro }}</p></div>
   <div class="related-grid" data-reveal-children>
     {% for slug in cat.services %}{% set r = services.get(slug) %}{% if r %}
-    <a class="related-card card" href="{{ base_path }}/{{ slug }}/">
-      <div class="related-card__media">{{ responsive_img(card_image(r.hero_image), 'related_card', r.title ~ ' — ' ~ cat.title ~ ' в Neva Beauty, Дананг') }}</div>
+    <a class="related-card card" href="{{ href(slug) }}">
+      <div class="related-card__media">{{ responsive_img(card_image(r.hero_image), 'related_card', t('category.card_alt', title=r.title, category=cat.title)) }}</div>
       {# h2, а не h3: на странице-категории услуги и есть разделы страницы — под h1
          без промежуточного h2 уровень бы «прыгал». В «Смотрите также» на странице
          услуги та же карточка идёт h3, потому что там над ней есть свой h2. #}
-      <div class="related-card__body"><h2>{{ r.title }}</h2><span class="related-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
+      <div class="related-card__body"><h2>{{ r.title }}</h2><span class="related-card__more">{{ t('cta.more') }} {{ icon('arrow-right') }}</span></div>
     </a>
     {% endif %}{% endfor %}
   </div>
@@ -23,7 +23,7 @@
 
 {% if cat.faq %}
 <section class="section container" id="faq">
-  <div class="section-head" data-reveal><p class="eyebrow">Вопросы и ответы</p><h2>Частые вопросы — {{ cat.title }}</h2></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('faq.eyebrow') }}</p><h2>{{ t('faq.title', title=cat.title) }}</h2></div>
   <div class="faq" data-reveal-children>
     {% for item in cat.faq %}
     <details class="faq__item"{% if loop.first %} open{% endif %}>
@@ -42,9 +42,9 @@
        страницы тратилось впустую. Дубли ловит check_headings.py.
        Подводка намеренно осталась общей: заказчик разрешил править только
        заголовки, остальной текст vn — отдельным решением. #}
-    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>{{ cat.booking_title }}</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
+    <div class="section-head" data-reveal><p class="eyebrow">{{ t('booking.eyebrow') }}</p><h2>{{ cat.booking_title }}</h2><p>{{ t('booking.lead') }}</p></div>
     <div class="booking__actions">
-      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ cat.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
+      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_page', title=cat.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
       <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
       <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
     </div>
@@ -57,8 +57,8 @@
 {% set siblings = categories | rejectattr('slug', 'equalto', cat.slug) | list %}
 {% if siblings %}
 <section class="section container">
-  <div class="section-head" data-reveal><p class="eyebrow">Другие направления</p><h2>Что ещё делают в Neva Beauty кроме раздела «{{ cat.title }}»</h2></div>
-  <nav class="cat-links" aria-label="Другие направления">
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('category.others_eyebrow') }}</p><h2>{{ t('category.others_title', title=cat.title) }}</h2></div>
+  <nav class="cat-links" aria-label="{{ t('category.others_eyebrow') }}">
     {% for other in siblings %}
     <a class="cat-links__item" href="{{ other.href }}">{{ other.title }} {{ icon('arrow-right') }}</a>
     {% endfor %}

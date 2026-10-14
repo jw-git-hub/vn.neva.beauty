@@ -3,9 +3,9 @@
 <section class="section container">
   <div class="section-head">
     <p class="eyebrow">404</p>
-    <h1>Страница не найдена</h1>
-    <p>Возможно, ссылка устарела. Вернитесь на главную или выберите услугу в меню.</p>
-    <p><a class="btn btn--primary" href="{{ base_path }}/">На главную</a></p>
+    <h1>{{ t('not_found.title') }}</h1>
+    <p>{{ t('not_found.text') }}</p>
+    <p><a class="btn btn--primary" href="{{ href('home') }}">{{ t('cta.to_home') }}</a></p>
   </div>
 </section>
 {% endblock %}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ locale.html_lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,7 +62,7 @@
   <link rel="alternate" hreflang="x-default" href="{{ site.base_url }}{{ page.url }}">
   <meta property="og:type" content="{{ page.og_type | default('website') }}">
   <meta property="og:site_name" content="{{ site.brand }}">
-  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale" content="{{ locale.og_locale }}">
   <meta property="og:title" content="{{ page.seo_title }}">
   <meta property="og:description" content="{{ page.seo_desc }}">
   <meta property="og:url" content="{{ site.base_url }}{{ page.url }}">

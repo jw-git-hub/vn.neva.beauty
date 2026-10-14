@@ -8,13 +8,13 @@
       <h1 class="hero__title">{% for line in home.hero_title_lines %}<span>{{ line }}</span>{{ " " }}{% endfor %}</h1>
       <p class="hero__sub">{{ home.hero_sub }}</p>
       <div class="hero__actions">
-        <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">Записаться</a>
-        <a class="btn btn--ghost" href="#services">Услуги</a>
+        <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_generic') | urlencode }}" target="_blank" rel="noopener">{{ t('cta.book') }}</a>
+        <a class="btn btn--ghost" href="#services">{{ t('cta.services') }}</a>
       </div>
     </div>
     <div class="hero__media">
       <span class="hero__blob" aria-hidden="true"></span>
-      {{ responsive_img('hero', 'home_hero', 'Безупречная кожа и макияж — центр красоты Neva Beauty', cls='hero__photo', priority=True) }}
+      {{ responsive_img('hero', 'home_hero', t('home.hero_alt'), cls='hero__photo', priority=True) }}
     </div>
   </div>
 </section>
@@ -25,18 +25,18 @@
     <div class="contact-strip__item">{{ icon('clock') }}<span>{{ site.hours }}</span></div>
     <div class="contact-strip__actions">
       <a class="btn btn--ghost btn--sm" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }}<span>Telegram</span></a>
-      <a class="btn btn--ghost btn--sm" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }}<span>WhatsApp</span></a>
+      <a class="btn btn--ghost btn--sm" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_generic') | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }}<span>WhatsApp</span></a>
     </div>
   </div>
 </section>
 
 <section class="section container" id="services">
-  <div class="section-head" data-reveal><p class="eyebrow">Услуги</p><h2>Направления красоты</h2><p>Аппаратные и уходовые процедуры под ваши задачи.</p></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('home.services_eyebrow') }}</p><h2>{{ t('home.services_title') }}</h2><p>{{ t('home.services_lead') }}</p></div>
   <div class="cat-grid" data-reveal-children>
     {% for c in categories %}
     <a class="cat-card card" href="{{ c.href }}">
       <div class="cat-card__media">{{ responsive_img(c.image, 'category_cover', c.title) }}</div>
-      <div class="cat-card__body"><h3>{{ c.title }}</h3><span class="cat-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
+      <div class="cat-card__body"><h3>{{ c.title }}</h3><span class="cat-card__more">{{ t('cta.more') }} {{ icon('arrow-right') }}</span></div>
     </a>
     {% endfor %}
   </div>
@@ -44,7 +44,7 @@
 
 <section class="section benefits-section">
   <div class="container">
-    <div class="section-head" data-reveal><p class="eyebrow">Почему Neva Beauty</p><h2>Забота в каждой детали</h2></div>
+    <div class="section-head" data-reveal><p class="eyebrow">{{ t('home.benefits_eyebrow') }}</p><h2>{{ t('home.benefits_title') }}</h2></div>
     <div class="benefits-grid" data-reveal-children>
       {% for b in home.benefits %}
       <div class="benefit"><span class="benefit__icon">{{ icon(b.icon) }}</span><h3>{{ b.title }}</h3><p>{{ b.text }}</p></div>
@@ -54,10 +54,10 @@
 </section>
 
 <section class="section container">
-  <div class="section-head" data-reveal><p class="eyebrow">Популярное</p><h2>Частые процедуры</h2><p>Цены указаны во вьетнамских донгах (đ).</p></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('home.popular_eyebrow') }}</p><h2>{{ t('home.popular_title') }}</h2><p>{{ t('home.popular_lead') }}</p></div>
   <div class="popular-grid" data-reveal-children>
     {% for p in home.popular %}
-    <a class="popular-card card" href="{{ base_path }}/{{ p.slug }}/">
+    <a class="popular-card card" href="{{ href(p.slug) }}">
       <span class="popular-card__info">
         <span class="popular-card__cat">{{ p.label }}</span>
         <span class="popular-card__name">{{ p.name }}</span>
@@ -70,8 +70,8 @@
 
 <section class="section container" id="faq">
   <div class="section-head" data-reveal>
-    <p class="eyebrow">Вопросы и ответы</p>
-    <h2>Коротко о Neva Beauty</h2>
+    <p class="eyebrow">{{ t('faq.eyebrow') }}</p>
+    <h2>{{ t('home.faq_title') }}</h2>
     <p>{{ home.about_lead }}</p>
   </div>
   <div class="faq" data-reveal-children>
@@ -91,9 +91,9 @@
        страницы тратилось впустую. Дубли ловит check_headings.py.
        Подводка намеренно осталась общей: заказчик разрешил править только
        заголовки, остальной текст vn — отдельным решением. #}
-    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>{{ home.booking_title }}</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
+    <div class="section-head" data-reveal><p class="eyebrow">{{ t('booking.eyebrow') }}</p><h2>{{ home.booking_title }}</h2><p>{{ t('booking.lead') }}</p></div>
     <div class="booking__actions">
-      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
+      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_generic') | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
       <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
       <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
     </div>

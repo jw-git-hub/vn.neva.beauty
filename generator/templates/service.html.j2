@@ -3,8 +3,8 @@
 {% block content %}
 <section class="svc-hero">
   <div class="container">
-    <nav class="breadcrumbs breadcrumbs--lead" aria-label="Хлебные крошки">
-      <a href="{{ base_path }}/">Главная</a>
+    <nav class="breadcrumbs breadcrumbs--lead" aria-label="{{ t('nav.breadcrumbs_label') }}">
+      <a href="{{ href('home') }}">{{ t('nav.home') }}</a>
       {% if category.is_page %}
       <span class="breadcrumbs__sep" aria-hidden="true">/</span>
       <a href="{{ category.href }}">{{ category.title }}</a>
@@ -17,11 +17,11 @@
         <p class="eyebrow">{{ svc.category }}</p>
         <h1>{{ svc.title }}</h1>
         <p class="svc-hero__intro">{{ svc.intro }}</p>
-        <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ svc.title) | urlencode }}" target="_blank" rel="noopener">Записаться</a>
+        <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_page', title=svc.title) | urlencode }}" target="_blank" rel="noopener">{{ t('cta.book') }}</a>
       </div>
       <div class="svc-hero__media">
         <span class="svc-hero__blob" aria-hidden="true"></span>
-        {{ responsive_img(svc.hero_image, 'service_hero', svc.title ~ ' — Neva Beauty, Дананг', priority=True) }}
+        {{ responsive_img(svc.hero_image, 'service_hero', t('service.hero_alt', title=svc.title), priority=True) }}
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@
   {#- Заголовок блока переопределяется из content.yml: где задан benefits_title,
      стоит вопрос, как его задаёт аудитория, и ответ идёт первым предложением
      под каждым пунктом. Где не задан — прежний заголовок. #}
-  <div class="section-head" data-reveal><p class="eyebrow">{{ svc.benefits_eyebrow or 'Преимущества' }}</p><h2>{{ svc.benefits_title or 'Почему это работает' }}</h2></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ svc.benefits_eyebrow or t('service.benefits_eyebrow') }}</p><h2>{{ svc.benefits_title or t('service.benefits_title') }}</h2></div>
   <div class="svc-benefits" data-reveal-children>
     {% for b in svc.benefits %}
     <div class="svc-benefit"><span class="svc-benefit__icon">{{ icon(b.icon) }}</span><h3>{{ b.title }}</h3><p>{{ b.text }}</p></div>
@@ -44,18 +44,18 @@
 <section class="section pricelist-section">
   <div class="container">
     {#- price_lead приходит из content.yml с уже подставленной ценой из прайса
-       (build.fill_tokens): под заголовком-вопросом первым идёт прямой ответ. #}
-    <div class="section-head" data-reveal><p class="eyebrow">Стоимость</p><h2>{{ svc.price_title or 'Цены' }}</h2><p>{{ svc.price_lead or 'Указаны во вьетнамских донгах (đ).' }}</p></div>
+       (pages.fill_tokens): под заголовком-вопросом первым идёт прямой ответ. #}
+    <div class="section-head" data-reveal><p class="eyebrow">{{ t('service.price_eyebrow') }}</p><h2>{{ svc.price_title or t('service.price_title') }}</h2><p>{{ svc.price_lead or t('service.price_lead') }}</p></div>
     <div class="pricelist" data-pricelist>
       {% set tabbed = sections|length > 1 %}
       {% if tabbed %}
       {# Вкладки и панели связаны по id: aria-controls/aria-labelledby — по ним же
          price-tabs.js находит панель, второго источника связи не нужно. #}
-      <div class="pricelist__tabs" role="tablist" aria-label="Разделы прайс-листа">
+      <div class="pricelist__tabs" role="tablist" aria-label="{{ t('service.price_tabs_label') }}">
         {% for sec in sections %}
         <button class="pricelist__tab{{ ' is-active' if loop.first }}" type="button" role="tab"
           id="price-tab-{{ loop.index0 }}" aria-controls="price-panel-{{ loop.index0 }}"
-          aria-selected="{{ 'true' if loop.first else 'false' }}"{% if not loop.first %} tabindex="-1"{% endif %}>{{ sec.section or 'Цены' }}</button>
+          aria-selected="{{ 'true' if loop.first else 'false' }}"{% if not loop.first %} tabindex="-1"{% endif %}>{{ sec.section or t('service.price_section_default') }}</button>
         {% endfor %}
       </div>
       {% endif %}
@@ -79,11 +79,11 @@
           {# Настоящая таблица: связь «услуга → цена» видна поисковикам, ИИ-ассистентам
              и скринридерам. Заголовки колонок скрыты визуально, но есть в разметке. #}
           <table class="pricelist__table">
-            <caption class="visually-hidden">{{ svc.title }} — {{ sec.section or 'Цены' }}</caption>
+            <caption class="visually-hidden">{{ svc.title }} — {{ sec.section or t('service.price_section_default') }}</caption>
             <thead>
               <tr>
-                <th scope="col"><span class="visually-hidden">Услуга</span></th>
-                <th scope="col"><span class="visually-hidden">Цена</span></th>
+                <th scope="col"><span class="visually-hidden">{{ t('service.col_service') }}</span></th>
+                <th scope="col"><span class="visually-hidden">{{ t('service.col_price') }}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -117,8 +117,8 @@
         <caption class="visually-hidden">{{ svc.compare.caption }}</caption>
         <thead>
           <tr>
-            <th scope="col"><span class="visually-hidden">Процедура и с чем она работает</span></th>
-            <th scope="col"><span class="visually-hidden">Цена</span></th>
+            <th scope="col"><span class="visually-hidden">{{ t('service.col_compare') }}</span></th>
+            <th scope="col"><span class="visually-hidden">{{ t('service.col_price') }}</span></th>
           </tr>
         </thead>
         {#- Названия без ссылок: единственный стиль ссылки в тексте — .faq__a a,
@@ -140,7 +140,7 @@
 
 {% if svc.faq %}
 <section class="section container" id="faq">
-  <div class="section-head" data-reveal><p class="eyebrow">Вопросы и ответы</p><h2>Частые вопросы — {{ svc.title }}</h2></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('faq.eyebrow') }}</p><h2>{{ t('faq.title', title=svc.title) }}</h2></div>
   <div class="faq" data-reveal-children>
     {% for item in svc.faq %}
     <details class="faq__item"{% if loop.first %} open{% endif %}>
@@ -159,9 +159,9 @@
        страницы тратилось впустую. Дубли ловит check_headings.py.
        Подводка намеренно осталась общей: заказчик разрешил править только
        заголовки, остальной текст vn — отдельным решением. #}
-    <div class="section-head" data-reveal><p class="eyebrow">Запись</p><h2>{{ svc.booking_title }}</h2><p>Ответим в мессенджере и подберём удобное время.</p></div>
+    <div class="section-head" data-reveal><p class="eyebrow">{{ t('booking.eyebrow') }}</p><h2>{{ svc.booking_title }}</h2><p>{{ t('booking.lead') }}</p></div>
     <div class="booking__actions">
-      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ ('Здравствуйте! Хочу записаться на: ' ~ svc.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
+      <a class="btn btn--primary" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_page', title=svc.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('message-circle') }} WhatsApp</a>
       <a class="btn btn--ghost" href="{{ site.contacts.telegram_url }}" target="_blank" rel="noopener">{{ icon('send') }} Telegram</a>
       <a class="btn btn--ghost" href="{{ site.contacts.instagram_url }}" target="_blank" rel="noopener">{{ icon('instagram') }} Instagram</a>
     </div>
@@ -171,12 +171,12 @@
 
 {% if svc.related %}
 <section class="section container">
-  <div class="section-head" data-reveal><p class="eyebrow">Дополните уход</p><h2>Смотрите также</h2></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('service.related_eyebrow') }}</p><h2>{{ t('service.related_title') }}</h2></div>
   <div class="related-grid" data-reveal-children>
     {% for rslug in svc.related %}{% set r = services.get(rslug) %}{% if r %}
-    <a class="related-card card" href="{{ base_path }}/{{ rslug }}/">
+    <a class="related-card card" href="{{ href(rslug) }}">
       <div class="related-card__media">{{ responsive_img(card_image(r.hero_image), 'related_card', r.title) }}</div>
-      <div class="related-card__body"><h3>{{ r.title }}</h3><span class="related-card__more">Подробнее {{ icon('arrow-right') }}</span></div>
+      <div class="related-card__body"><h3>{{ r.title }}</h3><span class="related-card__more">{{ t('cta.more') }} {{ icon('arrow-right') }}</span></div>
     </a>
     {% endif %}{% endfor %}
   </div>

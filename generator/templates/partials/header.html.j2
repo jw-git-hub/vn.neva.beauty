@@ -5,7 +5,7 @@
        кнопка переключателя салонов, а кнопка не может стоять внутри ссылки.
        В подвале и дровере город ничего не открывает, там остаётся brand_mark. #}
     {{ loc_switch(site, base_path, 'lotus') }}
-    <nav class="nav" aria-label="Основная навигация">
+    <nav class="nav" aria-label="{{ t('nav.main_label') }}">
       {% for item in site.nav %}
         {% if item.children %}
         <div class="nav__group">
@@ -20,7 +20,7 @@
         {% endif %}
       {% endfor %}
     </nav>
-    <a class="btn btn--primary site-header__cta" href="{{ site.contacts.whatsapp_url }}?text={{ 'Здравствуйте! Хочу записаться' | urlencode }}" target="_blank" rel="noopener">Записаться</a>
-    <button class="burger" data-drawer-open aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
+    <a class="btn btn--primary site-header__cta" href="{{ site.contacts.whatsapp_url }}?text={{ t('contact.text_generic') | urlencode }}" target="_blank" rel="noopener">{{ t('cta.book') }}</a>
+    <button class="burger" data-drawer-open aria-label="{{ t('nav.open_menu') }}" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </header>
