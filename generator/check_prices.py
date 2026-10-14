@@ -6,6 +6,7 @@
 в прайсе есть одноимённые позиции с разными ценами («Лоб» у женщин и мужчин),
 поэтому позиция, уехавшая в соседний раздел, — такая же ошибка, как неверная цена.
 Запуск: cd generator && ../.venv/bin/python check_prices.py"""
+import copy
 import json
 import re
 import sys
@@ -103,8 +104,26 @@ def page_html(view, slug):
     return view.page_file(slug).read_text(encoding="utf-8")
 
 
+@lru_cache(maxsize=None)
+def page_soup(view, slug):
+    """Страница услуги разбирается один раз: цены, таблица сравнения и название
+    берутся из одного разбора. Дерево общее — не менять его (см. name_text)."""
+    return BeautifulSoup(page_html(view, slug), "html.parser")
+
+
+def name_text(name_element):
+    """Название позиции без описания. Описание убирается из копии: разбор страницы
+    лежит в кэше и нужен следующим сверкам нетронутым."""
+    own = copy.copy(name_element)
+    description = own.select_one(".pricelist__desc")
+    if description:
+        description.extract()
+    return clean(own.get_text())
+
+
+@lru_cache(maxsize=None)
 def service_node(view, slug):
-    """Узел Service из JSON-LD страницы услуги."""
+    """Узел Service из JSON-LD страницы услуги. Разбор JSON — один раз на слаг."""
     graph = json.loads(JSON_LD_RE.search(page_html(view, slug)).group(1))["@graph"]
     node = next((n for n in graph if n.get("@type") == "Service"), None)
     if node is None:
@@ -173,16 +192,12 @@ def rendered_html(view):
     """Факт — цены из сгенерированного vn.neva.beauty/<slug>/index.html."""
     cnt = Counter(); counts = {}
     for slug in PRICES:
-        soup = BeautifulSoup(page_html(view, slug), "html.parser")
         n = 0
-        for index, panel in enumerate(soup.select(".pricelist__panel")):
+        for index, panel in enumerate(page_soup(view, slug).select(".pricelist__panel")):
             for row in panel.select(".pricelist__row"):
-                name_el = row.select_one(".pricelist__name")
-                d = name_el.select_one(".pricelist__desc")
-                if d:
-                    d.extract()
+                name = name_text(row.select_one(".pricelist__name"))
                 price = row.select_one(".pricelist__price")
-                cnt[(slug, index, clean(name_el.get_text()), clean(price.get_text()))] += 1; n += 1
+                cnt[(slug, index, name, clean(price.get_text()))] += 1; n += 1
             for c in panel.select(".combo"):
                 cnt[(slug, index, clean(c.select_one(".combo__name").get_text()),
                      clean(c.select_one(".combo__price").get_text()))] += 1; n += 1
@@ -269,12 +284,8 @@ def rendered_compare(view):
     result = {}
     for slug in PRICES:
         rows = []
-        for row in BeautifulSoup(page_html(view, slug), "html.parser").select(".compare__table tbody tr"):
-            name = row.select_one(".pricelist__name")
-            desc = name.select_one(".pricelist__desc")
-            if desc:
-                desc.extract()
-            rows.append((clean(name.get_text()),
+        for row in page_soup(view, slug).select(".compare__table tbody tr"):
+            rows.append((name_text(row.select_one(".pricelist__name")),
                          clean(row.select_one(".pricelist__price").get_text())))
         if rows:
             result[slug] = rows
