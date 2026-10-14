@@ -3,7 +3,7 @@ from datetime import date
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import images, schema
+import images, pricing, schema
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT.parent / "vn.neva.beauty"
@@ -169,106 +169,8 @@ def render_faq_contacts(faq, contacts, base_path="", price=None):
     return result
 
 
-ADDON_MARK = "+"  # «+350 000 đ» — надбавка к процедуре, а не её самостоятельная цена
-PRICE_RE = re.compile(r"^\+?\d[\d ]*đ$")  # единственная допустимая форма записи цены
-
-
-def price_value(price):
-    """Цена строкой из прайса → число («1 500 000 đ» → 1500000).
-    Пустая цена — None (позиция без цены). Любая другая форма — ошибка сборки:
-    просто вырезать цифры нельзя, иначе «1 000 000 – 2 000 000 đ» молча уедет
-    в разметку как 10000002000000."""
-    text = price.strip()
-    if not text:
-        return None
-    if not PRICE_RE.match(text):
-        raise ValueError(f"Непонятная цена в prices.json: {price!r}. Допустимые формы — "
-                         f"«1 500 000 đ», «+350 000 đ» или пустая строка.")
-    return int(re.sub(r"[^\d]", "", text))
-
-
-def is_addon(item):
-    """Позиция, которую нельзя купить как саму услугу: надбавка к процедуре
-    или сопутствующий товар. Часть видна по строке цены («+350 000 đ»), часть —
-    нет: «Костюм для LPG — 400 000 đ» выглядит обычной ценой, но услугой не
-    является. Такие помечены в прайсе флагом addon вручную."""
-    return bool(item.get("addon")) or item["price"].strip().startswith(ADDON_MARK)
-
-
-def price_aggregate(sections, currency):
-    """Диапазон цен услуги (min/max/кол-во) для AggregateOffer — из строк прайса.
-    Доплаты в диапазон не входят: иначе lowPrice занижает «услуги от» до надбавки,
-    которую нельзя купить отдельно. Возвращает None, если цен нет."""
-    values = [value for sec in sections for item in sec["items"]
-              if not is_addon(item) and (value := price_value(item["price"])) is not None]
-    if not values:
-        return None
-    return {"low": min(values), "high": max(values),
-            "count": len(values), "currency": currency}
-
-
-def price_hint(sections):
-    """Цена услуги одной строкой — для мест вне прайса: сравнительной таблицы,
-    подводки к ценам, llms.txt. Одна цена на всю услугу — показываем её, несколько
-    разных — «от <минимальной>», как на карточках «Популярное». Доплаты не в счёт:
-    надбавку нельзя заплатить вместо услуги. Нет цен — None."""
-    values = [item["price"].strip() for sec in sections for item in sec["items"]
-              if not is_addon(item) and price_value(item["price"]) is not None]
-    if not values:
-        return None
-    if len(set(values)) == 1:
-        return values[0]
-    return f"от {min(values, key=price_value)}"
-
-
-def compare_rows(rows, services, prices):
-    """Строки сравнительной таблицы: название и адрес услуги берутся из content.yml,
-    цена — из prices.json. Второго источника цен не появляется, поэтому таблица
-    не расходится с прайсом. Неизвестный слаг или услуга без цены — ошибка сборки:
-    пустая строка в таблице хуже упавшей сборки."""
-    result = []
-    for row in rows:
-        slug = row["slug"]
-        if slug not in services:
-            raise ValueError(f"Сравнительная таблица: в content.yml нет услуги {slug!r}")
-        hint = price_hint(prices.get(slug, []))
-        if hint is None:
-            raise ValueError(f"Сравнительная таблица: у услуги {slug!r} нет цены в прайсе")
-        result.append({"title": services[slug]["title"], "task": row["task"], "price": hint})
-    return result
-
-
-def popular_price(prices, slug, name):
-    """Цена для карточки «Популярное» на главной. Одноимённые позиции есть в разных
-    разделах прайса с разной ценой (эпиляция у женщин и мужчин) — тогда показываем
-    «от <минимальной>»: молча взять первую значит показать мужчине женскую цену.
-    Позиции нет в прайсе — ошибка сборки, иначе карточка уедет в прод без цены."""
-    matches = [item["price"] for sec in prices.get(slug, []) for item in sec["items"]
-               if item["name"] == name]
-    if not matches:
-        raise ValueError(f"«Популярное»: в прайсе {slug} нет позиции {name!r}")
-    if len(set(matches)) == 1:
-        return matches[0]
-    return f"от {min(matches, key=price_value)}"
-
-
-def offer_sections(sections):
-    """Разделы прайса для JSON-LD: цена числом, название и описание — дословно.
-    Позиции без цифр в цене пропускаем (нечего утверждать о цене).
-
-    Доплаты и сопутствующие товары в каталог не идут. Раньше шли, и надбавка
-    «+350 000 đ» уезжала в разметку как Offer с price 350000: знак «+» теряется,
-    остаётся полноценная цена услуги, которой нет. Описание («Дополнительно
-    к процедурам») этого не лечит — цену читает машина, а не человек. Заодно
-    каталог сходится с AggregateOffer: offerCount считается по тому же отбору."""
-    result = []
-    for sec in sections:
-        items = [{"name": item["name"], "desc": item.get("desc", ""), "price": value}
-                 for item in sec["items"] if not is_addon(item)
-                 and (value := price_value(item["price"])) is not None]
-        if items:
-            result.append({"title": sec.get("section") or "Цены", "items": items})
-    return result
+def format_from_ru(price):
+    return f"от {price}"
 
 
 LLMS_SUMMARY = ("> Центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная "
@@ -293,7 +195,7 @@ def llms_service_lines(base, services, prices):
     чтобы ответить «сколько стоит» — а карта сайта нужна как раз чтобы не пришлось."""
     lines = []
     for slug, svc in services.items():
-        hint = price_hint(prices.get(slug, []))
+        hint = pricing.price_hint(prices.get(slug, []), format_from_ru)
         price = f" Цена: {hint}." if hint else ""
         lines.append(f"- [{svc['title']}]({base}/{slug}/): {svc['seo_desc']}{price}")
     return lines
@@ -379,7 +281,7 @@ def main():
     else:
         home_schema = base_schema
     for item in content["home"].get("popular", []):
-        item["price"] = popular_price(prices, item["slug"], item["name"])
+        item["price"] = pricing.popular_price(prices, item["slug"], item["name"], format_from_ru)
     page = {"url":"/", "seo_title": content["home"].get("seo_title","Neva Beauty — центр красоты в Дананге"),
             "seo_desc": content["home"].get("seo_desc",""), "schema_json": home_schema,
             "hero_image": "/assets/img/hero.webp",  # LCP-элемент → preload в base.html.j2
@@ -400,24 +302,25 @@ def main():
         if cat["is_page"]:
             crumbs.append({"name": cat["title"], "url": base_url + cat["url"]})
         crumbs.append({"name": svc["title"], "url": base_url + f"/{slug}/"})
-        offers = offer_sections(sections)
+        offers = pricing.offer_sections(sections, "Цены")
         catalog = (schema.offer_catalog_node(f"{svc['title']} — цены", offers, currency)
                    if offers else None)
         nodes = [
             schema.breadcrumb_node(crumbs),
             schema.service_node(svc["title"], svc["intro"], provider_ref, area_name,
-                                price_aggregate(sections, currency), catalog,
+                                pricing.price_aggregate(sections, currency), catalog,
                                 url=f"{base_url}/{slug}/",
                                 image=f"{base_url}/assets/img/{svc['hero_image']}.webp",
                                 service_type=cat["title"]),
         ]
-        hint = price_hint(sections)
+        hint = pricing.price_hint(sections, format_from_ru)
         if svc.get("price_lead"):
             svc["price_lead"] = fill_tokens(svc["price_lead"],
                                             content_tokens(site["contacts"], hint))
         if svc.get("compare"):
-            svc["compare"]["rows"] = compare_rows(svc["compare"]["rows"],
-                                                  content["services"], prices)
+            svc["compare"]["rows"] = pricing.compare_rows(svc["compare"]["rows"],
+                                                          content["services"], prices,
+                                                          format_from_ru)
         if svc.get("faq"):
             svc["faq"] = render_faq_contacts(svc["faq"], site["contacts"], base_path, hint)
             nodes.append(schema.faq_node(svc["faq"]))
