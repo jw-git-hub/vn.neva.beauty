@@ -59,6 +59,9 @@ def parse_locale(data, source):
     missing = [key for key in REQUIRED_KEYS if key not in data]
     if missing:
         raise ValueError(f"{source}: нет обязательных ключей {missing}")
+    if not isinstance(data["url_prefix"], str):
+        raise ValueError(f"{source}: url_prefix должен быть строкой (\"\" для корня), "
+                         f"а не {data['url_prefix']!r}")
     return Locale(
         code=data["code"], html_lang=data["html_lang"], og_locale=data["og_locale"],
         url_prefix=data["url_prefix"].rstrip("/"), ui=_flatten(data["ui"]),
@@ -116,4 +119,6 @@ def localized_site(site, locale):
 def load_privacy(code, directory=LOCALES_DIR):
     """Текст политики конфиденциальности на языке — готовый HTML."""
     path = directory / code / "privacy.html"
+    if not path.exists():
+        raise FileNotFoundError(f"Нет текста политики конфиденциальности языка {code}: {path}")
     return Markup(path.read_text(encoding="utf-8").rstrip("\n"))

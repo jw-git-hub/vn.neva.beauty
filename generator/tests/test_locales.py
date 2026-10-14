@@ -1,8 +1,10 @@
 import unittest
 
 import copy
+import tempfile
+from pathlib import Path
 
-from locales import load_locale, localized_site, merge_overrides, parse_locale
+from locales import load_locale, load_privacy, localized_site, merge_overrides, parse_locale
 
 RAW = {
     "code": "ru", "html_lang": "ru", "og_locale": "ru_RU", "url_prefix": "",
@@ -24,6 +26,11 @@ class ParseLocaleTest(unittest.TestCase):
     def test_url_prefix_loses_trailing_slash(self):
         locale = parse_locale({**RAW, "url_prefix": "/en/"}, "en.yml")
         self.assertEqual(locale.url_prefix, "/en")
+
+    def test_url_prefix_must_be_a_string(self):
+        for bad in (None, 5):
+            with self.assertRaisesRegex(ValueError, "en.yml.*url_prefix"):
+                parse_locale({**RAW, "url_prefix": bad}, "en.yml")
 
 
 class TranslateTest(unittest.TestCase):
@@ -114,6 +121,16 @@ class RussianLocaleFileTest(unittest.TestCase):
         locale = load_locale("ru")
         self.assertEqual(locale.t("cta.book"), "Записаться")
         self.assertEqual(locale.url_prefix, "")
+
+
+class LoadPrivacyTest(unittest.TestCase):
+    def test_real_russian_text_is_loaded(self):
+        self.assertIn("<h1>", load_privacy("ru"))
+
+    def test_missing_file_is_error_with_its_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaisesRegex(FileNotFoundError, r"xx[/\\]privacy\.html"):
+                load_privacy("xx", Path(directory))
 
 
 if __name__ == "__main__":
