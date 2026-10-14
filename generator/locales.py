@@ -78,6 +78,20 @@ def load_locale(code, directory=LOCALES_DIR):
     return locale
 
 
+_KIND_NAMES = {dict: "словарь", list: "список"}
+
+
+def _kind(value):
+    return _KIND_NAMES.get(type(value), "значение")
+
+
+def _check_same_container(base, override, path):
+    """Словарь или список из site.yml нельзя молча заменить чем-то другим
+    (`business: ~` в файле языка стёр бы весь блок)."""
+    if isinstance(base, (dict, list)) and type(base) is not type(override):
+        raise ValueError(f"{path}: в site.yml {_kind(base)}, в языке {_kind(override)}")
+
+
 def _merge_dicts(base, override, path):
     merged = copy.deepcopy(base)
     for key, value in override.items():
@@ -104,6 +118,7 @@ def merge_overrides(base, override, path=""):
     Словари сливаются по ключам, списки словарей — поэлементно, остальное
     заменяется. Ключ, которого нет в основе, — ошибка: опечатка в en.yml не должна
     молча добавлять лишнее поле. Исходные данные не меняются."""
+    _check_same_container(base, override, path)
     if isinstance(base, dict) and isinstance(override, dict):
         return _merge_dicts(base, override, path)
     if isinstance(base, list) and isinstance(override, list):
@@ -113,7 +128,7 @@ def merge_overrides(base, override, path=""):
 
 def localized_site(site, locale):
     """site.yml с переопределениями языка: слоган, локация, названия салонов."""
-    return merge_overrides(site, locale.site)
+    return merge_overrides(site, locale.site, f"locales/{locale.code}.yml site")
 
 
 def load_privacy(code, directory=LOCALES_DIR):

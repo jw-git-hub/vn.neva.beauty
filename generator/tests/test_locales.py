@@ -108,12 +108,31 @@ class MergeOverridesTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r"locations\[0\].nmae"):
             merge_overrides(base, {"locations": [{"nmae": "One"}]})
 
+    def test_other_type_over_dict_or_list_is_error_with_path(self):
+        base = {"business": {"city": "Нячанг"}, "tags": ["а"]}
+        for key, bad in (("business", None), ("business", "строка"), ("business", ["x"]),
+                         ("tags", None), ("tags", {"a": 1})):
+            with self.assertRaisesRegex(ValueError, f"site.{key}: "):
+                merge_overrides(base, {key: bad}, "site")
+
+    def test_scalar_may_be_replaced_by_another_scalar(self):
+        self.assertEqual(merge_overrides({"hours": "Приём"}, {"hours": "Open"}), {"hours": "Open"})
+
     def test_base_is_not_mutated(self):
         base = {"business": {"city": "Нячанг"}, "locations": [{"name": "Один"}]}
         snapshot = copy.deepcopy(base)
         merge_overrides(base, {"business": {"city": "Nha Trang"},
                                "locations": [{"name": "One"}]})
         self.assertEqual(base, snapshot)
+
+
+class LocalizedSiteErrorsTest(unittest.TestCase):
+    def test_errors_name_the_locale_file(self):
+        site = {"business": {"city": "Нячанг"}}
+        for patch in ({"business": None}, {"business": {"sity": "x"}}):
+            locale = parse_locale({**RAW, "code": "en", "site": patch}, "en.yml")
+            with self.assertRaisesRegex(ValueError, r"locales/en\.yml site\.business"):
+                localized_site(site, locale)
 
 
 class RussianLocaleFileTest(unittest.TestCase):
