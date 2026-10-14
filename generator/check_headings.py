@@ -13,6 +13,7 @@
 import re
 import sys
 from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 from bs4 import BeautifulSoup
 
@@ -28,16 +29,25 @@ def pages():
                   if not any(part.startswith(".") for part in page.relative_to(SITE).parts))
 
 
+def page_name(page):
+    return str(page.relative_to(SITE.parent))
+
+
+@lru_cache(maxsize=None)
+def parse(page):
+    """Страница разбирается один раз: заголовки, h2 и язык берутся из одного разбора."""
+    return BeautifulSoup(page.read_text(encoding="utf-8"), "html.parser")
+
+
 def headings(page):
     """Заголовки страницы в порядке документа: [(уровень, текст)]."""
-    soup = BeautifulSoup(page.read_text(encoding="utf-8"), "html.parser")
     return [(int(h.name[1]), re.sub(r"\s+", " ", h.get_text()).strip())
-            for h in soup.find_all(HEADING_RE)]
+            for h in parse(page).find_all(HEADING_RE)]
 
 
 def check(page, found):
     """Нарушения иерархии на одной странице."""
-    name = page.relative_to(SITE.parent)
+    name = page_name(page)
     if not found:
         return [f"{name}: на странице нет ни одного заголовка"]
     errors = []
@@ -73,14 +83,16 @@ KNOWN_SHARED_H2 = {
 def main_h2(page):
     """h2 внутри <main>. Подвал не в счёт: «Услуги» и «Контакты» стоят там на
     каждой странице по определению, и это не дубли-заголовки, а навигация."""
-    soup = BeautifulSoup(page.read_text(encoding="utf-8"), "html.parser")
-    return [re.sub(r"\s+", " ", h.get_text()).strip() for h in soup.select("main h2")]
+    return [re.sub(r"\s+", " ", h.get_text()).strip() for h in parse(page).select("main h2")]
 
 
 def page_lang(page):
-    """Язык страницы из <html lang>."""
-    soup = BeautifulSoup(page.read_text(encoding="utf-8"), "html.parser")
-    return soup.html.get("lang", "")
+    """Язык страницы из <html lang>. Без него дубли h2 нельзя отнести к языку — это ошибка страницы."""
+    root = parse(page).html
+    lang = root.get("lang") if root else None
+    if not lang:
+        sys.exit(f"{page_name(page)}: у страницы нет <html lang>, язык заголовков неизвестен")
+    return lang
 
 
 def shared_h2(pages_):
@@ -90,7 +102,7 @@ def shared_h2(pages_):
         lang = page_lang(page)
         for text in main_h2(page):
             if text not in KNOWN_SHARED_H2.get(lang, set()):
-                seen[(lang, text)].append(str(page.relative_to(SITE.parent)))
+                seen[(lang, text)].append(page_name(page))
     errors = []
     for (lang, text), where in sorted(seen.items()):
         if len(where) > 1:
