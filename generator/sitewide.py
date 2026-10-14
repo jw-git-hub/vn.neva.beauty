@@ -83,11 +83,9 @@ def _llms_service_lines(content, prices, locale, routes):
     """Услуги для llms.txt: ссылка, краткое описание страницы и цена из прайса.
     Без описания и цены ассистенту приходится открывать все страницы, чтобы
     ответить «сколько стоит» — а карта сайта нужна как раз чтобы не пришлось."""
-    def format_from(price):
-        return locale.t("price.from", price=price)
     lines = []
     for service_id, svc in content["services"].items():
-        hint = pricing.price_hint(prices.get(service_id, []), format_from)
+        hint = pricing.price_hint(prices.get(service_id, []), locale.format_from)
         price = locale.t("llms.price", price=hint) if hint else ""
         lines.append(f"- [{svc['title']}]({routes.url(locale, service_id)}): {svc['seo_desc']}{price}")
     return lines

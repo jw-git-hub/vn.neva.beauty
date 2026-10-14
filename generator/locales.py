@@ -46,6 +46,10 @@ class Locale:
         text = self.ui[key]
         return text.format(**params) if params else text
 
+    def format_from(self, price):
+        """«от <цена>» — единая формулировка нижней границы для всех страниц и файлов."""
+        return self.t("price.from", price=price)
+
     def slug(self, page_id):
         """Слаг страницы в этом языке. Не задан — равен идентификатору."""
         return self.slugs.get(page_id, page_id)

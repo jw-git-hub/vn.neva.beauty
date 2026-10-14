@@ -28,9 +28,6 @@ class BuildContext:
     def url(self, page_id):
         return self.routes.url(self.locale, page_id)
 
-    def format_from(self, price):
-        return self.t("price.from", price=price)
-
 
 PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price)\}")
 
@@ -73,7 +70,7 @@ def build_home(ctx):
     home["faq"] = render_faq(ctx, home.get("faq", []))
     for item in home.get("popular", []):
         item["price"] = pricing.popular_price(ctx.prices, item["slug"], item["name"],
-                                              ctx.format_from)
+                                              ctx.locale.format_from)
     schema_json = (schema.render(ctx.site, [schema.faq_node(home["faq"])])
                    if home["faq"] else ctx.base_schema)
     page = {"id": HOME, "url": ctx.path(HOME),
@@ -116,7 +113,7 @@ def _prepare_service_texts(ctx, svc, hint):
                                         content_tokens(ctx.site["contacts"], hint))
     if svc.get("compare"):
         svc["compare"]["rows"] = pricing.compare_rows(
-            svc["compare"]["rows"], ctx.content["services"], ctx.prices, ctx.format_from)
+            svc["compare"]["rows"], ctx.content["services"], ctx.prices, ctx.locale.format_from)
     if svc.get("faq"):
         svc["faq"] = render_faq(ctx, svc["faq"], hint)
 
@@ -127,7 +124,7 @@ def build_service(ctx, service_id):
     sections = ctx.prices.get(service_id, [])
     nodes = [schema.breadcrumb_node(_service_crumbs(ctx, service_id, svc, cat)),
              _service_node(ctx, service_id, svc, cat, sections)]
-    _prepare_service_texts(ctx, svc, pricing.price_hint(sections, ctx.format_from))
+    _prepare_service_texts(ctx, svc, pricing.price_hint(sections, ctx.locale.format_from))
     if svc.get("faq"):
         nodes.append(schema.faq_node(svc["faq"]))
     page = {"id": service_id, "url": ctx.path(service_id),

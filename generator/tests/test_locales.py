@@ -45,6 +45,12 @@ class TranslateTest(unittest.TestCase):
         self.assertEqual(self.locale.t("price.from"), "от {price}")
 
 
+class FormatFromTest(unittest.TestCase):
+    def test_wraps_price_in_the_locale_phrase(self):
+        self.assertEqual(parse_locale(RAW, "ru.yml").format_from("1 500 000 ₫"),
+                         "от 1 500 000 ₫")
+
+
 class SlugTest(unittest.TestCase):
     def test_slug_defaults_to_page_id(self):
         self.assertEqual(parse_locale(RAW, "ru.yml").slug("lpg-massazh"), "lpg-massazh")
