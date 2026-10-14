@@ -47,6 +47,7 @@ def make_env(locale, routes, base_path):
     e.globals.update(
         icon=icon, theme_color=THEME_COLOR, base_path=base_path, locale=locale,
         t=locale.t, href=lambda page_id: routes.href(locale, page_id),
+        alternates=routes.alternates, x_default=routes.x_default,
         # Адаптивные картинки: ширины, sizes и пропорции берутся из images.py — оттуда же
         # make_images.py режет производные, поэтому разметка и файлы не разъезжаются.
         srcset=lambda stem, slot: images.srcset(stem, slot, base_path),
