@@ -36,6 +36,13 @@ class PageIdsTest(unittest.TestCase):
                          ["endosfera-terapiya", "korrekciya-figury", "lpg-massazh", "uhod"])
 
 
+class HasOwnPageTest(unittest.TestCase):
+    def test_only_category_with_several_services_has_page(self):
+        figure, care = make_content()["categories"]
+        self.assertTrue(taxonomy.has_own_page(figure))
+        self.assertFalse(taxonomy.has_own_page(care))
+
+
 class EnrichCategoriesTest(unittest.TestCase):
     def test_multi_service_category_is_a_page(self):
         cat = enriched()[0]["categories"][0]
@@ -60,6 +67,10 @@ class EnrichCategoriesTest(unittest.TestCase):
         self.assertEqual(taxonomy.category_of(content, "endosfera-terapiya")["slug"],
                          "korrekciya-figury")
 
+    def test_category_of_single_service_category(self):
+        content = enriched()[0]
+        self.assertEqual(taxonomy.category_of(content, "uhod")["slug"], "uhod")
+
 
 class FillRelatedTest(unittest.TestCase):
     def test_curated_first_then_siblings_then_others(self):
@@ -69,6 +80,21 @@ class FillRelatedTest(unittest.TestCase):
                          ["endosfera-terapiya", "uhod"])
         self.assertEqual(content["services"]["uhod"]["related"],
                          ["lpg-massazh", "endosfera-terapiya"])
+
+    def test_self_link_and_unknown_service_are_dropped(self):
+        content = make_content()
+        content["services"]["lpg-massazh"]["related"] = [
+            "lpg-massazh", "net-takoy-uslugi", "uhod"]
+        taxonomy.fill_related(content)
+        self.assertEqual(content["services"]["lpg-massazh"]["related"],
+                         ["uhod", "endosfera-terapiya"])
+
+    def test_repeated_curated_item_is_counted_once(self):
+        content = make_content()
+        content["services"]["lpg-massazh"]["related"] = ["uhod", "uhod"]
+        taxonomy.fill_related(content)
+        self.assertEqual(content["services"]["lpg-massazh"]["related"],
+                         ["uhod", "endosfera-terapiya"])
 
 
 class BuildNavTest(unittest.TestCase):
@@ -90,6 +116,10 @@ class BuildNavTest(unittest.TestCase):
             {"label": "LPG-массаж", "href": "/lpg-massazh/"},
             {"label": "Эндосфера-терапия", "href": "/endosfera-terapiya/"},
         ])
+
+    def test_label_falls_back_to_title_without_nav_label(self):
+        self.assertNotIn("nav_label", make_content()["categories"][1])
+        self.assertEqual(self.nav[2]["label"], self.nav[2]["title"])
 
     def test_single_service_category_has_no_children(self):
         item = self.nav[2]
