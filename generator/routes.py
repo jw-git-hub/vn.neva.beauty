@@ -14,6 +14,9 @@ INDEX_FILE = "index.html"
 # (?!/) отсекает протокол-относительные «//host/x»: это внешний адрес, не страница.
 _INTERNAL_HREF_RE = re.compile(r'href="/(?!/)([^"#?]*)([#?][^"]*)?"')
 _SINGLE_QUOTED_HREF_RE = re.compile(r"href='/(?!/)")
+# Слаг в адресе (спека §4): строчная латиница, цифры, дефисы между словами; без пустого
+# значения, без «/» и без дефиса на краях или двойного дефиса.
+_SLUG_RE = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")
 # Служебные идентификаторы, которые нельзя писать путём: главная — href="/".
 _PATHLESS_IDS = (HOME, NOT_FOUND)
 
@@ -61,6 +64,17 @@ def _check_slug_keys(locales, page_ids):
         for page_id in locale.slugs:
             if page_id not in page_ids:
                 raise ValueError(f"Язык {locale.code}: слаг для неизвестной страницы {page_id!r}")
+            if page_id in _PATHLESS_IDS:
+                raise ValueError(f"Язык {locale.code}: у страницы {page_id!r} нет собственного "
+                                 f"слага — адрес главной и 404 задан префиксом языка")
+
+
+def _check_slug_format(locales):
+    for locale in locales:
+        for page_id, slug in locale.slugs.items():
+            if not (isinstance(slug, str) and _SLUG_RE.fullmatch(slug)):
+                raise ValueError(f"Язык {locale.code}: слаг {slug!r} страницы {page_id!r} "
+                                 f"должен быть из строчной латиницы, цифр и дефисов")
 
 
 def _check_unique_slugs(locales, page_ids):
@@ -82,6 +96,7 @@ class Routes:
         _check_unique_prefixes(locales)
         _check_unique_html_langs(locales)
         _check_slug_keys(locales, page_ids)
+        _check_slug_format(locales)
         _check_unique_slugs(locales, page_ids)
         self._locales = list(locales)
         self._x_default_locale = _find_x_default(locales, x_default_locale)

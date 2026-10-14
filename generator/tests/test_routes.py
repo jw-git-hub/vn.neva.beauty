@@ -41,6 +41,23 @@ class ConstructorChecksTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "en.*lpg-masazh"):
             build_routes([RU, typo])
 
+    def test_slug_of_page_without_own_path_is_error(self):
+        for page_id in (HOME, NOT_FOUND):
+            ignored = make_locale("en", "/en", {page_id: "start"})
+            with self.assertRaisesRegex(ValueError, f"en.*{page_id}.*собственного"):
+                build_routes([RU, ignored])
+
+    def test_slug_must_be_lowercase_latin_digits_and_hyphens(self):
+        for bad in ("", "Body", "body shaping", "a/b", "-body", "body-", "body--shaping", "тело"):
+            malformed = make_locale("en", "/en", {"lpg-massazh": bad})
+            with self.assertRaisesRegex(ValueError, "en.*слаг.*lpg-massazh"):
+                build_routes([RU, malformed])
+
+    def test_well_formed_slugs_pass(self):
+        fine = make_locale("en", "/en", {"lpg-massazh": "lpg-2-massage"})
+        self.assertEqual(build_routes([RU, fine]).path(fine, "lpg-massazh"),
+                         "/en/lpg-2-massage/")
+
     def test_slugs_must_be_unique_within_language(self):
         clash = make_locale("en", "/en", {"lpg-massazh": "body", "korrekciya-figury": "body"})
         with self.assertRaisesRegex(ValueError, "en.*body"):
@@ -166,7 +183,7 @@ class LocalizeLinksTest(unittest.TestCase):
         html = "<a href='https://wa.me/1'>x</a>"
         self.assertEqual(make_routes().localize_links(EN, html), html)
 
-    def test_service_id_written_as_path_is_error(self):
+    def test_pathless_id_written_as_path_is_error(self):
         for bad in ("/home/", "/404/"):
             with self.assertRaisesRegex(ValueError, "лужебн"):
                 make_routes().localize_links(RU, f'<a href="{bad}">x</a>')
