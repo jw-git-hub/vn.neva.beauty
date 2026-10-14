@@ -56,7 +56,6 @@ def make_env(locale, routes, base_path, site_contacts):
     """Окружение Jinja одного языка: строки интерфейса и адреса берутся из языка."""
     e = Environment(loader=FileSystemLoader(ROOT/"templates"),
                     autoescape=select_autoescape(["html","j2"]))
-    e.filters["urlencode"] = lambda s: urllib.parse.quote(str(s))
     e.globals.update(
         icon=icon, theme_color=THEME_COLOR, base_path=base_path, locale=locale,
         t=locale.t, href=lambda page_id: routes.href(locale, page_id),

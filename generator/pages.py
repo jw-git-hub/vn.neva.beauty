@@ -33,18 +33,12 @@ class BuildContext:
 PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price)\}")
 
 
-def content_tokens(contacts, price=None):
-    """Плейсхолдеры, доступные в текстах content.yml: URL мессенджеров из site.yml
-    и цена услуги из prices.json. Единый источник у каждого значения ровно один,
-    поэтому текст не может разойтись ни с контактами, ни с прайсом."""
-    tokens = {
-        "{whatsapp}": contacts["whatsapp_url"],
-        "{telegram}": contacts["telegram_url"],
-        "{instagram}": contacts["instagram_url"],
-    }
-    if price:
-        tokens["{price}"] = price
-    return tokens
+def content_tokens(price=None):
+    """Плейсхолдеры текстов content.yml, кроме мессенджеров: цена услуги из prices.json.
+    Мессенджеры пишутся только как href="{whatsapp}" и раскрываются в
+    contacts.fill_contact_links — с текстом страницы и метками. Плейсхолдер мессенджера
+    в другом месте остаётся нераскрытым, и fill_tokens роняет сборку."""
+    return {"{price}": price} if price else {}
 
 
 def fill_tokens(text, tokens):
@@ -64,7 +58,7 @@ def render_faq(ctx, faq, price=None, page_title=None):
     в адреса языка страницы."""
     site_contacts = ctx.site["contacts"]
     message = contacts.contact_message(ctx.locale, page_title)
-    tokens = content_tokens(site_contacts, price)
+    tokens = content_tokens(price)
 
     def finish(answer):
         answer = contacts.fill_contact_links(answer, site_contacts, message)
@@ -117,8 +111,7 @@ def _service_node(ctx, service_id, svc, cat, sections):
 def _prepare_service_texts(ctx, svc, hint):
     """Подставляет цену и контакты в тексты услуги, собирает сравнительную таблицу."""
     if svc.get("price_lead"):
-        svc["price_lead"] = fill_tokens(svc["price_lead"],
-                                        content_tokens(ctx.site["contacts"], hint))
+        svc["price_lead"] = fill_tokens(svc["price_lead"], content_tokens(hint))
     if svc.get("compare"):
         svc["compare"]["rows"] = pricing.compare_rows(
             svc["compare"]["rows"], ctx.content["services"], ctx.prices, ctx.locale.format_from)

@@ -57,3 +57,12 @@ class LinkErrorsTest(unittest.TestCase):
         текст «Хочу записаться» и метки обращений им не нужны."""
         body = '<div class="legal-page"><a href="https://wa.me/100">+100</a></div>'
         self.assertEqual(errors(body), [])
+
+    def test_whitespace_differences_are_not_errors(self):
+        """Ожидаемый текст строится по h1, где пробелы схлопнуты; в адресе — исходное
+        название с неразрывным или двойным пробелом. Это один и тот же текст."""
+        raw = "?text=" + urllib.parse.quote("Хочу на: M\xa022  лифтинг\n")
+        soup = BeautifulSoup(f'<a href="https://wa.me/100{raw}" data-contact="whatsapp" '
+                             'data-place="hero">W</a>', "html.parser")
+        self.assertEqual(check_contacts.link_errors(soup, "page.html", CONTACTS,
+                                                    "Хочу на: M 22 лифтинг"), [])

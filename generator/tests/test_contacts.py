@@ -73,6 +73,18 @@ class FillContactLinksTest(unittest.TestCase):
         self.assertIn(contacts.contact_url(CONTACTS, "whatsapp", "Привет"), filled)
 
     def test_bare_placeholder_is_left_for_tokens(self):
-        """Плейсхолдер не в href — не ссылка связи; его раскроет pages.fill_tokens."""
+        """Плейсхолдер не в href — не ссылка связи; на нём упадёт pages.fill_tokens."""
         self.assertEqual(contacts.fill_contact_links("{telegram}", CONTACTS, "Привет"),
                          "{telegram}")
+
+
+class PrefillFlagTest(unittest.TestCase):
+    def test_missing_flag_is_error(self):
+        """Опечатка в имени флага не должна молча убирать текст из ссылок Telegram."""
+        flagless = {key: value for key, value in CONTACTS.items() if key != "telegram_prefill"}
+        with self.assertRaises(ValueError):
+            contacts.prefill_channels(flagless)
+
+    def test_string_flag_is_error(self):
+        with self.assertRaises(ValueError):
+            contacts.prefill_channels(dict(CONTACTS, telegram_prefill="false"))

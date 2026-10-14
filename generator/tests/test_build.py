@@ -8,6 +8,8 @@ from unittest import mock
 from markupsafe import Markup
 
 import build
+import contacts
+import pages
 import taxonomy
 from locales import load_locale
 from routes import Routes
@@ -87,13 +89,15 @@ if __name__ == "__main__":
     unittest.main()
 
 
-CONTACT_HREF_RE = re.compile(r'href="(https://(?:wa\.me|t\.me)/[^"]*)"')
+WHATSAPP_HREF_RE = re.compile(r'href="(https://wa\.me/[^"]*)"')
+TELEGRAM_HREF_RE = re.compile(r'href="(https://t\.me/[^"]*)"')
 
 
-def contact_texts(html):
-    """Тексты обращения во всех ссылках WhatsApp и Telegram страницы."""
+def contact_texts(html, href_re=WHATSAPP_HREF_RE):
+    """Тексты обращения во всех ссылках канала на странице. По умолчанию — WhatsApp:
+    у него текст есть всегда, а Telegram зависит от флага telegram_prefill."""
     return {urllib.parse.parse_qs(urllib.parse.urlsplit(url).query).get("text", [""])[0]
-            for url in CONTACT_HREF_RE.findall(html)}
+            for url in href_re.findall(html)}
 
 
 class ContactLinksInBuiltPagesTest(unittest.TestCase):
@@ -112,6 +116,12 @@ class ContactLinksInBuiltPagesTest(unittest.TestCase):
     def test_service_page_links_carry_service_title(self):
         self.assertEqual(contact_texts(self.pages["lpg-massazh/index.html"]),
                          {"Здравствуйте! Хочу записаться на: LPG-массаж"})
+
+    def test_telegram_links_follow_prefill_flag(self):
+        prefilled = "telegram" in contacts.prefill_channels(build.load()[0]["contacts"])
+        expected = "Здравствуйте! Хочу записаться на: LPG-массаж" if prefilled else ""
+        self.assertEqual(contact_texts(self.pages["lpg-massazh/index.html"], TELEGRAM_HREF_RE),
+                         {expected})
 
     def test_home_links_carry_generic_text(self):
         self.assertEqual(contact_texts(self.pages["index.html"]),
@@ -139,3 +149,10 @@ class ContactLinksInBuiltPagesTest(unittest.TestCase):
         self.assertIn('var PAGE = "lpg-massazh";', html)
         self.assertIn('"reachGoal", "contact"', html)
         self.assertIn('d.addEventListener("click", reportContact);', html)
+
+
+class MessengerPlaceholderTest(unittest.TestCase):
+    def test_messenger_placeholder_outside_href_is_error(self):
+        """{whatsapp} вне href="…" дал бы голый адрес без текста и меток — мимо contacts.py."""
+        with self.assertRaises(ValueError):
+            pages.fill_tokens("пишите {whatsapp}", pages.content_tokens())

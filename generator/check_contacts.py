@@ -34,6 +34,12 @@ def channel_of(href, site_contacts):
     return None
 
 
+def squeeze(text):
+    """Пробелы схлопнуты, края обрезаны: h1 на странице и название в адресе — один текст,
+    даже если в данных неразрывный или двойной пробел."""
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def text_of(href):
     return urllib.parse.parse_qs(urllib.parse.urlsplit(href).query).get("text", [None])[0]
 
@@ -42,7 +48,7 @@ def text_error(href, channel, site_contacts, expected_message):
     text = text_of(href)
     if channel not in contacts.prefill_channels(site_contacts):
         return f"у {channel} не должно быть текста, а он есть: {text!r}" if text else None
-    if text != expected_message:
+    if text is None or squeeze(text) != squeeze(expected_message):
         return f"текст {channel}: {text!r}, ожидался {expected_message!r}"
     return None
 
@@ -80,7 +86,7 @@ def link_errors(soup, name, site_contacts, expected_message):
 
 
 def h1_text(soup):
-    return re.sub(r"\s+", " ", soup.find("h1").get_text()).strip()
+    return squeeze(soup.find("h1").get_text())
 
 
 def expected_message(soup, page_id, locale):

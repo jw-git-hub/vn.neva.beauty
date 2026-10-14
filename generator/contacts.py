@@ -15,6 +15,7 @@ PLACES = ("header", "hero", "strip", "booking", "drawer", "footer", "faq")
 # Instagram не умеет подставлять текст в директ — у него адрес всегда голый.
 ALWAYS_PREFILLED = ("whatsapp",)
 FAQ_PLACE = "faq"
+TELEGRAM_PREFILL_KEY = "telegram_prefill"
 
 
 def contact_message(locale, page_title=None):
@@ -26,8 +27,14 @@ def contact_message(locale, page_title=None):
 
 def prefill_channels(contacts):
     """Каналы, в адрес которых подставляется текст. Telegram — по флагу в site.yml:
-    если ссылка с текстом не открывается на каком-то устройстве, флаг выключают."""
-    if contacts.get("telegram_prefill"):
+    если ссылка с текстом не открывается на каком-то устройстве, флаг выключают.
+    Флаг обязателен и только true/false: опечатка в имени или строка "false" молча
+    убрали бы текст из всех ссылок Telegram."""
+    flag = contacts.get(TELEGRAM_PREFILL_KEY)
+    if not isinstance(flag, bool):
+        raise ValueError(f"В site.yml contacts.{TELEGRAM_PREFILL_KEY} должен быть true "
+                         f"или false, а не {flag!r}")
+    if flag:
         return ALWAYS_PREFILLED + ("telegram",)
     return ALWAYS_PREFILLED
 
