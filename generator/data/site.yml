@@ -37,6 +37,10 @@ contacts:
   whatsapp_number: "84357132621"
   whatsapp_url: "https://wa.me/84357132621"
   telegram_url: "https://t.me/doctor_cosmetolog_pro"
+  # Подставлять ли текст обращения в ссылку Telegram (t.me/<имя>?text=…). Если на
+  # каком-то устройстве такая ссылка не открывает чат — false: Telegram останется
+  # без текста, а откуда пишут, покажет только Метрика.
+  telegram_prefill: true
   instagram_url: "https://instagram.com/vn.neva.beauty"
 
 # Единый источник фактов о бизнесе для JSON-LD (schema.org). Только реальные
