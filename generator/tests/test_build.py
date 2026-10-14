@@ -14,11 +14,14 @@ class BuildLocaleIsolationTest(unittest.TestCase):
         получить исходный контент, а не уже раскрытые плейсхолдеры предыдущего."""
         site, content, prices = build.load()
         snapshot = copy.deepcopy(content)
+        site_snapshot, prices_snapshot = copy.deepcopy(site), copy.deepcopy(prices)
         locale = load_locale("ru")
         routes = Routes([locale], taxonomy.page_ids(content), site["base_url"])
         with mock.patch("build.write", return_value=False):
             build.build_locale(site, content, prices, locale, routes, "")
         self.assertEqual(content, snapshot)
+        self.assertEqual(site, site_snapshot)
+        self.assertEqual(prices, prices_snapshot)
 
 
 class LoadLocalesTest(unittest.TestCase):
