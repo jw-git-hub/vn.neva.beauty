@@ -28,7 +28,7 @@ class BuildLocaleIsolationTest(unittest.TestCase):
 
 
 def build_pages_of_test_english(x_default_locale="en"):
-    """Собирает страницы тестового английского (префикс /en) рядом с русским, не пишя файлов.
+    """Собирает страницы тестового английского (префикс /en) рядом с русским, не пиша файлов.
     Возвращает {путь страницы: html}."""
     site, content, prices = build.load()
     russian = load_locale("ru")
