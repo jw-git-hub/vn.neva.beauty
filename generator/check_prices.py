@@ -9,9 +9,10 @@
 import json
 import re
 import sys
-from collections import Counter
+from collections import Counter, namedtuple
 from functools import lru_cache
 from pathlib import Path
+from types import SimpleNamespace
 
 import yaml
 from bs4 import BeautifulSoup
@@ -24,8 +25,19 @@ SITE = yaml.safe_load((ROOT / "data" / "site.yml").read_text(encoding="utf-8"))
 CURRENCY = SITE["business"].get("currency")
 JSON_LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
 PRICE_RE = re.compile(r"^\+?\d[\d ]*đ$")
-LOCALE_CODES = SITE.get("locales", ["ru"])
+LOCALE_CODES = SITE.get("locales")
 HOME_FILE = "index.html"
+POPULAR_MISMATCH = "POPULAR MISMATCH «{key}»: ожидалось {expected!r}, на главной {rendered!r}"
+COMPARE_MISMATCH = "COMPARE MISMATCH {key}: prices.json={expected} на странице={rendered}"
+SECTIONS_MISMATCH = "SECTIONS MISMATCH {key}: prices.json={expected} JSON-LD={rendered}"
+COUNT_MISMATCH = "COUNT MISMATCH {key}: prices.json={expected} rendered={rendered}"
+AGGREGATE_MISMATCH = ("AGGREGATE MISMATCH {key}: prices.json={expected} "
+                      "JSON-LD={rendered} (low, high, count, currency)")
+DESCRIPTION_MISMATCH = ("DESCRIPTION MISMATCH {slug}: у Offer «{name}» описание {desc!r} "
+                        "не совпадает с описанием в itemOffered")
+
+# Пара «эталон из prices.json / факт из разметки» одной величины.
+Pair = namedtuple("Pair", "expected rendered")
 
 
 class LocaleView:
@@ -301,77 +313,87 @@ def rendered_aggregates(view):
     return result
 
 
-if not (isinstance(CURRENCY, str) and re.fullmatch(r"[A-Z]{3}", CURRENCY)):
-    sys.exit(f"business.currency в site.yml = {CURRENCY!r}: цены в разметке уйдут без валюты")
-
-def compare_popular(view):
-    """Карточки «Популярное» главной против прайса. True, если расхождений нет."""
-    exp_popular, new_popular = expected_popular(view), rendered_popular(view)
-    ok = True
-    for name in sorted(set(exp_popular) | set(new_popular)):
-        if exp_popular.get(name) != new_popular.get(name):
-            ok = False
-            print(f"POPULAR MISMATCH «{name}»: ожидалось {exp_popular.get(name)!r}, "
-                  f"на главной {new_popular.get(name)!r}")
-    return ok
-
-
-def compare_tables(view):
-    """Сравнительные таблицы и описания Offer'ов. True, если расхождений нет."""
-    exp_compare, new_compare = expected_compare(view), rendered_compare(view)
-    ok = True
-    for slug in sorted(set(exp_compare) | set(new_compare)):
-        if exp_compare.get(slug) != new_compare.get(slug):
-            ok = False
-            print(f"COMPARE MISMATCH {slug}: prices.json={exp_compare.get(slug)} "
-                  f"на странице={new_compare.get(slug)}")
-    for slug, name, desc in rendered_offers(view)[1]:
-        ok = False
-        print(f"DESCRIPTION MISMATCH {slug}: у Offer «{name}» описание {desc!r} "
-              f"не совпадает с описанием в itemOffered")
-    return ok
-
-
-def compare_catalogs(view):
-    """Разделы каталога, число позиций и диапазоны цен по каждой услуге. True, если расхождений нет."""
-    _, exp_counts = expected_html(view)
-    _, new_counts = rendered_html(view)
-    exp_aggr, new_aggr = expected_aggregates(), rendered_aggregates(view)
-    ok = True
+def expected_section_titles(view):
+    """Эталон заголовков разделов каталога: у услуги с одним разделом
+    вложенных OfferCatalog нет, поэтому список пуст."""
+    result = {}
     for slug, sections in PRICES.items():
         titles = [title for title, _ in priced_sections(sections, view)]
-        catalog = service_node(view, slug).get("hasOfferCatalog", {})
-        expected_titles = titles if len(titles) > 1 else []
-        if catalog_section_titles(catalog) != expected_titles:
+        result[slug] = titles if len(titles) > 1 else []
+    return result
+
+
+def rendered_section_titles(view):
+    """Факт — заголовки вложенных OfferCatalog на странице услуги."""
+    return {slug: catalog_section_titles(service_node(view, slug).get("hasOfferCatalog", {}))
+            for slug in PRICES}
+
+
+def collect(view):
+    """Эталон и факт по каждой величине считаются здесь один раз на язык:
+    разбор HTML и JSON-LD дорогой, сравнения берут готовые значения."""
+    exp_html, exp_counts = expected_html(view)
+    new_html, new_counts = rendered_html(view)
+    new_offers, mismatched = rendered_offers(view)
+    return SimpleNamespace(
+        html=Pair(exp_html, new_html),
+        counts=Pair(exp_counts, new_counts),
+        offers=Pair(expected_offers(), new_offers),
+        descriptions=mismatched,
+        popular=Pair(expected_popular(view), rendered_popular(view)),
+        compare=Pair(expected_compare(view), rendered_compare(view)),
+        sections=Pair(expected_section_titles(view), rendered_section_titles(view)),
+        aggregates=Pair(expected_aggregates(), rendered_aggregates(view)),
+    )
+
+
+def report_mismatches(pair, template):
+    """Печатает каждый ключ, по которому эталон и факт различаются.
+    True, если расхождений нет."""
+    ok = True
+    for key in sorted(set(pair.expected) | set(pair.rendered)):
+        expected, rendered = pair.expected.get(key), pair.rendered.get(key)
+        if expected != rendered:
             ok = False
-            print(f"SECTIONS MISMATCH {slug}: prices.json={expected_titles} "
-                  f"JSON-LD={catalog_section_titles(catalog)}")
-        if exp_counts[slug] != new_counts.get(slug, 0):
-            ok = False
-            print(f"COUNT MISMATCH {slug}: prices.json={exp_counts[slug]} rendered={new_counts.get(slug, 0)}")
-        if exp_aggr.get(slug) != new_aggr.get(slug):
-            ok = False
-            print(f"AGGREGATE MISMATCH {slug}: prices.json={exp_aggr.get(slug)} "
-                  f"JSON-LD={new_aggr.get(slug)} (low, high, count, currency)")
+            print(template.format(key=key, expected=expected, rendered=rendered))
     return ok
+
+
+def report_descriptions(mismatched):
+    """Описание Offer'а должно совпадать с описанием его itemOffered. True, если так и есть."""
+    for slug, name, desc in mismatched:
+        print(DESCRIPTION_MISMATCH.format(slug=slug, name=name, desc=desc))
+    return not mismatched
+
+
+def summary_line(view, facts):
+    return (f"[{view.code}] html_items={sum(facts.html.rendered.values())} "
+            f"jsonld_offers={sum(facts.offers.rendered.values())} "
+            f"aggregates={len(facts.aggregates.rendered)} popular={len(facts.popular.rendered)} "
+            f"compare_rows={sum(len(rows) for rows in facts.compare.rendered.values())} "
+            f"currency={CURRENCY}")
 
 
 def run(view):
-    """Сверка цен одного языка. Возвращает True, если расхождений нет."""
-    exp_html, _ = expected_html(view)
-    new_html, _ = rendered_html(view)
-    exp_offers = expected_offers()
-    new_offers, _ = rendered_offers(view)
-    ok = report("HTML", exp_html, new_html)
-    ok &= report("JSON-LD", exp_offers, new_offers)
-    ok &= compare_popular(view)
-    ok &= compare_tables(view)
-    ok &= compare_catalogs(view)
-    print(f"[{view.code}] html_items={sum(new_html.values())} jsonld_offers={sum(new_offers.values())} "
-          f"aggregates={len(rendered_aggregates(view))} popular={len(rendered_popular(view))} "
-          f"compare_rows={sum(len(rows) for rows in rendered_compare(view).values())} currency={CURRENCY}")
+    """Сверка цен одного языка. Возвращает True, если расхождений нет.
+    `&=` не обрывает цепочку: печатаются расхождения всех блоков сразу."""
+    facts = collect(view)
+    ok = report("HTML", *facts.html)
+    ok &= report("JSON-LD", *facts.offers)
+    ok &= report_mismatches(facts.popular, POPULAR_MISMATCH)
+    ok &= report_mismatches(facts.compare, COMPARE_MISMATCH)
+    ok &= report_descriptions(facts.descriptions)
+    ok &= report_mismatches(facts.sections, SECTIONS_MISMATCH)
+    ok &= report_mismatches(facts.counts, COUNT_MISMATCH)
+    ok &= report_mismatches(facts.aggregates, AGGREGATE_MISMATCH)
+    print(summary_line(view, facts))
     return ok
 
+
+if not (isinstance(CURRENCY, str) and re.fullmatch(r"[A-Z]{3}", CURRENCY)):
+    sys.exit(f"business.currency в site.yml = {CURRENCY!r}: цены в разметке уйдут без валюты")
+if not LOCALE_CODES:
+    sys.exit("В site.yml не задан список языков locales: без него нечего сверять")
 
 results = [run(LocaleView(code)) for code in LOCALE_CODES]
 print("PRICE PARITY OK" if all(results) else "PRICE PARITY FAILED")
