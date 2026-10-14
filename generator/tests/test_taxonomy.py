@@ -25,7 +25,7 @@ def make_content():
 
 def enriched():
     content = make_content()
-    routes = Routes([RU], taxonomy.page_ids(content), "https://vn.neva.beauty")
+    routes = Routes([RU], taxonomy.page_ids(content), "https://vn.neva.beauty", "ru")
     taxonomy.enrich_categories(content, routes, RU)
     return content, routes
 

@@ -15,12 +15,12 @@ PAGE_IDS = ["lpg-massazh", "korrekciya-figury"]
 BASE_URL = "https://vn.neva.beauty"
 
 
-def make_routes(base_path=""):
-    return Routes([RU, EN], PAGE_IDS, BASE_URL, base_path)
+def make_routes(base_path="", x_default_locale="ru"):
+    return Routes([RU, EN], PAGE_IDS, BASE_URL, x_default_locale, base_path)
 
 
-def build_routes(locales, base_path=""):
-    return Routes(locales, PAGE_IDS, BASE_URL, base_path)
+def build_routes(locales, base_path="", x_default_locale="ru"):
+    return Routes(locales, PAGE_IDS, BASE_URL, x_default_locale, base_path)
 
 
 class ConstructorChecksTest(unittest.TestCase):
@@ -113,9 +113,15 @@ class HreflangTest(unittest.TestCase):
             "en-US": "https://vn.neva.beauty/en/lpg-massage/",
         })
 
-    def test_x_default_is_the_main_language_address(self):
+    def test_x_default_points_to_the_configured_language(self):
         self.assertEqual(make_routes().x_default("lpg-massazh"),
                          "https://vn.neva.beauty/lpg-massazh/")
+        self.assertEqual(make_routes(x_default_locale="en").x_default("lpg-massazh"),
+                         "https://vn.neva.beauty/en/lpg-massage/")
+
+    def test_unknown_x_default_language_is_error(self):
+        with self.assertRaisesRegex(ValueError, "x_default_locale.*de"):
+            make_routes(x_default_locale="de")
 
 
 class LocalizeLinksTest(unittest.TestCase):

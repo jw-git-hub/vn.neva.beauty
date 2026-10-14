@@ -22,14 +22,14 @@ PAGE_IDS = ["lpg-massazh", "uhod", "korrekciya-figury"]
 
 class SitemapPathsTest(unittest.TestCase):
     def test_order_is_home_services_categories(self):
-        routes = Routes([RU], PAGE_IDS, BASE_URL)
+        routes = Routes([RU], PAGE_IDS, BASE_URL, "ru")
         self.assertEqual(sitewide.sitemap_paths(CONTENT, routes, RU),
                          ["/", "/lpg-massazh/", "/uhod/", "/korrekciya-figury/"])
 
     def test_category_address_comes_from_routes_of_the_given_locale(self):
         """Адрес раздела берётся из таблицы маршрутов, а не из поля cat["url"]:
         иначе ключи changed (их строит build через routes.path) разошлись бы с sitemap."""
-        routes = Routes([RU, EN], PAGE_IDS, BASE_URL)
+        routes = Routes([RU, EN], PAGE_IDS, BASE_URL, "ru")
         self.assertEqual(sitewide.sitemap_paths(CONTENT, routes, EN)[-1], "/en/body-shaping/")
 
 

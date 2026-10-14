@@ -48,6 +48,14 @@ def _check_unique_html_langs(locales):
         seen[locale.html_lang] = locale.code
 
 
+def _find_x_default(locales, code):
+    for locale in locales:
+        if locale.code == code:
+            return locale
+    raise ValueError(f"x_default_locale = {code!r}: такого языка нет среди "
+                     f"{[locale.code for locale in locales]}")
+
+
 def _check_slug_keys(locales, page_ids):
     for locale in locales:
         for page_id in locale.slugs:
@@ -67,7 +75,7 @@ def _check_unique_slugs(locales, page_ids):
 
 
 class Routes:
-    def __init__(self, locales, page_ids, base_url, base_path=""):
+    def __init__(self, locales, page_ids, base_url, x_default_locale, base_path=""):
         page_ids = set(page_ids) | {HOME, PRIVACY, NOT_FOUND}
         _check_not_empty(locales)
         _check_main_in_root(locales)
@@ -76,6 +84,7 @@ class Routes:
         _check_slug_keys(locales, page_ids)
         _check_unique_slugs(locales, page_ids)
         self._locales = list(locales)
+        self._x_default_locale = _find_x_default(locales, x_default_locale)
         self._page_ids = page_ids
         self._base_url = base_url
         self._base_path = base_path.rstrip("/")
@@ -109,8 +118,10 @@ class Routes:
         return {locale.html_lang: self.url(locale, page_id) for locale in self._locales}
 
     def x_default(self, page_id):
-        """Адрес для hreflang="x-default": основной (первый) язык сайта."""
-        return self.url(self._locales[0], page_id)
+        """Адрес для hreflang="x-default": язык из site.yml (x_default_locale).
+        Не «первый язык»: по спеке x-default — английская версия, а корень домена
+        может оставаться за русским."""
+        return self.url(self._x_default_locale, page_id)
 
     def localize_links(self, locale, html):
         """Переводит внутренние ссылки текста в адреса языка страницы.

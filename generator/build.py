@@ -37,6 +37,13 @@ def load_locales(site):
         raise ValueError("В site.yml не задан список языков locales (первый — основной)")
     return [load_locale(code) for code in codes]
 
+def load_x_default_locale(site):
+    """Язык для hreflang="x-default". Обязателен по той же причине, что и locales."""
+    code = site.get("x_default_locale")
+    if not code:
+        raise ValueError("В site.yml не задан x_default_locale (язык для hreflang x-default)")
+    return code
+
 def write(path: Path, html: str) -> bool:
     """Пишет файл и возвращает True, если содержимое изменилось (нужно для lastmod в sitemap)."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -99,7 +106,8 @@ def main():
     # "/vn.neva.beauty" для превью на GitHub Pages по подпути проекта. SEO-URL не трогает.
     base_path = site.get("base_path", "").rstrip("/")
     locales = load_locales(site)
-    routes = Routes(locales, taxonomy.page_ids(content), site["base_url"], base_path)
+    routes = Routes(locales, taxonomy.page_ids(content), site["base_url"],
+                    load_x_default_locale(site), base_path)
     sitewide.build_css_bundle(OUT)  # до страниц: отпечаток бандла стоит в каждой
     changed, urls, contents = {}, [], {}
     for locale in locales:

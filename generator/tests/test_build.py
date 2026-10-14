@@ -16,7 +16,7 @@ class BuildLocaleIsolationTest(unittest.TestCase):
         snapshot = copy.deepcopy(content)
         site_snapshot, prices_snapshot = copy.deepcopy(site), copy.deepcopy(prices)
         locale = load_locale("ru")
-        routes = Routes([locale], taxonomy.page_ids(content), site["base_url"])
+        routes = Routes([locale], taxonomy.page_ids(content), site["base_url"], "ru")
         with mock.patch("build.write", return_value=False):
             build.build_locale(site, content, prices, locale, routes, "")
         self.assertEqual(content, snapshot)
@@ -33,6 +33,16 @@ class LoadLocalesTest(unittest.TestCase):
         for site in ({}, {"locales": []}, {"locales": None}):
             with self.assertRaisesRegex(ValueError, "locales"):
                 build.load_locales(site)
+
+
+class LoadXDefaultLocaleTest(unittest.TestCase):
+    def test_returns_code_from_site(self):
+        self.assertEqual(build.load_x_default_locale({"x_default_locale": "en"}), "en")
+
+    def test_missing_key_is_error(self):
+        for site in ({}, {"x_default_locale": None}, {"x_default_locale": ""}):
+            with self.assertRaisesRegex(ValueError, "x_default_locale"):
+                build.load_x_default_locale(site)
 
 
 if __name__ == "__main__":
