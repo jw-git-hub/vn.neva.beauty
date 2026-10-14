@@ -1,0 +1,89 @@
+# Русский язык сайта. Строки интерфейса раньше были зашиты в шаблоны и build.py.
+code: ru
+html_lang: ru
+og_locale: ru_RU
+url_prefix: ""
+# Языки браузера, которым показывается эта версия (автовыбор языка, спека, раздел 14).
+browser_languages: [ru, uk, be, kk]
+
+ui:
+  nav:
+    home: "Главная"
+    main_label: "Основная навигация"
+    open_menu: "Открыть меню"
+    close_menu: "Закрыть меню"
+    drawer_label: "Мобильное меню"
+    breadcrumbs_label: "Хлебные крошки"
+  cta:
+    book: "Записаться"
+    services: "Услуги"
+    more: "Подробнее"
+    to_home: "На главную"
+  contact:
+    text_generic: "Здравствуйте! Хочу записаться"
+    text_page: "Здравствуйте! Хочу записаться на: {title}"
+  locations:
+    title: "Наши салоны"
+    here: "вы здесь"
+  footer:
+    services_title: "Услуги"
+    contacts_title: "Контакты"
+    copyright: "© Neva Beauty — Da Nang, Vietnam"
+    privacy: "Политика конфиденциальности"
+  home:
+    hero_alt: "Безупречная кожа и макияж — центр красоты Neva Beauty"
+    services_eyebrow: "Услуги"
+    services_title: "Направления красоты"
+    services_lead: "Аппаратные и уходовые процедуры под ваши задачи."
+    benefits_eyebrow: "Почему Neva Beauty"
+    benefits_title: "Забота в каждой детали"
+    popular_eyebrow: "Популярное"
+    popular_title: "Частые процедуры"
+    popular_lead: "Цены указаны во вьетнамских донгах (đ)."
+    faq_title: "Коротко о Neva Beauty"
+    seo_title_default: "Neva Beauty — центр красоты в Дананге"
+  faq:
+    eyebrow: "Вопросы и ответы"
+    title: "Частые вопросы — {title}"
+  booking:
+    eyebrow: "Запись"
+    lead: "Ответим в мессенджере и подберём удобное время."
+  service:
+    hero_alt: "{title} — Neva Beauty, Дананг"
+    benefits_eyebrow: "Преимущества"
+    benefits_title: "Почему это работает"
+    price_eyebrow: "Стоимость"
+    price_title: "Цены"
+    price_lead: "Указаны во вьетнамских донгах (đ)."
+    price_tabs_label: "Разделы прайс-листа"
+    price_section_default: "Цены"
+    col_service: "Услуга"
+    col_price: "Цена"
+    col_compare: "Процедура и с чем она работает"
+    related_eyebrow: "Дополните уход"
+    related_title: "Смотрите также"
+    catalog_name: "{title} — цены"
+  category:
+    eyebrow: "Направление"
+    card_alt: "{title} — {category} в Neva Beauty, Дананг"
+    others_eyebrow: "Другие направления"
+    others_title: "Что ещё делают в Neva Beauty кроме раздела «{title}»"
+  price:
+    from: "от {price}"
+  privacy:
+    seo_title: "Политика конфиденциальности — Neva Beauty"
+  not_found:
+    seo_title: "Страница не найдена — Neva Beauty"
+    title: "Страница не найдена"
+    text: "Возможно, ссылка устарела. Вернитесь на главную или выберите услугу в меню."
+  llms:
+    summary: "> Центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. Обслуживание на русском языке для русскоязычных клиентов."
+    about_title: "## О центре"
+    city: "- Город: {location}. Точный адрес выдаётся при записи"
+    booking: "- Приём: по предварительной записи"
+    languages: "- Языки обслуживания: русский и английский"
+    currency: "- Валюта цен: вьетнамский донг (đ, {currency})"
+    categories_title: "## Направления"
+    services_title: "## Услуги"
+    price: " Цена: {price}."
+    contacts_title: "## Контакты"
