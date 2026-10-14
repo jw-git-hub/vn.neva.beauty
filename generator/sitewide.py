@@ -3,6 +3,7 @@ import hashlib
 import json
 import re
 from datetime import date
+from pathlib import Path
 
 import rcssmin
 
@@ -44,11 +45,12 @@ def sitemap_paths(content, routes, locale):
     """Индексируемые страницы языка в порядке sitemap: главная, услуги, разделы.
     Политика и 404 закрыты от индексации и в sitemap не идут."""
     services = [routes.path(locale, service_id) for service_id in content["services"]]
-    categories = [cat["url"] for cat in content["categories"] if cat["is_page"]]
+    categories = [routes.path(locale, cat["page_id"])
+                  for cat in content["categories"] if cat["is_page"]]
     return [routes.path(locale, HOME)] + services + categories
 
 
-def previous_lastmods(path):
+def previous_lastmods(path: Path) -> dict:
     """Достаёт lastmod из уже собранного sitemap: даты неизменившихся страниц переживают сборку."""
     if not path.exists():
         return {}
@@ -57,7 +59,7 @@ def previous_lastmods(path):
     return dict(pairs)
 
 
-def build_sitemap(base_url, urls, changed, known):
+def build_sitemap(base_url: str, urls: list, changed: dict, known: dict) -> str:
     """Собирает sitemap, обновляя lastmod только у реально изменившихся страниц.
     Иначе любая сборка (правка CSS, пересборка на CI) сообщала бы поисковикам о правке
     всего сайта и обесценивала сигнал lastmod."""
