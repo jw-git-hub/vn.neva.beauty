@@ -28,6 +28,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Модули сборки проверяются до самой сборки: ошибка в таблице маршрутов или
+      # в разборе цен должна остановить деплой раньше, чем появится хоть одна страница.
+      - name: Unit tests
+        run: python -m unittest discover -s generator/tests -t generator
+
       - name: Generate site
         run: python generator/build.py
 

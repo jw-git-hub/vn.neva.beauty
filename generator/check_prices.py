@@ -24,7 +24,31 @@ SITE = yaml.safe_load((ROOT / "data" / "site.yml").read_text(encoding="utf-8"))
 CURRENCY = SITE["business"].get("currency")
 JSON_LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
 PRICE_RE = re.compile(r"^\+?\d[\d ]*đ$")
-DEFAULT_SECTION = "Цены"
+LOCALE_CODES = SITE.get("locales", ["ru"])
+HOME_FILE = "index.html"
+
+
+class LocaleView:
+    """То, что тесту нужно знать о языке: где лежат страницы и как на них
+    пишутся «от …» и название раздела по умолчанию. Читается из файла языка
+    напрямую, без модулей сборки."""
+
+    def __init__(self, code):
+        data = yaml.safe_load((ROOT / "data" / "locales" / f"{code}.yml").read_text(encoding="utf-8"))
+        self.code = code
+        self.prefix = data["url_prefix"].strip("/")
+        self.slugs = data.get("slugs") or {}
+        self.from_template = data["ui"]["price"]["from"]
+        self.default_section = data["ui"]["service"]["price_section_default"]
+
+    def page_file(self, slug=None):
+        parts = [self.prefix] if self.prefix else []
+        if slug:
+            parts.append(self.slugs.get(slug, slug))
+        return NEW.joinpath(*parts, HOME_FILE)
+
+    def format_from(self, price):
+        return self.from_template.format(price=price)
 
 
 def clean(s):
@@ -52,31 +76,31 @@ def is_addon(item):
     return bool(item.get("addon")) or item["price"].strip().startswith("+")
 
 
-def price_hint(sections):
+def price_hint(sections, view):
     """Цена услуги одной строкой: точная, если в прайсе она одна, иначе «от <минимальной>».
     Так цена услуги показывается вне прайс-листа — в сравнительной таблице."""
     values = [clean(it["price"]) for sec in sections for it in sec["items"]
               if not is_addon(it) and price_number(it["price"]) is not None]
     if not values:
         return None
-    return values[0] if len(set(values)) == 1 else f"от {min(values, key=price_number)}"
+    return values[0] if len(set(values)) == 1 else view.format_from(min(values, key=price_number))
 
 
 @lru_cache(maxsize=None)
-def page_html(slug):
-    return (NEW / slug / "index.html").read_text(encoding="utf-8")
+def page_html(view, slug):
+    return view.page_file(slug).read_text(encoding="utf-8")
 
 
-def service_node(slug):
+def service_node(view, slug):
     """Узел Service из JSON-LD страницы услуги."""
-    graph = json.loads(JSON_LD_RE.search(page_html(slug)).group(1))["@graph"]
+    graph = json.loads(JSON_LD_RE.search(page_html(view, slug)).group(1))["@graph"]
     node = next((n for n in graph if n.get("@type") == "Service"), None)
     if node is None:
         sys.exit(f"В JSON-LD страницы {slug} нет узла Service")
     return node
 
 
-def priced_sections(sections):
+def priced_sections(sections, view):
     """Разделы прайса с позициями, у которых есть цена: [(название, [(имя, описание,
     цена-числом, цена-строкой)])] в порядке из prices.json."""
     result = []
@@ -84,7 +108,7 @@ def priced_sections(sections):
         items = [(clean(it["name"]), clean(it.get("desc", "")), value, clean(it["price"]))
                  for it in sec["items"] if (value := price_number(it["price"])) is not None]
         if items:
-            result.append((clean(sec.get("section") or DEFAULT_SECTION), items))
+            result.append((clean(sec.get("section") or view.default_section), items))
     return result
 
 
@@ -121,23 +145,23 @@ def report(label, expected, actual):
 
 # ---------- цены в HTML ----------
 
-def expected_html():
+def expected_html(view):
     """Эталон — прайсы из data/prices.json (источник истины)."""
     cnt = Counter(); counts = {}
     for slug, sections in PRICES.items():
         n = 0
-        for index, (_, items) in enumerate(priced_sections(sections)):
+        for index, (_, items) in enumerate(priced_sections(sections, view)):
             for name, _, _, price_text in items:
                 cnt[(slug, index, name, price_text)] += 1; n += 1
         counts[slug] = n
     return cnt, counts
 
 
-def rendered_html():
+def rendered_html(view):
     """Факт — цены из сгенерированного vn.neva.beauty/<slug>/index.html."""
     cnt = Counter(); counts = {}
     for slug in PRICES:
-        soup = BeautifulSoup(page_html(slug), "html.parser")
+        soup = BeautifulSoup(page_html(view, slug), "html.parser")
         n = 0
         for index, panel in enumerate(soup.select(".pricelist__panel")):
             for row in panel.select(".pricelist__row"):
@@ -160,7 +184,7 @@ def expected_offers():
     """Эталон каталога: позиции с числовой ценой, кроме доплат и товаров.
     Отбор тот же, что у диапазона: цену, которую нельзя заплатить за саму
     услугу, разметка утверждать не должна. Пустые после отбора разделы
-    выпадают — как в build.offer_sections, иначе разъедутся номера разделов."""
+    выпадают — как в pricing.offer_sections, иначе разъедутся номера разделов."""
     cnt = Counter()
     for slug, sections in PRICES.items():
         index = 0
@@ -176,11 +200,11 @@ def expected_offers():
     return cnt
 
 
-def rendered_offers():
+def rendered_offers(view):
     """Факт — Offer'ы из hasOfferCatalog на странице услуги."""
     cnt = Counter(); mismatched = []
     for slug in PRICES:
-        for index, offer in catalog_offers(service_node(slug).get("hasOfferCatalog", {})):
+        for index, offer in catalog_offers(service_node(view, slug).get("hasOfferCatalog", {})):
             offered = offer.get("itemOffered", {})
             desc = clean(offer.get("description", ""))
             if desc != clean(offered.get("description", "")):
@@ -192,23 +216,23 @@ def rendered_offers():
 
 # ---------- цены на карточках «Популярное» (главная) ----------
 
-def expected_popular():
+def expected_popular(view):
     """Эталон карточек главной: точная цена, а при одноимённых позициях в разных
-    разделах прайса — «от <минимальной>» (см. build.popular_price)."""
+    разделах прайса — «от <минимальной>» (см. pricing.popular_price)."""
     result = {}
     for item in CONTENT["home"].get("popular", []):
         matches = [clean(it["price"]) for sec in PRICES.get(item["slug"], [])
                    for it in sec["items"] if it["name"] == item["name"]]
         if not matches:
             sys.exit(f"«Популярное»: в прайсе {item['slug']} нет позиции {item['name']!r}")
-        price = matches[0] if len(set(matches)) == 1 else f"от {min(matches, key=price_number)}"
+        price = matches[0] if len(set(matches)) == 1 else view.format_from(min(matches, key=price_number))
         result[clean(item["name"])] = price
     return result
 
 
-def rendered_popular():
+def rendered_popular(view):
     """Факт — цены на карточках «Популярное» собранной главной."""
-    soup = BeautifulSoup((NEW / "index.html").read_text(encoding="utf-8"), "html.parser")
+    soup = BeautifulSoup(view.page_file().read_text(encoding="utf-8"), "html.parser")
     return {clean(card.select_one(".popular-card__name").get_text()):
             clean(card.select_one(".popular-card__price").get_text())
             for card in soup.select(".popular-card")}
@@ -216,7 +240,7 @@ def rendered_popular():
 
 # ---------- цены в сравнительных таблицах ----------
 
-def expected_compare():
+def expected_compare(view):
     """Эталон сравнительной таблицы: [(название услуги, цена одной строкой)]
     в порядке строк из content.yml."""
     result = {}
@@ -224,16 +248,16 @@ def expected_compare():
         rows = (svc.get("compare") or {}).get("rows")
         if rows:
             result[slug] = [(clean(CONTENT["services"][row["slug"]]["title"]),
-                             price_hint(PRICES.get(row["slug"], []))) for row in rows]
+                             price_hint(PRICES.get(row["slug"], []), view)) for row in rows]
     return result
 
 
-def rendered_compare():
+def rendered_compare(view):
     """Факт — строки сравнительных таблиц на собранных страницах услуг."""
     result = {}
     for slug in PRICES:
         rows = []
-        for row in BeautifulSoup(page_html(slug), "html.parser").select(".compare__table tbody tr"):
+        for row in BeautifulSoup(page_html(view, slug), "html.parser").select(".compare__table tbody tr"):
             name = row.select_one(".pricelist__name")
             desc = name.select_one(".pricelist__desc")
             if desc:
@@ -256,14 +280,14 @@ def expected_aggregates():
     return result
 
 
-def rendered_aggregates():
+def rendered_aggregates(view):
     """Факт — цены услуги из Service.offers: AggregateOffer с диапазоном либо
     обычный Offer, если позиция в прайсе одна. Обе формы приводим к общему виду
     (min, max, count, валюта) — тогда подмена одной формы другой всё равно всплывёт
     как расхождение с прайсом: у Offer count всегда 1, у диапазона — число позиций."""
     result = {}
     for slug in PRICES:
-        offers = service_node(slug).get("offers")
+        offers = service_node(view, slug).get("offers")
         if not offers:
             continue
         kind = offers.get("@type")
@@ -280,54 +304,75 @@ def rendered_aggregates():
 if not (isinstance(CURRENCY, str) and re.fullmatch(r"[A-Z]{3}", CURRENCY)):
     sys.exit(f"business.currency в site.yml = {CURRENCY!r}: цены в разметке уйдут без валюты")
 
-exp_html, exp_counts = expected_html()
-new_html, new_counts = rendered_html()
-exp_offers = expected_offers()
-new_offers, desc_mismatch = rendered_offers()
-exp_aggr, new_aggr = expected_aggregates(), rendered_aggregates()
-
-exp_popular, new_popular = expected_popular(), rendered_popular()
-exp_compare, new_compare = expected_compare(), rendered_compare()
-
-ok = report("HTML", exp_html, new_html)
-ok &= report("JSON-LD", exp_offers, new_offers)
-
-if exp_popular != new_popular:
-    ok = False
+def compare_popular(view):
+    """Карточки «Популярное» главной против прайса. True, если расхождений нет."""
+    exp_popular, new_popular = expected_popular(view), rendered_popular(view)
+    ok = True
     for name in sorted(set(exp_popular) | set(new_popular)):
         if exp_popular.get(name) != new_popular.get(name):
+            ok = False
             print(f"POPULAR MISMATCH «{name}»: ожидалось {exp_popular.get(name)!r}, "
                   f"на главной {new_popular.get(name)!r}")
+    return ok
 
-for slug in sorted(set(exp_compare) | set(new_compare)):
-    if exp_compare.get(slug) != new_compare.get(slug):
-        ok = False
-        print(f"COMPARE MISMATCH {slug}: prices.json={exp_compare.get(slug)} "
-              f"на странице={new_compare.get(slug)}")
 
-for slug, name, desc in desc_mismatch:
-    ok = False
-    print(f"DESCRIPTION MISMATCH {slug}: у Offer «{name}» описание {desc!r} "
-          f"не совпадает с описанием в itemOffered")
+def compare_tables(view):
+    """Сравнительные таблицы и описания Offer'ов. True, если расхождений нет."""
+    exp_compare, new_compare = expected_compare(view), rendered_compare(view)
+    ok = True
+    for slug in sorted(set(exp_compare) | set(new_compare)):
+        if exp_compare.get(slug) != new_compare.get(slug):
+            ok = False
+            print(f"COMPARE MISMATCH {slug}: prices.json={exp_compare.get(slug)} "
+                  f"на странице={new_compare.get(slug)}")
+    for slug, name, desc in rendered_offers(view)[1]:
+        ok = False
+        print(f"DESCRIPTION MISMATCH {slug}: у Offer «{name}» описание {desc!r} "
+              f"не совпадает с описанием в itemOffered")
+    return ok
 
-for slug, sections in PRICES.items():
-    titles = [title for title, _ in priced_sections(sections)]
-    catalog = service_node(slug).get("hasOfferCatalog", {})
-    expected_titles = titles if len(titles) > 1 else []
-    if catalog_section_titles(catalog) != expected_titles:
-        ok = False
-        print(f"SECTIONS MISMATCH {slug}: prices.json={expected_titles} "
-              f"JSON-LD={catalog_section_titles(catalog)}")
-    if exp_counts[slug] != new_counts.get(slug, 0):
-        ok = False
-        print(f"COUNT MISMATCH {slug}: prices.json={exp_counts[slug]} rendered={new_counts.get(slug, 0)}")
-    if exp_aggr.get(slug) != new_aggr.get(slug):
-        ok = False
-        print(f"AGGREGATE MISMATCH {slug}: prices.json={exp_aggr.get(slug)} "
-              f"JSON-LD={new_aggr.get(slug)} (low, high, count, currency)")
 
-print(f"html_items={sum(new_html.values())} jsonld_offers={sum(new_offers.values())} "
-      f"aggregates={len(new_aggr)} popular={len(new_popular)} "
-      f"compare_rows={sum(len(rows) for rows in new_compare.values())} currency={CURRENCY}")
-print("PRICE PARITY OK" if ok else "PRICE PARITY FAILED")
-sys.exit(0 if ok else 1)
+def compare_catalogs(view):
+    """Разделы каталога, число позиций и диапазоны цен по каждой услуге. True, если расхождений нет."""
+    _, exp_counts = expected_html(view)
+    _, new_counts = rendered_html(view)
+    exp_aggr, new_aggr = expected_aggregates(), rendered_aggregates(view)
+    ok = True
+    for slug, sections in PRICES.items():
+        titles = [title for title, _ in priced_sections(sections, view)]
+        catalog = service_node(view, slug).get("hasOfferCatalog", {})
+        expected_titles = titles if len(titles) > 1 else []
+        if catalog_section_titles(catalog) != expected_titles:
+            ok = False
+            print(f"SECTIONS MISMATCH {slug}: prices.json={expected_titles} "
+                  f"JSON-LD={catalog_section_titles(catalog)}")
+        if exp_counts[slug] != new_counts.get(slug, 0):
+            ok = False
+            print(f"COUNT MISMATCH {slug}: prices.json={exp_counts[slug]} rendered={new_counts.get(slug, 0)}")
+        if exp_aggr.get(slug) != new_aggr.get(slug):
+            ok = False
+            print(f"AGGREGATE MISMATCH {slug}: prices.json={exp_aggr.get(slug)} "
+                  f"JSON-LD={new_aggr.get(slug)} (low, high, count, currency)")
+    return ok
+
+
+def run(view):
+    """Сверка цен одного языка. Возвращает True, если расхождений нет."""
+    exp_html, _ = expected_html(view)
+    new_html, _ = rendered_html(view)
+    exp_offers = expected_offers()
+    new_offers, _ = rendered_offers(view)
+    ok = report("HTML", exp_html, new_html)
+    ok &= report("JSON-LD", exp_offers, new_offers)
+    ok &= compare_popular(view)
+    ok &= compare_tables(view)
+    ok &= compare_catalogs(view)
+    print(f"[{view.code}] html_items={sum(new_html.values())} jsonld_offers={sum(new_offers.values())} "
+          f"aggregates={len(rendered_aggregates(view))} popular={len(rendered_popular(view))} "
+          f"compare_rows={sum(len(rows) for rows in rendered_compare(view).values())} currency={CURRENCY}")
+    return ok
+
+
+results = [run(LocaleView(code)) for code in LOCALE_CODES]
+print("PRICE PARITY OK" if all(results) else "PRICE PARITY FAILED")
+sys.exit(0 if all(results) else 1)

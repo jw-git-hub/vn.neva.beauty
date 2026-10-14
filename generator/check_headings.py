@@ -53,6 +53,7 @@ def check(page, found):
     return errors
 
 
+# Ключ — язык страницы (<html lang>): одинаковый h2 считается дублем только внутри языка.
 # Известный остаток дублей h2, ещё не разобранный. Правило уникальности введено
 # вместе с заголовками блока записи, а на эти три группы заказчик правку текста
 # пока не давал. Список именной и конечный: новый дубль проверка поймает сразу,
@@ -61,9 +62,11 @@ def check(page, found):
 # «Смотрите также» → «Что выбирают вместе с услугой «<название>»» — оба
 # собираются шаблоном из title страницы; «Почему это работает» потребует текста.
 KNOWN_SHARED_H2 = {
-    "Почему это работает",
-    "Цены",
-    "Смотрите также",
+    "ru": {
+        "Почему это работает",
+        "Цены",
+        "Смотрите также",
+    },
 }
 
 
@@ -74,18 +77,25 @@ def main_h2(page):
     return [re.sub(r"\s+", " ", h.get_text()).strip() for h in soup.select("main h2")]
 
 
+def page_lang(page):
+    """Язык страницы из <html lang>."""
+    soup = BeautifulSoup(page.read_text(encoding="utf-8"), "html.parser")
+    return soup.html.get("lang", "")
+
+
 def shared_h2(pages_):
-    """Один и тот же h2 на нескольких страницах."""
+    """Один и тот же h2 на нескольких страницах одного языка."""
     seen = defaultdict(list)
     for page in pages_:
+        lang = page_lang(page)
         for text in main_h2(page):
-            if text not in KNOWN_SHARED_H2:
-                seen[text].append(str(page.relative_to(SITE.parent)))
+            if text not in KNOWN_SHARED_H2.get(lang, set()):
+                seen[(lang, text)].append(str(page.relative_to(SITE.parent)))
     errors = []
-    for text, where in sorted(seen.items()):
+    for (lang, text), where in sorted(seen.items()):
         if len(where) > 1:
             shown = ", ".join(where[:3]) + ("…" if len(where) > 3 else "")
-            errors.append(f"один и тот же h2 на {len(where)} страницах ({shown}): «{text}»")
+            errors.append(f"один и тот же h2 на {len(where)} страницах [{lang}] ({shown}): «{text}»")
     return errors
 
 
@@ -93,6 +103,6 @@ all_headings = [(page, headings(page)) for page in pages()]
 errors = [error for page, found in all_headings for error in check(page, found)]
 errors += shared_h2([page for page, _ in all_headings])
 print(f"страниц проверено: {len(all_headings)}, "
-      f"известных дублей в исключениях: {len(KNOWN_SHARED_H2)}")
+      f"известных дублей в исключениях: {sum(len(known) for known in KNOWN_SHARED_H2.values())}")
 print("\n".join(errors) if errors else "HEADINGS OK — иерархия без пропусков, h2 не повторяются")
 sys.exit(1 if errors else 0)
