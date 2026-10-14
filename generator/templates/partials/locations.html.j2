@@ -7,14 +7,14 @@
    должен уйти сразу; loc_list — строчки в подвале, для того, кто дочитал
    и только теперь узнаёт, что салон есть и во второй стране. #}
 
-{% macro _href(place, base_path) -%}
+{% macro _href(place) -%}
 {{ href('home') if place.current else place.url }}
 {%- endmacro %}
 
 {# Переключатель в шапке. Строка города под названием и так стояла в фирменном
    замке — она и становится кнопкой: ширины шапке добавляет только галочка, а
    свободного места там 47 px на 1024 (см. комментарий у .site-header__cta). #}
-{% macro loc_switch(site, base_path, brand_icon) -%}
+{% macro loc_switch(site, brand_icon) -%}
 <div class="brand-mark site-header__logo loc" data-loc>
   {{ icon(brand_icon, 'brand-mark__flower') }}
   <span class="brand-mark__text">
@@ -24,7 +24,7 @@
   <div class="loc__menu">
     <p class="loc__lead">{{ t('locations.title') }}</p>
     {% for place in site.locations %}
-    <a class="loc__item{% if place.current %} is-active{% endif %}" href="{{ _href(place, base_path) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
+    <a class="loc__item{% if place.current %} is-active{% endif %}" href="{{ _href(place) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
       {{ icon('map-pin', 'loc__pin') }}
       <span class="loc__place"><span class="loc__city">{{ place.city }}</span><span class="loc__country">{{ place.country }}</span></span>
     </a>
@@ -35,11 +35,11 @@
 
 {# Строчки в подвале — под фирменным замком, в колонке, где до сих пор был
    только знак и пустое место. #}
-{% macro loc_list(site, base_path) -%}
+{% macro loc_list(site) -%}
 <div class="site-footer__places">
   <h2 class="site-footer__title">{{ t('locations.title') }}</h2>
   {% for place in site.locations %}
-  <a class="site-footer__place{% if place.current %} is-current{% endif %}" href="{{ _href(place, base_path) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
+  <a class="site-footer__place{% if place.current %} is-current{% endif %}" href="{{ _href(place) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
     {{ icon('map-pin', 'site-footer__place-pin') }}
     <span>{{ place.city }}, {{ place.country }}</span>
     {%- if place.current %}<span class="site-footer__place-here">{{ t('locations.here') }}</span>

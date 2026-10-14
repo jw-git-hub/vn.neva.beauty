@@ -4,7 +4,7 @@
     {# Замок здесь собран не макросом brand_mark, а loc_switch: строка города —
        кнопка переключателя салонов, а кнопка не может стоять внутри ссылки.
        В подвале и дровере город ничего не открывает, там остаётся brand_mark. #}
-    {{ loc_switch(site, base_path, 'lotus') }}
+    {{ loc_switch(site, 'lotus') }}
     <nav class="nav" aria-label="{{ t('nav.main_label') }}">
       {% for item in site.nav %}
         {% if item.children %}
