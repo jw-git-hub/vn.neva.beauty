@@ -205,6 +205,30 @@
 .burger span{display:block;height:2px;background:var(--ink);border-radius:2px;transition:all var(--t-fast) var(--ease)}
 @media(min-width:1024px){.burger{display:none}}
 
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА ===== */
+/* Пилюля — ссылка на ту же страницу на другом языке (спека, раздел 8). До 1024 px
+   меню и кнопка записи скрыты, и margin-left:auto прижимает пилюлю к бургеру. С 1024 px
+   меню центрируется своими auto-отступами — это та же точка, куда его ставил
+   space-between между логотипом и кнопкой, — а пилюля встаёт рядом с кнопкой.
+   Видимая пилюля 40×30 px, зона нажатия 44×44 — псевдоэлементом, без сдвига потока. */
+.lang-pill{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;
+  min-width:2.5rem;height:1.875rem;padding:0 .7rem;margin-left:auto;
+  border:1px solid var(--line);border-radius:var(--radius-pill);
+  font-family:var(--font-body);font-size:.75rem;font-weight:600;letter-spacing:.08em;line-height:1;
+  color:var(--ink);transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.lang-pill:hover{border-color:var(--rose-soft);color:var(--rose)}
+.lang-pill::after{content:"";position:absolute;inset:-7px -2px}
+@media(min-width:1024px){.nav{margin-inline:auto}.lang-pill{margin-left:0}}
+
+/* Строка «Русский · English» в мобильном меню и подвале. Текущий язык — текст, не ссылка. */
+.lang-line{display:flex;align-items:center;flex-wrap:wrap;margin:0;font-size:var(--fs-200);color:var(--muted)}
+.lang-line a{display:inline-flex;align-items:center;min-height:44px;padding-inline:.25rem;
+  color:var(--muted);transition:color var(--t-fast) var(--ease)}
+.lang-line a:hover{color:var(--rose)}
+.lang-line__current{padding-inline:.25rem;color:var(--ink);font-weight:600}
+.lang-line__sep{color:var(--taupe)}
+.drawer__langs{justify-content:center}
+
 /* overlay + drawer */
 .overlay{position:fixed;inset:0;background:rgba(58,44,42,.5);z-index:var(--z-overlay);
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);

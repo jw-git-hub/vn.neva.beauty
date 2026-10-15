@@ -1,5 +1,6 @@
 {% from 'partials/brand.html.j2' import brand_mark %}
 {% from 'partials/locations.html.j2' import loc_list %}
+{%- from 'partials/language_switch.html.j2' import lang_line %}
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="site-footer__col site-footer__brand">
@@ -24,5 +25,6 @@
   <div class="site-footer__bottom container">
     <span>{{ t('footer.copyright') }}</span>
     <a href="{{ href('privacy') }}">{{ t('footer.privacy') }}</a>
+    {{ lang_line(page, 'site-footer__langs') }}
   </div>
 </footer>

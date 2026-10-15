@@ -206,3 +206,39 @@ class EnglishHeadingTemplateTest(unittest.TestCase):
         for heading in ("Prices", "See also"):
             self.assertIn(f"<h2>{heading} — EN LPG-массаж</h2>", html)
         self.assertNotIn("{title}", html)
+
+
+def build_real_pages(code):
+    """Собирает страницы настоящего языка сайта (ru или en) с обоими языками в таблице
+    маршрутов, не пиша файлов. Возвращает {путь страницы: html}."""
+    site, content, prices = build.load()
+    locales = build.load_locales(site)
+    routes = Routes(locales, taxonomy.page_ids(content), site["base_url"],
+                    build.load_x_default_locale(site))
+    locale = next(item for item in locales if item.code == code)
+    written = {}
+    with mock.patch("build.write", side_effect=lambda path, html: written.update({path: html})):
+        build.build_locale(site, content, prices, locale, routes, "", locales[0])
+    return {path.relative_to(build.OUT).as_posix(): html for path, html in written.items()}
+
+
+class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.ru, cls.en = build_real_pages("ru"), build_real_pages("en")
+
+    def test_russian_page_has_english_pill(self):
+        self.assertIn('<a class="lang-pill" href="/en/lpg-massage/" hreflang="en" lang="en" '
+                      'aria-label="EN — English version" data-lang="en">EN</a>',
+                      self.ru["lpg-massazh/index.html"])
+
+    def test_english_page_has_russian_pill(self):
+        self.assertIn('<a class="lang-pill" href="/lpg-massazh/" hreflang="ru" lang="ru" '
+                      'aria-label="RU — русская версия" data-lang="ru">RU</a>',
+                      self.en["en/lpg-massage/index.html"])
+
+    def test_language_line_marks_current_without_link(self):
+        html = self.ru["lpg-massazh/index.html"]
+        self.assertEqual(html.count('<span class="lang-line__current" lang="ru" aria-current="true">'
+                                    'Русский</span>'), 2)  # мобильное меню и подвал
+        self.assertEqual(html.count('data-lang="en">English</a>'), 2)

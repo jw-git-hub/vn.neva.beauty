@@ -1,4 +1,5 @@
 {% from 'partials/locations.html.j2' import loc_switch %}
+{%- from 'partials/language_switch.html.j2' import lang_pill %}
 <header class="site-header" data-header>
   <div class="container site-header__inner">
     {# Замок здесь собран не макросом brand_mark, а loc_switch: строка города —
@@ -20,6 +21,7 @@
         {% endif %}
       {% endfor %}
     </nav>
+    {{ lang_pill(page) }}
     <a class="btn btn--primary site-header__cta" {{ contact('whatsapp', 'header', page) }}>{{ t('cta.book') }}</a>
     <button class="burger" data-drawer-open aria-label="{{ t('nav.open_menu') }}" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>

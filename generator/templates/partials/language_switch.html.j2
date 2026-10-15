@@ -1,0 +1,22 @@
+{# Переключатель языка — ссылка на ту же страницу на другом языке (спека, раздел 8).
+   Без флагов: флаг означает страну, а переключатель стран на сайте уже есть.
+   Работает без JavaScript; nav.js только запоминает ручной выбор (data-lang),
+   чтобы автовыбор по браузеру его не перебивал. #}
+
+{# Пилюля в шапке: один короткий код языка, на который можно перейти. #}
+{% macro lang_pill(page) -%}
+{%- for link in language_links(page) if not link.is_current -%}
+<a class="lang-pill" href="{{ link.href }}" hreflang="{{ link.html_lang }}" lang="{{ link.html_lang }}" aria-label="{{ link.label }}" data-lang="{{ link.code }}">{{ link.short }}</a>
+{%- endfor -%}
+{%- endmacro %}
+
+{# Строка «Русский · English»: текущий язык выделен и ссылкой не является. #}
+{% macro lang_line(page, cls) -%}
+<p class="lang-line {{ cls }}">
+{%- for link in language_links(page) %}
+  {%- if not loop.first %}<span class="lang-line__sep" aria-hidden="true"> · </span>{% endif %}
+  {%- if link.is_current %}<span class="lang-line__current" lang="{{ link.html_lang }}" aria-current="true">{{ link.name }}</span>
+  {%- else %}<a href="{{ link.href }}" hreflang="{{ link.html_lang }}" lang="{{ link.html_lang }}" data-lang="{{ link.code }}">{{ link.name }}</a>{% endif %}
+{%- endfor -%}
+</p>
+{%- endmacro %}

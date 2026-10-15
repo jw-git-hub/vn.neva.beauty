@@ -1,5 +1,5 @@
 // nav.js — мобильный drawer, дропдауны по клику, переключатель салонов,
-// тень хедера при скролле, уборка отработавшего якоря из адреса
+// тень хедера при скролле, уборка отработавшего якоря из адреса, память выбора языка
 const header = document.querySelector('[data-header]');
 const openBtn = document.querySelector('[data-drawer-open]');
 const drawer = document.querySelector('[data-drawer]');
@@ -144,3 +144,11 @@ function forgetHashWhenOffscreen(){
 
 window.addEventListener('hashchange', forgetHashWhenOffscreen);
 forgetHashWhenOffscreen();
+
+// Ручной выбор языка запоминается: автовыбор по браузеру (строчный скрипт в начале
+// <head>, generator/language_redirect.py) читает тот же ключ и выбор не перебивает.
+// Переход по ссылке не отменяется — пилюля работает и без этой памяти.
+const LANG_KEY = 'neva.lang';
+document.querySelectorAll('[data-lang]').forEach(link => link.addEventListener('click', () => {
+  try { localStorage.setItem(LANG_KEY, link.dataset.lang); } catch (e) { /* приватный режим: без памяти */ }
+}));
