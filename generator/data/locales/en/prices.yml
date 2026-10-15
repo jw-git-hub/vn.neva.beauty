@@ -6,8 +6,8 @@
 
 sections:
   'Цены': 'Prices'
-  'Цены - Женщины': 'Prices - Women'
-  'Цены - Мужчины': 'Prices - Men'
+  'Цены - Женщины': 'Prices — Women'
+  'Цены - Мужчины': 'Prices — Men'
   'Прайс-лист на услуги чистки': 'Cleansing facials price list'
 
 names:
@@ -36,16 +36,16 @@ names:
   'Все тело': 'Full body'
 
   # LPG-массаж
-  'LPG Массаж - Тело': 'LPG Massage - Body'
-  'LPG Массаж - Лицо': 'LPG Massage - Face'
+  'LPG Массаж - Тело': 'LPG Massage — Body'
+  'LPG Массаж - Лицо': 'LPG Massage — Face'
   'Костюм для LPG': 'LPG bodysuit'
 
   # Эндосфера-терапия
-  'Эндосфера-терапия - Тело': 'Endosphere Therapy - Body'
-  'Эндосфера-терапия - Лицо': 'Endosphere Therapy - Face'
+  'Эндосфера-терапия - Тело': 'Endosphere Therapy — Body'
+  'Эндосфера-терапия - Лицо': 'Endosphere Therapy — Face'
 
   # Ультразвуковая кавитация
-  'УЗ-кавитация': 'Ultrasonic cavitation'
+  'УЗ-кавитация': 'Ultrasonic Cavitation'
 
   # Эстетический уход за лицом
   'Пилинг по типу кожи': 'Peel for your skin type'
