@@ -11,8 +11,13 @@ from routes import NOT_FOUND
 STORAGE_KEY = "neva.lang"
 SOURCE_KEY = "neva.source"  # источник визита на время перехода — для Метрики
 # Поисковые и ИИ-краулеры, сборщики превью ссылок, Lighthouse: им — запрошенная страница.
-BOT_PATTERN = ("bot|crawl|spider|slurp|lighthouse|pagespeed|preview|"
-               "facebookexternalhit|whatsapp|telegram|headless")
+# «google» — инструменты Google, исполняющие JS без «bot» в имени (Google-InspectionTool
+# проверки URL в Search Console, GoogleOther): иначе проверка русского адреса показала
+# бы переадресацию. В браузерах Chrome и Android этого слова нет. «telegram» нет
+# намеренно: превью Telegram ловится по «bot», а встроенный браузер Telegram на Android
+# пишет себя в user-agent — это живой гость, ему автовыбор нужен.
+BOT_PATTERN = ("bot|crawl|spider|slurp|lighthouse|pagespeed|preview|google|"
+               "facebookexternalhit|whatsapp|headless")
 
 
 def _groups(locales):

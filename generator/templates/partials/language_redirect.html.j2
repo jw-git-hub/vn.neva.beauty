@@ -25,7 +25,8 @@
     return C.fallback;
   }
   if (new RegExp(C.bots, "i").test(navigator.userAgent) || isInternal(document.referrer)) return;
-  var target = choose(navigator.languages || [navigator.language || ""]);
+  var languages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
+  var target = choose(languages);
   if (target === C.current || !C.pairs[target]) return;
   try { sessionStorage.setItem(C.sourceKey, document.referrer); } catch (e) {}
   location.replace(C.pairs[target] + location.search + location.hash);

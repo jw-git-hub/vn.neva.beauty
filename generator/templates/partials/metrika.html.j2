@@ -25,24 +25,22 @@
       ссылок и точный показатель отказов остаются — они почти ничего не стоят. #}
   {#- Переход по языку (language_redirect.html.j2): document.referrer после него — наша
       же страница, и визит из поиска записался бы внутренним. Скрипт выбора языка
-      сохранил настоящий источник; тогда первый просмотр отправляется вручную
-      (defer + hit) с этим источником, а ключ удаляется. Пустая строка — прямой заход.
-      Имя параметра referer — по документации Метрики; подтверждается тестовым визитом. #}
-  var source = null;
+      сохранил настоящий источник; до загрузки tag.js он подставляется в сам
+      document.referrer, и счётчик видит его во всех запросах. Пустая строка — прямой
+      заход: передать её через hit нельзя, для счётчика она значит «не задано». #}
   try {
-    source = sessionStorage.getItem({{ language_source_key | tojson }});
-    if (source !== null) sessionStorage.removeItem({{ language_source_key | tojson }});
+    var source = sessionStorage.getItem({{ language_source_key | tojson }});
+    if (source !== null) {
+      sessionStorage.removeItem({{ language_source_key | tojson }});
+      Object.defineProperty(d, "referrer", {get: function () { return source; }});
+    }
   } catch (e) {}
   ym({{ site.metrika_id }}, "init", {
        clickmap:true,
        trackLinks:true,
        accurateTrackBounce:true,
-       webvisor:false,
-       defer:source !== null
+       webvisor:false
   });
-  if (source !== null) {
-    ym({{ site.metrika_id }}, "hit", location.href, {referer: source, title: d.title});
-  }
   {#- Обращение: один обработчик на весь документ ловит клик по любой ссылке связи
       (data-contact, см. contacts.py) и отправляет цель contact с параметрами визита:
       канал, язык, страница, место кнопки. Ссылки открываются в новой вкладке, страница

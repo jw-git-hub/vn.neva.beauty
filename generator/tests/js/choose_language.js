@@ -18,7 +18,8 @@ function run(script, input) {
   };
   Object.defineProperty(location, "href", { set() { result.assigned = true; } });
   const context = vm.createContext({
-    navigator: { languages: input.languages, language: input.languages[0], userAgent: input.userAgent },
+    navigator: { languages: input.languages, language: input.language || input.languages[0],
+      userAgent: input.userAgent },
     document: { referrer: input.referrer },
     location, URL,
     localStorage: storage(input.saved, input.storageFails),

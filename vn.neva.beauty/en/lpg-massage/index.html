@@ -23,11 +23,12 @@
     return C.fallback;
   }
   if (new RegExp(C.bots, "i").test(navigator.userAgent) || isInternal(document.referrer)) return;
-  var target = choose(navigator.languages || [navigator.language || ""]);
+  var languages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
+  var target = choose(languages);
   if (target === C.current || !C.pairs[target]) return;
   try { sessionStorage.setItem(C.sourceKey, document.referrer); } catch (e) {}
   location.replace(C.pairs[target] + location.search + location.hash);
-})({"bots": "bot|crawl|spider|slurp|lighthouse|pagespeed|preview|facebookexternalhit|whatsapp|telegram|headless", "current": "en", "fallback": "en", "groups": [["ru", ["ru", "uk", "be", "kk"]]], "pairs": {"en": "/en/lpg-massage/", "ru": "/lpg-massazh/"}, "sourceKey": "neva.source", "storageKey": "neva.lang"});
+})({"bots": "bot|crawl|spider|slurp|lighthouse|pagespeed|preview|google|facebookexternalhit|whatsapp|headless", "current": "en", "fallback": "en", "groups": [["ru", ["ru", "uk", "be", "kk"]]], "pairs": {"en": "/en/lpg-massage/", "ru": "/lpg-massazh/"}, "sourceKey": "neva.source", "storageKey": "neva.lang"});
 </script>
   
   <link rel="stylesheet" href="/assets/css/bundle.min.css?v=df6a07c6">
@@ -969,21 +970,19 @@
 (function (w, d) {
   w.ym = w.ym || function () { (w.ym.a = w.ym.a || []).push(arguments) };
   w.ym.l = 1 * new Date();
-  var source = null;
   try {
-    source = sessionStorage.getItem("neva.source");
-    if (source !== null) sessionStorage.removeItem("neva.source");
+    var source = sessionStorage.getItem("neva.source");
+    if (source !== null) {
+      sessionStorage.removeItem("neva.source");
+      Object.defineProperty(d, "referrer", {get: function () { return source; }});
+    }
   } catch (e) {}
   ym(106778458, "init", {
        clickmap:true,
        trackLinks:true,
        accurateTrackBounce:true,
-       webvisor:false,
-       defer:source !== null
+       webvisor:false
   });
-  if (source !== null) {
-    ym(106778458, "hit", location.href, {referer: source, title: d.title});
-  }
   var PAGE = "lpg-massazh";
   function reportContact(event) {
     var link = event.target.closest && event.target.closest("[data-contact]");

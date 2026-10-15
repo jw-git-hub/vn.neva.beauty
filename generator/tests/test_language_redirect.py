@@ -21,7 +21,13 @@ BROWSER = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/60
 ROBOTS = ("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
           "Mozilla/5.0 (Linux; Android 11) Chrome/120.0 Mobile Safari/537.36 Chrome-Lighthouse",
           "TelegramBot (like TwitterBot)", "facebookexternalhit/1.1",
-          "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.1)")
+          "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.1)",
+          "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X) AppleWebKit/537.36 Chrome/120.0 "
+          "Mobile Safari/537.36 (compatible; Google-InspectionTool/1.0;)",
+          "Mozilla/5.0 (compatible; GoogleOther)")
+# Встроенный браузер Telegram на Android дописывает себя в user-agent — это живой гость.
+TELEGRAM_IN_APP = ("Mozilla/5.0 (Linux; Android 14; SM-A546B) AppleWebKit/537.36 Chrome/128.0 "
+                   "Mobile Safari/537.36 Telegram-Android/11.2.3 (Samsung SM-A546B; Android 14)")
 RUSSIAN_GROUP = ("ru", "uk", "be", "kk")
 
 
@@ -109,6 +115,15 @@ class ChooseLanguageScriptTest(unittest.TestCase):
         self.assertNotEqual(self.run_cases("ru", [case]), ["ASSIGNED"])
         self.assertEqual(self.run_cases("ru", [case]), [EN_PAGE])
 
+    def test_telegram_in_app_browser_is_a_guest(self):
+        case = {"languages": ["en-US"], "saved": None, "referrer": "", "userAgent": TELEGRAM_IN_APP}
+        self.assertEqual(self.run_cases("ru", [case]), [EN_PAGE])
+
+    def test_empty_language_list_falls_back_to_language(self):
+        case = {"languages": [], "language": "ru-RU", "saved": None, "referrer": "",
+                "userAgent": BROWSER}
+        self.assertEqual(self.run_cases("en", [case]), [RU_PAGE])
+
     def test_storage_failure_is_harmless(self):
         case = {"languages": ["ru"], "saved": "en", "referrer": "", "userAgent": BROWSER,
                 "storageFails": True}
@@ -132,20 +147,21 @@ class MetrikaSourceTest(unittest.TestCase):
                                          capture_output=True, text=True, check=True).stdout)
 
     def test_redirect_source_reaches_metrika(self):
+        """Счётчик берёт источник из document.referrer: после перехода по языку он
+        подменяется исходным, и init остаётся обычным — один просмотр, без hit."""
         result = self.run_metrika("https://www.google.com/")
+        self.assertEqual(result["referrer"], "https://www.google.com/")
         init = next(call for call in result["calls"] if call[1] == "init")
-        hit = next(call for call in result["calls"] if call[1] == "hit")
-        self.assertTrue(init[2]["defer"])
-        self.assertEqual(hit[2:], ["https://vn.neva.beauty/en/",
-                                   {"referer": "https://www.google.com/", "title": "Page"}])
+        self.assertFalse(init[2].get("defer"))
+        self.assertFalse(any(call[1] == "hit" for call in result["calls"]))
         self.assertIsNone(result["left"])
 
-    def test_direct_entry_after_redirect_keeps_empty_source(self):
-        hit = next(call for call in self.run_metrika("")["calls"] if call[1] == "hit")
-        self.assertEqual(hit[3]["referer"], "")
+    def test_direct_entry_after_redirect_stays_direct(self):
+        """Пустой источник — прямой заход. Пустая строка в hit для счётчика значила бы
+        «не задано», и он записал бы переход с нашей же русской страницы."""
+        self.assertEqual(self.run_metrika("")["referrer"], "")
 
     def test_normal_visit_is_unchanged(self):
         result = self.run_metrika(None)
-        init = next(call for call in result["calls"] if call[1] == "init")
-        self.assertFalse(init[2].get("defer"))
+        self.assertEqual(result["referrer"], "https://vn.neva.beauty/lpg-massazh/")
         self.assertFalse(any(call[1] == "hit" for call in result["calls"]))
