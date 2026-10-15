@@ -9,6 +9,11 @@ url_prefix: ""
 browser_languages: [ru, uk, be, kk]
 
 ui:
+  # Переключатель языка (спека, раздел 8): подписи берутся из языка цели.
+  language:
+    short: "RU"
+    name: "Русский"
+    switch_label: "RU — русская версия"
   nav:
     home: "Главная"
     main_label: "Основная навигация"

@@ -26,6 +26,11 @@ slugs:
   lazernye-procedury: laser-treatments
 
 ui:
+  # Переключатель языка: строки из спеки, раздел 8.
+  language:
+    short: "EN"
+    name: "English"
+    switch_label: "EN — English version"
   nav:
     home: "Home"
     main_label: "Main navigation"

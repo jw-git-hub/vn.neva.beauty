@@ -104,6 +104,11 @@ class Routes:
         self._base_url = base_url
         self._base_path = base_path.rstrip("/")
 
+    @property
+    def locales(self):
+        """Языки сайта в порядке site.yml."""
+        return list(self._locales)
+
     def path(self, locale, page_id):
         """Путь страницы от корня сайта с префиксом языка: «/en/laser-hair-removal/»."""
         if page_id not in self._page_ids:

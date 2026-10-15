@@ -2,7 +2,7 @@ import json, re, urllib.parse, yaml
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import contacts, images, pages, schema, sitewide, taxonomy, translation
+import contacts, images, language_switch, pages, schema, sitewide, taxonomy, translation
 from locales import load_locale, load_privacy, localized_site
 from routes import Routes
 
@@ -59,6 +59,7 @@ def make_env(locale, routes, base_path, site_contacts):
     e.globals.update(
         icon=icon, theme_color=THEME_COLOR, base_path=base_path, locale=locale,
         t=locale.t, href=lambda page_id: routes.href(locale, page_id),
+        language_links=lambda page: language_switch.language_links(routes, locale, page["id"]),
         # Ссылка связи: адрес с текстом страницы и метки канала и места (contacts.py).
         contact=lambda channel, place, page: contacts.link_attrs(
             site_contacts, channel, place,
