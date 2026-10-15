@@ -18,6 +18,12 @@ from types import SimpleNamespace
 import yaml
 from bs4 import BeautifulSoup
 
+# Модули сборки — только для названий на языке страницы (накладка текстов и словарь
+# прайса). Разбор цен тест держит своей копией: price_number, is_addon, price_hint ниже.
+import locales
+import pricing
+import translation
+
 ROOT = Path(__file__).resolve().parent
 NEW = ROOT.parent / "vn.neva.beauty"
 PRICES = json.loads((ROOT / "data" / "prices.json").read_text(encoding="utf-8"))
@@ -46,9 +52,10 @@ class LocaleView:
     пишутся «от …» и название раздела по умолчанию. Читается из файла языка
     напрямую, без модулей сборки."""
 
-    def __init__(self, code):
+    def __init__(self, code, main_code):
         data = yaml.safe_load((ROOT / "data" / "locales" / f"{code}.yml").read_text(encoding="utf-8"))
         self.code = code
+        self.content, self.prices, self._price_translation = translated_data(code, main_code)
         self.prefix = data["url_prefix"].strip("/")
         self.slugs = data.get("slugs") or {}
         self.from_template = data["ui"]["price"]["from"]
@@ -62,6 +69,19 @@ class LocaleView:
 
     def format_from(self, price):
         return self.from_template.format(price=price)
+
+    def prices_name(self, slug, name):
+        return self._price_translation.text(slug, "names", name)
+
+
+def translated_data(code, main_code):
+    """Тексты, прайс и переводчик прайса языка: основной — как в мастере, перевод —
+    через модули перевода. Прайс — в виде для шаблона: признак комбо по русскому названию."""
+    language = translation.prepare(CONTENT, PRICES, locales.load_locale(code),
+                                   locales.load_locale(main_code))
+    prices = {slug: language.prices.translate_sections(slug, pricing.price_view(sections))
+              for slug, sections in PRICES.items()}
+    return language.content, prices, language.prices
 
 
 def clean(s):
@@ -179,7 +199,7 @@ def report(label, expected, actual):
 def expected_html(view):
     """Эталон — прайсы из data/prices.json (источник истины)."""
     cnt = Counter(); counts = {}
-    for slug, sections in PRICES.items():
+    for slug, sections in view.prices.items():
         n = 0
         for index, (_, items) in enumerate(priced_sections(sections, view)):
             for name, _, _, price_text in items:
@@ -205,15 +225,45 @@ def rendered_html(view):
     return cnt, counts
 
 
+PRICE_CELL_SELECTOR = ".pricelist__price, .combo__price"
+POSITION_MISMATCH = "POSITION MISMATCH {slug} #{index}: {main_code}={expected!r} {code}={rendered!r}"
+
+
+def price_sequence(soup):
+    """Цены прайс-листа в порядке документа: строки таблицы и карточки комбо."""
+    return [clean(cell.get_text()) for panel in soup.select(".pricelist__panel")
+            for cell in panel.select(PRICE_CELL_SELECTOR)]
+
+
+def position_mismatches(main, other):
+    """n-я цена перевода против n-й цены основного языка: [(номер, основная, перевода)]."""
+    size = max(len(main), len(other))
+    padded = [(main + [None] * size)[:size], (other + [None] * size)[:size]]
+    return [(index, expected, rendered)
+            for index, (expected, rendered) in enumerate(zip(*padded)) if expected != rendered]
+
+
+def report_positions(main_view, view):
+    """Позиционное равенство: перевод не мог переставить или потерять цену."""
+    ok = True
+    for slug in PRICES:
+        for index, expected, rendered in position_mismatches(
+                price_sequence(page_soup(main_view, slug)), price_sequence(page_soup(view, slug))):
+            ok = False
+            print(POSITION_MISMATCH.format(slug=slug, index=index, main_code=main_view.code,
+                                           code=view.code, expected=expected, rendered=rendered))
+    return ok
+
+
 # ---------- цены в JSON-LD ----------
 
-def expected_offers():
+def expected_offers(view):
     """Эталон каталога: позиции с числовой ценой, кроме доплат и товаров.
     Отбор тот же, что у диапазона: цену, которую нельзя заплатить за саму
     услугу, разметка утверждать не должна. Пустые после отбора разделы
     выпадают — как в pricing.offer_sections, иначе разъедутся номера разделов."""
     cnt = Counter()
-    for slug, sections in PRICES.items():
+    for slug, sections in view.prices.items():
         index = 0
         for sec in sections:
             kept = [(clean(it["name"]), clean(it.get("desc", "")), value)
@@ -253,7 +303,7 @@ def expected_popular(view):
         if not matches:
             sys.exit(f"«Популярное»: в прайсе {item['slug']} нет позиции {item['name']!r}")
         price = matches[0] if len(set(matches)) == 1 else view.format_from(min(matches, key=price_number))
-        result[clean(item["name"])] = price
+        result[clean(view.prices_name(item["slug"], item["name"]))] = price
     return result
 
 
@@ -271,10 +321,11 @@ def expected_compare(view):
     """Эталон сравнительной таблицы: [(название услуги, цена одной строкой)]
     в порядке строк из content.yml."""
     result = {}
-    for slug, svc in CONTENT["services"].items():
+    services = view.content["services"]
+    for slug, svc in services.items():
         rows = (svc.get("compare") or {}).get("rows")
         if rows:
-            result[slug] = [(clean(CONTENT["services"][row["slug"]]["title"]),
+            result[slug] = [(clean(services[row["slug"]]["title"]),
                              price_hint(PRICES.get(row["slug"], []), view)) for row in rows]
     return result
 
@@ -328,7 +379,7 @@ def expected_section_titles(view):
     """Эталон заголовков разделов каталога: у услуги с одним разделом
     вложенных OfferCatalog нет, поэтому список пуст."""
     result = {}
-    for slug, sections in PRICES.items():
+    for slug, sections in view.prices.items():
         titles = [title for title, _ in priced_sections(sections, view)]
         result[slug] = titles if len(titles) > 1 else []
     return result
@@ -349,7 +400,7 @@ def collect(view):
     return SimpleNamespace(
         html=Pair(exp_html, new_html),
         counts=Pair(exp_counts, new_counts),
-        offers=Pair(expected_offers(), new_offers),
+        offers=Pair(expected_offers(view), new_offers),
         descriptions=mismatched,
         popular=Pair(expected_popular(view), rendered_popular(view)),
         compare=Pair(expected_compare(view), rendered_compare(view)),
@@ -401,11 +452,17 @@ def run(view):
     return ok
 
 
-if not (isinstance(CURRENCY, str) and re.fullmatch(r"[A-Z]{3}", CURRENCY)):
-    sys.exit(f"business.currency в site.yml = {CURRENCY!r}: цены в разметке уйдут без валюты")
-if not LOCALE_CODES:
-    sys.exit("В site.yml не задан список языков locales: без него нечего сверять")
+def main():
+    if not (isinstance(CURRENCY, str) and re.fullmatch(r"[A-Z]{3}", CURRENCY)):
+        sys.exit(f"business.currency в site.yml = {CURRENCY!r}: цены в разметке уйдут без валюты")
+    if not LOCALE_CODES:
+        sys.exit("В site.yml не задан список языков locales: без него нечего сверять")
+    views = [LocaleView(code, LOCALE_CODES[0]) for code in LOCALE_CODES]
+    results = [run(view) for view in views]
+    results += [report_positions(views[0], view) for view in views[1:]]
+    print("PRICE PARITY OK" if all(results) else "PRICE PARITY FAILED")
+    sys.exit(0 if all(results) else 1)
 
-results = [run(LocaleView(code)) for code in LOCALE_CODES]
-print("PRICE PARITY OK" if all(results) else "PRICE PARITY FAILED")
-sys.exit(0 if all(results) else 1)
+
+if __name__ == "__main__":
+    main()
