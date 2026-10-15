@@ -57,3 +57,10 @@ class TranslationTest(unittest.TestCase):
         self.addCleanup(mock.patch.stopall)
         language = translation.prepare(self.content, self.prices, self.english, self.main)
         self.assertTrue(language.content["home"]["seo_title"].startswith(PREFIX))
+
+    def test_stale_lock_is_a_problem(self):
+        with mock.patch("translation.translation_lock.load_lock",
+                        return_value={"content.home.seo_title": "0" * 16}):
+            problems = self.problems()
+        self.assertTrue(any(problem.startswith("замок content.home.seo_title")
+                            for problem in problems))

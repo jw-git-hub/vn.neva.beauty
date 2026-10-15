@@ -12,7 +12,8 @@ import yaml
 
 import overlay
 import price_translation
-from locales import LOCALES_DIR, ui_problems
+import translation_lock
+from locales import LOCALES_DIR, load_privacy, ui_problems
 
 CONTENT_FILE = "content.yml"
 PRICES_FILE = "prices.yml"
@@ -44,7 +45,17 @@ def privacy_exists(code, directory=LOCALES_DIR):
     return (directory / code / PRIVACY_FILE).exists()
 
 
-def translation_problems(content, prices, locale, main_locale):
+def _lock_problems(content, locale, main_locale):
+    """Замок ставится после одобрения перевода (этап 12). Нет замка — нечего сверять."""
+    locked = translation_lock.load_lock(locale.code)
+    if locked is None:
+        return []
+    current = translation_lock.source_fingerprints(content, main_locale,
+                                                   load_privacy(main_locale.code))
+    return translation_lock.lock_problems(locked, current)
+
+
+def translation_problems(content, prices, locale, main_locale, check_lock=True):
     """(данные языка, все проблемы перевода). Основной язык проблем не имеет."""
     if locale.code == main_locale.code:
         return LanguageData(copy.deepcopy(content),
@@ -56,6 +67,8 @@ def translation_problems(content, prices, locale, main_locale):
     if not privacy_exists(locale.code):
         problems.append(f"privacy: нет перевода политики "
                         f"(data/locales/{locale.code}/{PRIVACY_FILE})")
+    if check_lock:
+        problems += _lock_problems(content, locale, main_locale)
     return LanguageData(merged, price_translation.PriceTranslation(catalog)), problems
 
 
