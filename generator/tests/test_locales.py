@@ -2,9 +2,11 @@ import unittest
 
 import copy
 import tempfile
+from dataclasses import replace
 from pathlib import Path
 
-from locales import load_locale, load_privacy, localized_site, merge_overrides, parse_locale
+from locales import (load_locale, load_privacy, localized_site, merge_overrides, parse_locale,
+                     ui_problems)
 
 RAW = {
     "code": "ru", "html_lang": "ru", "og_locale": "ru_RU", "url_prefix": "",
@@ -154,3 +156,34 @@ class LoadPrivacyTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UiProblemsTest(unittest.TestCase):
+    def setUp(self):
+        self.main = load_locale("ru")
+
+    def with_ui(self, ui):
+        return replace(self.main, code="en", url_prefix="/en", ui=ui)
+
+    def test_full_copy_has_no_problems(self):
+        self.assertEqual(ui_problems(self.main, self.with_ui(dict(self.main.ui))), [])
+
+    def test_missing_key_is_named(self):
+        ui = dict(self.main.ui); del ui["nav.home"]
+        self.assertEqual(ui_problems(self.main, self.with_ui(ui)), ["ui nav.home: нет перевода"])
+
+    def test_extra_key_is_error(self):
+        ui = dict(self.main.ui, **{"nav.extra": "Extra"})
+        self.assertEqual(ui_problems(self.main, self.with_ui(ui)),
+                         ["ui nav.extra: лишний ключ — в основном языке его нет"])
+
+    def test_lost_param_is_error(self):
+        ui = dict(self.main.ui, **{"price.from": "from"})
+        self.assertEqual(ui_problems(self.main, self.with_ui(ui)),
+                         ["ui price.from: потерян параметр {price}"])
+
+    def test_extra_param_is_allowed(self):
+        """Английский h2 «Prices — {title}» при русском «Цены»: параметр передаёт шаблон."""
+        key = next(key for key, text in self.main.ui.items() if "{" not in text)
+        ui = dict(self.main.ui, **{key: "Text {title}"})
+        self.assertEqual(ui_problems(self.main, self.with_ui(ui)), [])

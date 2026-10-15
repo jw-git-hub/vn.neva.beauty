@@ -6,6 +6,7 @@
 import copy
 from dataclasses import dataclass, field
 from pathlib import Path
+from string import Formatter
 
 import yaml
 from markupsafe import Markup
@@ -137,3 +138,25 @@ def load_privacy(code, directory=LOCALES_DIR):
     if not path.exists():
         raise FileNotFoundError(f"Нет текста политики конфиденциальности языка {code}: {path}")
     return Markup(path.read_text(encoding="utf-8").rstrip("\n"))
+
+
+def _params(text):
+    """Имена параметров строки: «от {price}» → {"price"}. Удвоенные скобки — не параметр."""
+    return {name for _, name, _, _ in Formatter().parse(text) if name}
+
+
+def _key_problem(main, other, key):
+    if key not in other.ui:
+        return f"ui {key}: нет перевода"
+    lost = sorted(_params(main.ui[key]) - _params(other.ui[key]))
+    return f"ui {key}: потерян параметр {{{lost[0]}}}" if lost else None
+
+
+def ui_problems(main, other):
+    """Строки интерфейса перевода против основного языка. Ключи совпадают, параметры
+    русской строки сохранены: «from» вместо «from {price}» молча убрал бы цену."""
+    problems = [problem for key in sorted(main.ui)
+                if (problem := _key_problem(main, other, key))]
+    problems += [f"ui {key}: лишний ключ — в основном языке его нет"
+                 for key in sorted(set(other.ui) - set(main.ui))]
+    return problems
