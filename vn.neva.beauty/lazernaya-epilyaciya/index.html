@@ -1508,12 +1508,21 @@
 (function (w, d) {
   w.ym = w.ym || function () { (w.ym.a = w.ym.a || []).push(arguments) };
   w.ym.l = 1 * new Date();
+  var source = null;
+  try {
+    source = sessionStorage.getItem("neva.source");
+    if (source !== null) sessionStorage.removeItem("neva.source");
+  } catch (e) {}
   ym(106778458, "init", {
        clickmap:true,
        trackLinks:true,
        accurateTrackBounce:true,
-       webvisor:false
+       webvisor:false,
+       defer:source !== null
   });
+  if (source !== null) {
+    ym(106778458, "hit", location.href, {referer: source, title: d.title});
+  }
   var PAGE = "lazernaya-epilyaciya";
   function reportContact(event) {
     var link = event.target.closest && event.target.closest("[data-contact]");

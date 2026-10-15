@@ -61,6 +61,7 @@ def make_env(locale, routes, base_path, site):
         t=locale.t, href=lambda page_id: routes.href(locale, page_id),
         language_links=lambda page: language_switch.language_links(routes, locale, page["id"]),
         language_redirect_config=lambda page: language_redirect.config(site, routes, locale, page["id"]),
+        language_source_key=language_redirect.SOURCE_KEY,
         # Ссылка связи: адрес с текстом страницы и метки канала и места (contacts.py).
         contact=lambda channel, place, page: contacts.link_attrs(
             site["contacts"], channel, place,

@@ -113,3 +113,39 @@ class ChooseLanguageScriptTest(unittest.TestCase):
         case = {"languages": ["ru"], "saved": "en", "referrer": "", "userAgent": BROWSER,
                 "storageFails": True}
         self.assertEqual(self.run_cases("en", [case]), [RU_PAGE])
+
+
+METRIKA_RE = re.compile(r"<script>\s*(\(function \(w, d\)[\s\S]*?)</script>")
+METRIKA_HARNESS = Path(__file__).resolve().parent / "js" / "metrika_source.js"
+
+
+@unittest.skipUnless(NODE, "нужен node: код Метрики проверяется в нём")
+class MetrikaSourceTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.script = METRIKA_RE.search(build_real_pages("en")["en/index.html"]).group(1)
+
+    def run_metrika(self, source):
+        payload = json.dumps({"script": self.script, "source": source,
+                              "key": language_redirect.SOURCE_KEY})
+        return json.loads(subprocess.run([NODE, str(METRIKA_HARNESS)], input=payload,
+                                         capture_output=True, text=True, check=True).stdout)
+
+    def test_redirect_source_reaches_metrika(self):
+        result = self.run_metrika("https://www.google.com/")
+        init = next(call for call in result["calls"] if call[1] == "init")
+        hit = next(call for call in result["calls"] if call[1] == "hit")
+        self.assertTrue(init[2]["defer"])
+        self.assertEqual(hit[2:], ["https://vn.neva.beauty/en/",
+                                   {"referer": "https://www.google.com/", "title": "Page"}])
+        self.assertIsNone(result["left"])
+
+    def test_direct_entry_after_redirect_keeps_empty_source(self):
+        hit = next(call for call in self.run_metrika("")["calls"] if call[1] == "hit")
+        self.assertEqual(hit[3]["referer"], "")
+
+    def test_normal_visit_is_unchanged(self):
+        result = self.run_metrika(None)
+        init = next(call for call in result["calls"] if call[1] == "init")
+        self.assertFalse(init[2].get("defer"))
+        self.assertFalse(any(call[1] == "hit" for call in result["calls"]))
