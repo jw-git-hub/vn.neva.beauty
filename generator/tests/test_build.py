@@ -13,6 +13,7 @@ import pages
 import taxonomy
 from locales import load_locale
 from routes import Routes
+from tests.pseudo_translation import pseudo_content, pseudo_prices
 
 
 class BuildLocaleIsolationTest(unittest.TestCase):
@@ -25,15 +26,15 @@ class BuildLocaleIsolationTest(unittest.TestCase):
         locale = load_locale("ru")
         routes = Routes([locale], taxonomy.page_ids(content), site["base_url"], "ru")
         with mock.patch("build.write", return_value=False):
-            build.build_locale(site, content, prices, locale, routes, "")
+            build.build_locale(site, content, prices, locale, routes, "", locale)
         self.assertEqual(content, snapshot)
         self.assertEqual(site, site_snapshot)
         self.assertEqual(prices, prices_snapshot)
 
 
 def build_pages_of_test_english(x_default_locale="en"):
-    """Собирает страницы тестового английского (префикс /en) рядом с русским, не пиша файлов.
-    Возвращает {путь страницы: html}."""
+    """Собирает страницы тестового английского (префикс /en, псевдоперевод «EN …»)
+    рядом с русским, не пиша файлов. Возвращает {путь страницы: html}."""
     site, content, prices = build.load()
     russian = load_locale("ru")
     english = replace(russian, code="en", html_lang="en", og_locale="en_US", url_prefix="/en")
@@ -41,8 +42,11 @@ def build_pages_of_test_english(x_default_locale="en"):
                     x_default_locale)
     written = {}
     with mock.patch("build.write", side_effect=lambda path, html: written.update({path: html})), \
-            mock.patch("build.load_privacy", return_value=Markup("<p>Privacy</p>")):
-        build.build_locale(site, content, prices, english, routes, "")
+            mock.patch("build.load_privacy", return_value=Markup("<p>Privacy</p>")), \
+            mock.patch("translation.load_overlay", return_value=pseudo_content(content)), \
+            mock.patch("translation.load_price_catalog", return_value=pseudo_prices(prices)), \
+            mock.patch("translation.privacy_exists", return_value=True):
+        build.build_locale(site, content, prices, english, routes, "", russian)
     return {path.relative_to(build.OUT).as_posix(): html for path, html in written.items()}
 
 
@@ -109,7 +113,7 @@ class ContactLinksInBuiltPagesTest(unittest.TestCase):
         written = {}
         with mock.patch("build.write",
                         side_effect=lambda path, html: written.update({path: html})):
-            build.build_locale(site, content, prices, locale, routes, "")
+            build.build_locale(site, content, prices, locale, routes, "", locale)
         cls.pages = {path.relative_to(build.OUT).as_posix(): html
                      for path, html in written.items()}
 
@@ -156,3 +160,25 @@ class MessengerPlaceholderTest(unittest.TestCase):
         """{whatsapp} вне href="…" дал бы голый адрес без текста и меток — мимо contacts.py."""
         with self.assertRaises(ValueError):
             pages.fill_tokens("пишите {whatsapp}", pages.content_tokens())
+
+
+class TranslatedEnglishPagesTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = build_pages_of_test_english()
+
+    def test_price_list_uses_translated_names(self):
+        html = self.pages["en/lpg-massazh/index.html"]
+        self.assertIn("EN LPG Массаж - Тело", html)
+
+    def test_combo_survives_translation(self):
+        """Комбо узнаётся по русскому «КОМБО» до перевода: в английском прайсе это карточка."""
+        html = self.pages["en/lazernaya-epilyaciya/index.html"]
+        self.assertIn('<div class="combo__name">EN КОМБО 1', html)
+
+    def test_popular_card_shows_translated_name(self):
+        self.assertIn('<span class="popular-card__name">EN LPG Массаж - Тело</span>',
+                      self.pages["en/index.html"])
+
+    def test_page_text_is_translated(self):
+        self.assertIn("<h1>EN LPG-массаж</h1>", self.pages["en/lpg-massazh/index.html"])

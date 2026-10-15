@@ -15,6 +15,7 @@ class BuildContext:
     site: dict
     content: dict
     prices: dict
+    price_translation: object
     locale: object
     routes: object
     env: object
@@ -73,6 +74,7 @@ def build_home(ctx):
     for item in home.get("popular", []):
         item["price"] = pricing.popular_price(ctx.prices, item["slug"], item["name"],
                                               ctx.locale.format_from)
+        item["name_text"] = ctx.price_translation.text(item["slug"], "names", item["name"])
     schema_json = (schema.render(ctx.site, [schema.faq_node(home["faq"])])
                    if home["faq"] else ctx.base_schema)
     page = {"id": HOME, "url": ctx.path(HOME),
@@ -123,8 +125,10 @@ def build_service(ctx, service_id):
     svc = ctx.content["services"][service_id]
     cat = taxonomy.category_of(ctx.content, service_id)
     sections = ctx.prices.get(service_id, [])
+    # Комбо узнаётся по русскому названию, поэтому перевод — после price_view.
+    view = ctx.price_translation.translate_sections(service_id, pricing.price_view(sections))
     nodes = [schema.breadcrumb_node(_service_crumbs(ctx, service_id, svc, cat)),
-             _service_node(ctx, service_id, svc, cat, sections)]
+             _service_node(ctx, service_id, svc, cat, view)]
     _prepare_service_texts(ctx, svc, pricing.price_hint(sections, ctx.locale.format_from))
     if svc.get("faq"):
         nodes.append(schema.faq_node(svc["faq"]))
@@ -135,7 +139,7 @@ def build_service(ctx, service_id):
             "hero_stem": svc["hero_image"], "hero_slot": "service_hero"}
     return ctx.env.get_template("service.html.j2").render(
         site=ctx.site, page=page, svc=svc, slug=service_id, category=cat,
-        sections=pricing.price_view(sections), services=ctx.content["services"])
+        sections=view, services=ctx.content["services"])
 
 
 def build_category(ctx, cat):

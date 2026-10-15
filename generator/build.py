@@ -1,8 +1,8 @@
-import copy, json, re, urllib.parse, yaml
+import json, re, urllib.parse, yaml
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import contacts, images, pages, schema, sitewide, taxonomy
+import contacts, images, pages, schema, sitewide, taxonomy, translation
 from locales import load_locale, load_privacy, localized_site
 from routes import Routes
 
@@ -73,16 +73,18 @@ def make_env(locale, routes, base_path, site_contacts):
     )
     return e
 
-def build_locale(site, content, prices, locale, routes, base_path):
+def build_locale(site, content, prices, locale, routes, base_path, main_locale):
     """Собирает все страницы одного языка. Возвращает ({путь: изменилась ли страница},
-    контент языка). Контент копируется: сборка подставляет в тексты цены и ссылки,
-    и следующий язык должен получить исходник, а не раскрытые плейсхолдеры."""
+    контент языка). Контент языка — копия мастера или мастер с накладкой перевода
+    (translation.prepare): сборка подставляет в тексты цены и ссылки, и следующий язык
+    должен получить исходник, а не раскрытые плейсхолдеры."""
     site = localized_site(site, locale)
-    content = copy.deepcopy(content)
+    language = translation.prepare(content, prices, locale, main_locale)
+    content = language.content
     taxonomy.enrich_categories(content, routes, locale)
     taxonomy.fill_related(content)
     site["nav"] = taxonomy.build_nav(content, routes, locale)
-    ctx = pages.BuildContext(site, content, prices, locale, routes,
+    ctx = pages.BuildContext(site, content, prices, language.prices, locale, routes,
                              make_env(locale, routes, base_path, site["contacts"]), schema.render(site))
     changed = {}
     for page_id, html in pages.build_all(ctx, load_privacy(locale.code)):
@@ -115,7 +117,7 @@ def main():
     changed, urls, contents = {}, [], {}
     for locale in locales:
         locale_changed, contents[locale.code] = build_locale(
-            site, content, prices, locale, routes, base_path)
+            site, content, prices, locale, routes, base_path, locales[0])
         changed.update(locale_changed)
         urls += sitewide.sitemap_paths(contents[locale.code], routes, locale)
     write_sitewide(site, contents, prices, locales, routes, changed, urls, base_path)
