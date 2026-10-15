@@ -10,7 +10,7 @@ import hashlib
 import json
 
 import overlay
-from locales import LOCALES_DIR
+from locales import LOCALES_DIR, site_strings
 
 LOCK_FILE = "content.lock.json"
 FINGERPRINT_LENGTH = 16
@@ -20,9 +20,10 @@ def fingerprint(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:FINGERPRINT_LENGTH]
 
 
-def source_fingerprints(content, main_locale, privacy_text):
-    """Отпечатки всех русских строк, которые переводятся: тексты, интерфейс, политика."""
+def source_fingerprints(site, content, main_locale, privacy_text):
+    """Отпечатки всех русских строк, которые переводятся: тексты, интерфейс, site, политика."""
     strings = {f"content.{path}": text for path, text in overlay.source_strings(content).items()}
+    strings.update({f"site.{path}": text for path, text in site_strings(site).items()})
     strings.update({f"ui.{key}": text for key, text in main_locale.ui.items()})
     strings["privacy"] = str(privacy_text)
     return {path: fingerprint(text) for path, text in strings.items()}

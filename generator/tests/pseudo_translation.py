@@ -3,6 +3,7 @@
 каркаса проверяется без настоящего перевода."""
 import overlay
 import price_translation as pt
+from locales import site_strings
 
 PREFIX = "EN "
 
@@ -28,3 +29,12 @@ def pseudo_prices(prices):
     for _, kind, key in pt.required_keys(prices):
         catalog[kind][key] = PREFIX + key
     return catalog
+
+
+def pseudo_site(site):
+    """Переопределения site для языка: «EN » перед каждой строкой site_strings."""
+    strings = site_strings(site)
+    result = {path: PREFIX + text for path, text in strings.items() if "[" not in path}
+    result["locations"] = [{field: PREFIX + place[field] for field in ("city", "country")}
+                           for place in site["locations"]]
+    return result

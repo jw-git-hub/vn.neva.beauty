@@ -13,7 +13,7 @@ import yaml
 import overlay
 import price_translation
 import translation_lock
-from locales import LOCALES_DIR, load_privacy, ui_problems
+from locales import LOCALES_DIR, load_privacy, site_problems, ui_problems
 
 CONTENT_FILE = "content.yml"
 PRICES_FILE = "prices.yml"
@@ -45,36 +45,43 @@ def privacy_exists(code, directory=LOCALES_DIR):
     return (directory / code / PRIVACY_FILE).exists()
 
 
-def _lock_problems(content, locale, main_locale):
+def _lock_problems(site, content, locale, main_locale):
     """Замок ставится после одобрения перевода (этап 12). Нет замка — нечего сверять."""
     locked = translation_lock.load_lock(locale.code)
     if locked is None:
         return []
-    current = translation_lock.source_fingerprints(content, main_locale,
+    current = translation_lock.source_fingerprints(site, content, main_locale,
                                                    load_privacy(main_locale.code))
     return translation_lock.lock_problems(locked, current)
 
 
-def translation_problems(content, prices, locale, main_locale, check_lock=True):
+def _data_problems(site, prices, catalog, locale, main_locale):
+    """Проблемы перевода вне текстов страниц: прайс, интерфейс, строки site, политика."""
+    problems = price_translation.catalog_problems(prices, catalog)
+    problems += ui_problems(main_locale, locale)
+    problems += site_problems(site, locale)
+    if not privacy_exists(locale.code):
+        problems.append(f"privacy: нет перевода политики "
+                        f"(data/locales/{locale.code}/{PRIVACY_FILE})")
+    return problems
+
+
+def translation_problems(site, content, prices, locale, main_locale, check_lock=True):
     """(данные языка, все проблемы перевода). Основной язык проблем не имеет."""
     if locale.code == main_locale.code:
         return LanguageData(copy.deepcopy(content),
                             price_translation.PriceTranslation.identity()), []
     merged, problems = overlay.merge_translation(content, load_overlay(locale.code))
     catalog = load_price_catalog(locale.code)
-    problems += price_translation.catalog_problems(prices, catalog)
-    problems += ui_problems(main_locale, locale)
-    if not privacy_exists(locale.code):
-        problems.append(f"privacy: нет перевода политики "
-                        f"(data/locales/{locale.code}/{PRIVACY_FILE})")
+    problems += _data_problems(site, prices, catalog, locale, main_locale)
     if check_lock:
-        problems += _lock_problems(content, locale, main_locale)
+        problems += _lock_problems(site, content, locale, main_locale)
     return LanguageData(merged, price_translation.PriceTranslation(catalog)), problems
 
 
-def prepare(content, prices, locale, main_locale):
+def prepare(site, content, prices, locale, main_locale):
     """Данные языка для сборки. Перевод с проблемами — ошибка со всем списком."""
-    language, problems = translation_problems(content, prices, locale, main_locale)
+    language, problems = translation_problems(site, content, prices, locale, main_locale)
     if problems:
         raise ValueError(f"Перевод {locale.code} не готов, проблем: {len(problems)}. "
                          f"Список — python generator/translation_status.py {locale.code}\n"

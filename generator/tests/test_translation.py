@@ -5,14 +5,16 @@ from unittest import mock
 import build
 import translation
 from locales import load_locale
-from tests.pseudo_translation import PREFIX, pseudo_content, pseudo_prices
+from tests.pseudo_translation import PREFIX, pseudo_content, pseudo_prices, pseudo_site
 
 
 class TranslationTest(unittest.TestCase):
     def setUp(self):
         _, self.content, self.prices = build.load()
         self.main = load_locale("ru")
-        self.english = replace(self.main, code="en", html_lang="en", url_prefix="/en")
+        self.site = build.load()[0]
+        self.english = replace(self.main, code="en", html_lang="en", url_prefix="/en",
+                               site=pseudo_site(self.site))
 
     def patched(self, overlay=None, catalog=None, privacy=True):
         return [mock.patch("translation.load_overlay",
@@ -26,11 +28,11 @@ class TranslationTest(unittest.TestCase):
         for patch in patches:
             patch.start()
         self.addCleanup(mock.patch.stopall)
-        return translation.translation_problems(self.content, self.prices,
+        return translation.translation_problems(self.site, self.content, self.prices,
                                                 self.english, self.main)[1]
 
     def test_main_language_is_master_copy(self):
-        language = translation.prepare(self.content, self.prices, self.main, self.main)
+        language = translation.prepare(self.site, self.content, self.prices, self.main, self.main)
         self.assertEqual(language.content, self.content)
         self.assertIsNot(language.content, self.content)
 
@@ -47,7 +49,7 @@ class TranslationTest(unittest.TestCase):
             patch.start()
         self.addCleanup(mock.patch.stopall)
         with self.assertRaises(ValueError) as error:
-            translation.prepare(self.content, self.prices, self.english, self.main)
+            translation.prepare(self.site, self.content, self.prices, self.english, self.main)
         self.assertIn("home.seo_title: нет перевода", str(error.exception))
         self.assertIn("services.lpg-massazh.title: нет перевода", str(error.exception))
 
@@ -55,8 +57,14 @@ class TranslationTest(unittest.TestCase):
         for patch in self.patched():
             patch.start()
         self.addCleanup(mock.patch.stopall)
-        language = translation.prepare(self.content, self.prices, self.english, self.main)
+        language = translation.prepare(self.site, self.content, self.prices, self.english, self.main)
         self.assertTrue(language.content["home"]["seo_title"].startswith(PREFIX))
+
+    def test_site_strings_need_translation(self):
+        self.english = replace(self.english, site={})
+        problems = self.problems()
+        for field in ("tagline", "location", "hours", "locations[0].city", "locations[1].country"):
+            self.assertIn(f"site {field}: нет перевода", problems)
 
     def test_stale_lock_is_a_problem(self):
         with mock.patch("translation.translation_lock.load_lock",

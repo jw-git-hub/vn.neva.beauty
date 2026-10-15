@@ -14,12 +14,12 @@ from locales import load_locale, load_privacy
 def main(code):
     site, content, prices = build.load()
     main_locale = build.load_locales(site)[0]
-    _, problems = translation.translation_problems(content, prices, load_locale(code),
+    _, problems = translation.translation_problems(site, content, prices, load_locale(code),
                                                    main_locale, check_lock=False)
     if problems:
         sys.exit(f"Перевод {code} не готов, проблем: {len(problems)} — замок не ставлю.\n"
                  + "\n".join(problems))
-    fingerprints = translation_lock.source_fingerprints(content, main_locale,
+    fingerprints = translation_lock.source_fingerprints(site, content, main_locale,
                                                         load_privacy(main_locale.code))
     translation_lock.write_lock(code, fingerprints)
     print(f"Замок {code}: строк {len(fingerprints)}")

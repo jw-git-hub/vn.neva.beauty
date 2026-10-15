@@ -77,7 +77,7 @@ class LocaleView:
 def translated_data(code, main_code):
     """Тексты, прайс и переводчик прайса языка: основной — как в мастере, перевод —
     через модули перевода. Прайс — в виде для шаблона: признак комбо по русскому названию."""
-    language = translation.prepare(CONTENT, PRICES, locales.load_locale(code),
+    language = translation.prepare(SITE, CONTENT, PRICES, locales.load_locale(code),
                                    locales.load_locale(main_code))
     prices = {slug: language.prices.translate_sections(slug, pricing.price_view(sections))
               for slug, sections in PRICES.items()}

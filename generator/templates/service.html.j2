@@ -32,7 +32,7 @@
   {#- Заголовок блока переопределяется из content.yml: где задан benefits_title,
      стоит вопрос, как его задаёт аудитория, и ответ идёт первым предложением
      под каждым пунктом. Где не задан — прежний заголовок. #}
-  <div class="section-head" data-reveal><p class="eyebrow">{{ svc.benefits_eyebrow or t('service.benefits_eyebrow') }}</p><h2>{{ svc.benefits_title or t('service.benefits_title') }}</h2></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ svc.benefits_eyebrow or t('service.benefits_eyebrow') }}</p><h2>{{ svc.benefits_title or t('service.benefits_title', title=svc.title) }}</h2></div>
   <div class="svc-benefits" data-reveal-children>
     {% for b in svc.benefits %}
     <div class="svc-benefit"><span class="svc-benefit__icon">{{ icon(b.icon) }}</span><h3>{{ b.title }}</h3><p>{{ b.text }}</p></div>
@@ -45,7 +45,7 @@
   <div class="container">
     {#- price_lead приходит из content.yml с уже подставленной ценой из прайса
        (pages.fill_tokens): под заголовком-вопросом первым идёт прямой ответ. #}
-    <div class="section-head" data-reveal><p class="eyebrow">{{ t('service.price_eyebrow') }}</p><h2>{{ svc.price_title or t('service.price_title') }}</h2><p>{{ svc.price_lead or t('service.price_lead') }}</p></div>
+    <div class="section-head" data-reveal><p class="eyebrow">{{ t('service.price_eyebrow') }}</p><h2>{{ svc.price_title or t('service.price_title', title=svc.title) }}</h2><p>{{ svc.price_lead or t('service.price_lead') }}</p></div>
     <div class="pricelist" data-pricelist>
       {% set tabbed = sections|length > 1 %}
       {% if tabbed %}
@@ -171,7 +171,7 @@
 
 {% if svc.related %}
 <section class="section container">
-  <div class="section-head" data-reveal><p class="eyebrow">{{ t('service.related_eyebrow') }}</p><h2>{{ t('service.related_title') }}</h2></div>
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('service.related_eyebrow') }}</p><h2>{{ t('service.related_title', title=svc.title) }}</h2></div>
   <div class="related-grid" data-reveal-children>
     {% for rslug in svc.related %}{% set r = services.get(rslug) %}{% if r %}
     <a class="related-card card" href="{{ href(rslug) }}">

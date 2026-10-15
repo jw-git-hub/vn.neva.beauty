@@ -6,18 +6,22 @@ from pathlib import Path
 import translation_lock as lock
 from locales import load_locale
 
+SITE = {"tagline": "Центр красоты", "location": "Дананг", "hours": "По записи",
+        "locations": [{"city": "Самуи", "country": "Таиланд", "url": "https://th"}]}
 CONTENT = {"home": {"seo_title": "Главная", "faq": [{"q": "Вопрос?", "a": "Ответ."}]}}
 
 
 class FingerprintsTest(unittest.TestCase):
     def setUp(self):
         self.main = load_locale("ru")
-        self.current = lock.source_fingerprints(CONTENT, self.main, "<p>Политика</p>")
+        self.current = lock.source_fingerprints(SITE, CONTENT, self.main, "<p>Политика</p>")
 
     def test_paths_cover_content_ui_and_privacy(self):
         self.assertIn("content.home.faq[0].q", self.current)
         self.assertIn("ui.nav.home", self.current)
         self.assertIn("privacy", self.current)
+        self.assertIn("site.tagline", self.current)
+        self.assertIn("site.locations[0].city", self.current)
 
     def test_same_source_has_no_problems(self):
         self.assertEqual(lock.lock_problems(self.current, dict(self.current)), [])

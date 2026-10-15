@@ -78,8 +78,8 @@ def build_locale(site, content, prices, locale, routes, base_path, main_locale):
     контент языка). Контент языка — копия мастера или мастер с накладкой перевода
     (translation.prepare): сборка подставляет в тексты цены и ссылки, и следующий язык
     должен получить исходник, а не раскрытые плейсхолдеры."""
+    language = translation.prepare(site, content, prices, locale, main_locale)
     site = localized_site(site, locale)
-    language = translation.prepare(content, prices, locale, main_locale)
     content = language.content
     taxonomy.enrich_categories(content, routes, locale)
     taxonomy.fill_related(content)

@@ -44,8 +44,9 @@ class Locale:
         пустое место на странице хуже упавшей сборки."""
         if key not in self.ui:
             raise KeyError(f"Нет строки интерфейса {key!r} в locales/{self.code}.yml")
-        text = self.ui[key]
-        return text.format(**params) if params else text
+        # Формат всегда, даже без параметров: строка с {title}, которому шаблон
+        # не передал значение, должна уронить сборку, а не выйти на страницу скобками.
+        return self.ui[key].format(**params)
 
     def format_from(self, price):
         """«от <цена>» — единая формулировка нижней границы для всех страниц и файлов."""
@@ -138,6 +139,32 @@ def load_privacy(code, directory=LOCALES_DIR):
     if not path.exists():
         raise FileNotFoundError(f"Нет текста политики конфиденциальности языка {code}: {path}")
     return Markup(path.read_text(encoding="utf-8").rstrip("\n"))
+
+
+# Строки site.yml на языке сайта (спека, раздел 5). Пути, а не имена полей:
+# business.address.country — код страны, его не переводят.
+SITE_TEXT_FIELDS = ("tagline", "location", "hours")
+SITE_LOCATION_FIELDS = ("city", "country")
+
+
+def _location_strings(places):
+    return {f"locations[{index}].{field}": place[field]
+            for index, place in enumerate(places or []) if isinstance(place, dict)
+            for field in SITE_LOCATION_FIELDS if field in place}
+
+
+def site_strings(site):
+    """Строки site.yml, которые язык переводит: {путь: текст}."""
+    strings = {field: site[field] for field in SITE_TEXT_FIELDS if field in site}
+    strings.update(_location_strings(site.get("locations")))
+    return strings
+
+
+def site_problems(site, locale):
+    """Каждая строка site_strings должна быть в переопределениях site файла языка."""
+    provided = site_strings(locale.site)
+    return [f"site {path}: нет перевода" for path in site_strings(site)
+            if not (isinstance(provided.get(path), str) and provided[path].strip())]
 
 
 def _params(text):

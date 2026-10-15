@@ -13,7 +13,7 @@ import pages
 import taxonomy
 from locales import load_locale
 from routes import Routes
-from tests.pseudo_translation import pseudo_content, pseudo_prices
+from tests.pseudo_translation import pseudo_content, pseudo_prices, pseudo_site
 
 
 class BuildLocaleIsolationTest(unittest.TestCase):
@@ -32,12 +32,14 @@ class BuildLocaleIsolationTest(unittest.TestCase):
         self.assertEqual(prices, prices_snapshot)
 
 
-def build_pages_of_test_english(x_default_locale="en"):
+def build_pages_of_test_english(x_default_locale="en", ui_overrides=None):
     """Собирает страницы тестового английского (префикс /en, псевдоперевод «EN …»)
     рядом с русским, не пиша файлов. Возвращает {путь страницы: html}."""
     site, content, prices = build.load()
     russian = load_locale("ru")
-    english = replace(russian, code="en", html_lang="en", og_locale="en_US", url_prefix="/en")
+    english = replace(russian, code="en", html_lang="en", og_locale="en_US", url_prefix="/en",
+                      ui={**russian.ui, **(ui_overrides or {})},
+                      site=pseudo_site(site))
     routes = Routes([russian, english], taxonomy.page_ids(content), site["base_url"],
                     x_default_locale)
     written = {}
@@ -190,3 +192,17 @@ class TranslatedEnglishPagesTest(unittest.TestCase):
         html = self.pages["en/index.html"]
         self.assertIn('href="https://th.neva.beauty" hreflang="ru"', html)
         self.assertIn("сайт на русском", html)  # псевдоперевод берёт строки интерфейса русского
+
+
+class EnglishHeadingTemplateTest(unittest.TestCase):
+    def test_repeated_h2_can_carry_service_title(self):
+        """Спека, раздел 12: английские «Prices», «See also», «Why it works» собираются
+        с названием услуги, иначе h2 повторяются на всех страницах услуг."""
+        pages = build_pages_of_test_english(ui_overrides={
+            "service.price_title": "Prices — {title}",
+            "service.related_title": "See also — {title}",
+            "service.benefits_title": "Why it works — {title}"})
+        html = pages["en/lpg-massazh/index.html"]
+        for heading in ("Prices", "See also"):
+            self.assertIn(f"<h2>{heading} — EN LPG-массаж</h2>", html)
+        self.assertNotIn("{title}", html)

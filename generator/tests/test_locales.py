@@ -6,7 +6,7 @@ from dataclasses import replace
 from pathlib import Path
 
 from locales import (load_locale, load_privacy, localized_site, merge_overrides, parse_locale,
-                     ui_problems)
+                     site_strings, ui_problems)
 
 RAW = {
     "code": "ru", "html_lang": "ru", "og_locale": "ru_RU", "url_prefix": "",
@@ -49,9 +49,6 @@ class TranslateTest(unittest.TestCase):
     def test_unknown_key_is_error(self):
         with self.assertRaisesRegex(KeyError, "cta.missing"):
             self.locale.t("cta.missing")
-
-    def test_template_without_params_is_returned_as_is(self):
-        self.assertEqual(self.locale.t("price.from"), "от {price}")
 
 
 class FormatFromTest(unittest.TestCase):
@@ -187,3 +184,20 @@ class UiProblemsTest(unittest.TestCase):
         key = next(key for key, text in self.main.ui.items() if "{" not in text)
         ui = dict(self.main.ui, **{key: "Text {title}"})
         self.assertEqual(ui_problems(self.main, self.with_ui(ui)), [])
+
+
+class TemplateParamTest(unittest.TestCase):
+    def test_unpassed_param_is_error_not_text(self):
+        """«Prices — {title}» без title не должно выйти на страницу фигурными скобками."""
+        locale = replace(load_locale("ru"), ui={"service.price_title": "Prices — {title}"})
+        with self.assertRaises(KeyError):
+            locale.t("service.price_title")
+
+
+class SiteStringsTest(unittest.TestCase):
+    def test_paths_skip_country_code(self):
+        import build
+        strings = site_strings(build.load()[0])
+        self.assertEqual(sorted(strings), ["hours", "location", "locations[0].city",
+                                           "locations[0].country", "locations[1].city",
+                                           "locations[1].country", "tagline"])

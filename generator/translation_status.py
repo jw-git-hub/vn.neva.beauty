@@ -9,7 +9,7 @@ import build
 import translation
 from locales import load_locale
 
-GROUP_OF_PREFIX = (("ui ", "ui"), ("prices", "prices"), ("privacy", "privacy"), ("замок", "замок"))
+GROUP_OF_PREFIX = (("ui ", "ui"), ("site ", "site"), ("prices", "prices"), ("privacy", "privacy"), ("замок", "замок"))
 CONTENT_GROUP = "content"
 
 
@@ -27,7 +27,7 @@ def grouped(problems):
 
 def main(code):
     site, content, prices = build.load()
-    _, problems = translation.translation_problems(content, prices, load_locale(code),
+    _, problems = translation.translation_problems(site, content, prices, load_locale(code),
                                                    build.load_locales(site)[0])
     for group, items in sorted(grouped(problems).items()):
         print(f"## {group}: {len(items)}")
