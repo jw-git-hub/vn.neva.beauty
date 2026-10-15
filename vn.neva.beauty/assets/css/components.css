@@ -234,6 +234,9 @@
 .lang-line__current{padding-inline:.25rem;color:var(--ink);font-weight:600}
 .lang-line__sep{color:var(--taupe)}
 .drawer__langs{justify-content:center}
+/* В подвале строка стоит в одной линии с подписями: зону нажатия 44 px компенсируют
+   отрицательные поля, иначе строка опускается ниже соседей и сдвигается вправо. */
+.site-footer__langs{margin:-.75rem -.25rem}
 
 /* overlay + drawer */
 .overlay{position:fixed;inset:0;background:rgba(58,44,42,.5);z-index:var(--z-overlay);
