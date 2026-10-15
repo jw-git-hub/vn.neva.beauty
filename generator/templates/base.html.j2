@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- set redirect = language_redirect_config(page) %}
+  {%- if redirect %}
+  {% include 'partials/language_redirect.html.j2' %}
+  {%- endif %}
   {# Ссылки на то, без чего страница не рисуется, — первыми в head, до разметки
      Schema.org. Пока её JSON не разобран, сканер предзагрузки о стилях не знает:
      на мобильном канале HTML приезжает несколькими порциями, и запрос CSS уходил

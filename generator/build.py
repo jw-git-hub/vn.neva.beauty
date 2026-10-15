@@ -2,7 +2,7 @@ import json, re, urllib.parse, yaml
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import contacts, images, language_switch, pages, schema, sitewide, taxonomy, translation
+import contacts, images, language_redirect, language_switch, pages, schema, sitewide, taxonomy, translation
 from locales import load_locale, load_privacy, localized_site
 from routes import Routes
 
@@ -52,7 +52,7 @@ def write(path: Path, html: str) -> bool:
     print("→", path.relative_to(OUT.parent))
     return changed
 
-def make_env(locale, routes, base_path, site_contacts):
+def make_env(locale, routes, base_path, site):
     """Окружение Jinja одного языка: строки интерфейса и адреса берутся из языка."""
     e = Environment(loader=FileSystemLoader(ROOT/"templates"),
                     autoescape=select_autoescape(["html","j2"]))
@@ -60,9 +60,10 @@ def make_env(locale, routes, base_path, site_contacts):
         icon=icon, theme_color=THEME_COLOR, base_path=base_path, locale=locale,
         t=locale.t, href=lambda page_id: routes.href(locale, page_id),
         language_links=lambda page: language_switch.language_links(routes, locale, page["id"]),
+        language_redirect_config=lambda page: language_redirect.config(site, routes, locale, page["id"]),
         # Ссылка связи: адрес с текстом страницы и метки канала и места (contacts.py).
         contact=lambda channel, place, page: contacts.link_attrs(
-            site_contacts, channel, place,
+            site["contacts"], channel, place,
             contacts.contact_message(locale, page.get("contact_title"))),
         alternates=routes.alternates, x_default=routes.x_default,
         # Адаптивные картинки: ширины, sizes и пропорции берутся из images.py — оттуда же
@@ -86,7 +87,7 @@ def build_locale(site, content, prices, locale, routes, base_path, main_locale):
     taxonomy.fill_related(content)
     site["nav"] = taxonomy.build_nav(content, routes, locale)
     ctx = pages.BuildContext(site, content, prices, language.prices, locale, routes,
-                             make_env(locale, routes, base_path, site["contacts"]), schema.render(site))
+                             make_env(locale, routes, base_path, site), schema.render(site))
     changed = {}
     for page_id, html in pages.build_all(ctx, load_privacy(locale.code)):
         changed[routes.path(locale, page_id)] = write(OUT / routes.out_file(locale, page_id), html)

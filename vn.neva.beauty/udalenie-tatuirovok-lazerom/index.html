@@ -3,6 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+(function (C) {
+  function stored(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function isInternal(referrer) {
+    try { return !!referrer && new URL(referrer).host === location.host; } catch (e) { return false; }
+  }
+  function prefersGroup(languages, group) {
+    return languages.some(function (tag) {
+      return group.indexOf(String(tag).toLowerCase().split("-")[0]) !== -1;
+    });
+  }
+  function choose(languages) {
+    var saved = stored(C.storageKey);
+    if (saved && C.pairs[saved]) return saved;
+    for (var i = 0; i < C.groups.length; i++) {
+      if (prefersGroup(languages, C.groups[i][1])) return C.groups[i][0];
+    }
+    return C.fallback;
+  }
+  if (new RegExp(C.bots, "i").test(navigator.userAgent) || isInternal(document.referrer)) return;
+  var target = choose(navigator.languages || [navigator.language || ""]);
+  if (target === C.current || !C.pairs[target]) return;
+  try { sessionStorage.setItem(C.sourceKey, document.referrer); } catch (e) {}
+  location.replace(C.pairs[target] + location.search + location.hash);
+})({"bots": "bot|crawl|spider|slurp|lighthouse|pagespeed|preview|facebookexternalhit|whatsapp|telegram|headless", "current": "ru", "fallback": "en", "groups": [["ru", ["ru", "uk", "be", "kk"]]], "pairs": {"en": "/en/laser-tattoo-removal/", "ru": "/udalenie-tatuirovok-lazerom/"}, "sourceKey": "neva.source", "storageKey": "neva.lang"});
+</script>
   
   <link rel="stylesheet" href="/assets/css/bundle.min.css?v=cac28848">
   
