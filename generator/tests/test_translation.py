@@ -64,3 +64,13 @@ class TranslationTest(unittest.TestCase):
             problems = self.problems()
         self.assertTrue(any(problem.startswith("замок content.home.seo_title")
                             for problem in problems))
+
+
+class StatusGroupsTest(unittest.TestCase):
+    def test_groups(self):
+        import translation_status
+        self.assertEqual({translation_status.group_of(problem) for problem in (
+            "ui nav.home: нет перевода", "home.seo_title: нет перевода",
+            "prices names «Лоб»: нет перевода (lpg-massazh)", "privacy: нет перевода политики",
+            "замок privacy: в мастере строки больше нет")},
+            {"ui", "content", "prices", "privacy", "замок"})
