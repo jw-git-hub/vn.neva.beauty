@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="/assets/css/bundle.min.css?v=e5ef38ea">
+  
+  
+  
+  
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/manrope-var.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/cormorant-600.woff2" crossorigin>
+  <script>document.documentElement.classList.add('js')</script>
+  
+  <script>
+  (function () {
+    var DELAYS = [800, 2500, 6000];  // паузы перед повторными попытками, мс
+
+    function rememberSource(img) {
+      // Слушатель вешаем на саму картинку: её событие load, в отличие от error,
+      // до window в фазе capture не доходит — общий обработчик его не увидит.
+      img.dataset.imgSrc = img.src;
+      img.addEventListener('load', function () { delete img.dataset.imgError; }, { once: true });
+    }
+
+    function reloadLater(img) {
+      var attempt = Number(img.dataset.imgRetry || 0);
+      if (attempt >= DELAYS.length) return;
+      if (!img.dataset.imgSrc) rememberSource(img);
+      img.dataset.imgRetry = attempt + 1;
+      var src = img.dataset.imgSrc;
+      setTimeout(function () {
+        // Параметр обязателен: без него браузер отдаёт запомненную ошибку, не запрос.
+        img.src = src + (src.indexOf('?') < 0 ? '?' : '&') + 'retry=' + (attempt + 1);
+      }, DELAYS[attempt]);
+    }
+
+    addEventListener('error', function (event) {
+      var img = event.target;
+      if (!img || img.tagName !== 'IMG') return;
+      img.dataset.imgError = '';
+      reloadLater(img);
+    }, true);
+  })();
+  </script>
+  <title>Privacy Policy | Neva Beauty</title>
+  <meta name="description" content="">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://vn.neva.beauty/en/privacy/">
+  <link rel="alternate" hreflang="en" href="https://vn.neva.beauty/en/privacy/">
+  <link rel="alternate" hreflang="x-default" href="https://vn.neva.beauty/en/privacy/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Neva Beauty">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Privacy Policy | Neva Beauty">
+  <meta property="og:description" content="">
+  <meta property="og:url" content="https://vn.neva.beauty/en/privacy/">
+  
+  
+  <meta property="og:image" content="https://vn.neva.beauty/assets/img/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Neva Beauty — Da Nang">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Privacy Policy | Neva Beauty">
+  <meta name="twitter:description" content="">
+  <meta name="twitter:image" content="https://vn.neva.beauty/assets/img/og-default.jpg">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://vn.neva.beauty/#organization",
+      "name": "Neva Beauty",
+      "url": "https://vn.neva.beauty/",
+      "logo": "https://vn.neva.beauty/assets/img/logo-neva-beauty.png",
+      "sameAs": [
+        "https://www.instagram.com/vn.neva.beauty/",
+        "https://t.me/doctor_cosmetolog_pro_channel"
+      ]
+    },
+    {
+      "@type": "BeautySalon",
+      "@id": "https://vn.neva.beauty/#business",
+      "name": "Neva Beauty",
+      "url": "https://vn.neva.beauty/",
+      "image": "https://vn.neva.beauty/assets/img/hero.jpg",
+      "telephone": "+84357132621",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Da Nang",
+        "addressCountry": "VN",
+        "addressRegion": "Da Nang"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Da Nang"
+      },
+      "parentOrganization": {
+        "@id": "https://vn.neva.beauty/#organization"
+      },
+      "priceRange": "$$",
+      "currenciesAccepted": "VND",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+84357132621",
+        "availableLanguage": [
+          "Russian",
+          "English"
+        ]
+      },
+      "sameAs": [
+        "https://www.instagram.com/vn.neva.beauty/",
+        "https://t.me/doctor_cosmetolog_pro_channel"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://vn.neva.beauty/#website",
+      "url": "https://vn.neva.beauty/",
+      "name": "Neva Beauty",
+      "inLanguage": "ru",
+      "publisher": {
+        "@id": "https://vn.neva.beauty/#organization"
+      }
+    }
+  ]
+}</script>
+  
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#FBF4F0">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+  <span class="aurora__blob" style="--x:12%;--y:8%;--size:48vw;--tint:var(--rose-soft);--op:.62;--dur:34s;--delay:0s;--dx:6vw;--dy:4vh"></span>
+  <span class="aurora__blob" style="--x:78%;--y:2%;--size:42vw;--tint:#F1D3C5;--op:.66;--dur:42s;--delay:-9s;--dx:-5vw;--dy:5vh"></span>
+  <span class="aurora__blob" style="--x:62%;--y:52%;--size:54vw;--tint:var(--rose);--op:.40;--dur:46s;--delay:-18s;--dx:-7vw;--dy:-5vh"></span>
+  <span class="aurora__blob" style="--x:4%;--y:60%;--size:44vw;--tint:var(--taupe);--op:.44;--dur:38s;--delay:-5s;--dx:6vw;--dy:-6vh"></span>
+  <span class="aurora__blob" style="--x:40%;--y:82%;--size:46vw;--tint:var(--rose-soft);--op:.54;--dur:40s;--delay:-22s;--dx:4vw;--dy:4vh"></span>
+</div>
+  
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    
+    <div class="brand-mark site-header__logo loc" data-loc>
+  <svg class="brand-mark__flower"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="332 279.5 336 323"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(-62 500 586.14)"/>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(62 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(-38 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(38 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(-17 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(17 500 586.14)"/>
+  <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" transform="rotate(0 500 586.14)"/>
+</svg>
+
+  <span class="brand-mark__text">
+    <a class="brand-mark__name" href="/en/">Neva Beauty</a>
+    <button class="brand-mark__loc loc__toggle" data-loc-toggle aria-expanded="false" aria-haspopup="true">Da Nang<svg class="loc__chev" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  </span>
+  <div class="loc__menu">
+    <p class="loc__lead">Our locations</p>
+    
+    <a class="loc__item" href="https://th.neva.beauty" hreflang="ru" rel="noopener">
+      <svg class="loc__pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+      <span class="loc__place"><span class="loc__city">Koh Samui</span><span class="loc__country">Thailand · site in Russian</span></span>
+    </a>
+    
+    <a class="loc__item is-active" href="/en/" aria-current="page">
+      <svg class="loc__pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+      <span class="loc__place"><span class="loc__city">Da Nang</span><span class="loc__country">Vietnam</span></span>
+    </a>
+    
+  </div>
+</div>
+    <nav class="nav" aria-label="Main navigation">
+      
+        
+        <a class="nav__link" href="/en/">Home</a>
+        
+      
+        
+        <div class="nav__group">
+          <button class="nav__link nav__toggle" aria-expanded="false">Body<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="nav__menu">
+            <a class="nav__lead" href="/en/body-contouring/"><span>Non-Surgical Body Contouring</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            <a class="nav__sub" href="/en/lpg-massage/">LPG Massage</a><a class="nav__sub" href="/en/endosphere-therapy/">Endosphere Therapy</a><a class="nav__sub" href="/en/ultrasonic-cavitation/">Ultrasonic Cavitation</a>
+          </div>
+        </div>
+        
+      
+        
+        <div class="nav__group">
+          <button class="nav__link nav__toggle" aria-expanded="false">Rejuvenation<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="nav__menu">
+            <a class="nav__lead" href="/en/non-surgical-face-lift/"><span>Non-Surgical Face Lift &amp; Rejuvenation</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            <a class="nav__sub" href="/en/hifu-treatment/">HIFU Treatment</a><a class="nav__sub" href="/en/morpheus8-rf-microneedling/">Morpheus8 RF Microneedling</a><a class="nav__sub" href="/en/m22-photorejuvenation/">M22 Photorejuvenation</a>
+          </div>
+        </div>
+        
+      
+        
+        <div class="nav__group">
+          <button class="nav__link nav__toggle" aria-expanded="false">Laser<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="nav__menu">
+            <a class="nav__lead" href="/en/laser-treatments/"><span>Laser Treatments</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            <a class="nav__sub" href="/en/laser-hair-removal/">Laser Hair Removal</a><a class="nav__sub" href="/en/laser-tattoo-removal/">Laser Tattoo Removal</a><a class="nav__sub" href="/en/permanent-makeup-removal/">Permanent Makeup Removal</a><a class="nav__sub" href="/en/carbon-laser-peel/">Carbon Laser Peel</a>
+          </div>
+        </div>
+        
+      
+        
+        <a class="nav__link" href="/en/facial-treatments/">Facials</a>
+        
+      
+    </nav>
+    <a class="btn btn--primary site-header__cta" href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="header">Book now</a>
+    <button class="burger" data-drawer-open aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+  
+  
+<div class="overlay" data-overlay data-drawer-close aria-hidden="true"></div>
+<aside class="drawer" data-drawer role="dialog" aria-modal="true" aria-label="Mobile menu">
+  <div class="drawer__top">
+    <span class="drawer__brand brand-mark"><svg class="brand-mark__flower"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="332 279.5 336 323"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(-62 500 586.14)"/>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(62 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(-38 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(38 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(-17 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(17 500 586.14)"/>
+  <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" transform="rotate(0 500 586.14)"/>
+</svg>
+
+<span class="brand-mark__text">
+  <span class="brand-mark__name">Neva Beauty</span>
+  <span class="brand-mark__loc">Da Nang</span>
+</span></span>
+    <button class="drawer__close" data-drawer-close aria-label="Close menu">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <nav class="drawer__nav">
+    
+      
+      <a class="drawer__link" href="/en/" style="--i:1">Home</a>
+      
+    
+      
+      <div class="drawer__group" style="--i:2">
+        <a class="drawer__group-label" href="/en/body-contouring/">Non-Surgical Body Contouring<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+        <a class="drawer__sub" href="/en/lpg-massage/">LPG Massage</a><a class="drawer__sub" href="/en/endosphere-therapy/">Endosphere Therapy</a><a class="drawer__sub" href="/en/ultrasonic-cavitation/">Ultrasonic Cavitation</a>
+      </div>
+      
+    
+      
+      <div class="drawer__group" style="--i:3">
+        <a class="drawer__group-label" href="/en/non-surgical-face-lift/">Non-Surgical Face Lift &amp; Rejuvenation<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+        <a class="drawer__sub" href="/en/hifu-treatment/">HIFU Treatment</a><a class="drawer__sub" href="/en/morpheus8-rf-microneedling/">Morpheus8 RF Microneedling</a><a class="drawer__sub" href="/en/m22-photorejuvenation/">M22 Photorejuvenation</a>
+      </div>
+      
+    
+      
+      <div class="drawer__group" style="--i:4">
+        <a class="drawer__group-label" href="/en/laser-treatments/">Laser Treatments<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+        <a class="drawer__sub" href="/en/laser-hair-removal/">Laser Hair Removal</a><a class="drawer__sub" href="/en/laser-tattoo-removal/">Laser Tattoo Removal</a><a class="drawer__sub" href="/en/permanent-makeup-removal/">Permanent Makeup Removal</a><a class="drawer__sub" href="/en/carbon-laser-peel/">Carbon Laser Peel</a>
+      </div>
+      
+    
+      
+      <a class="drawer__link" href="/en/facial-treatments/" style="--i:5">Facials</a>
+      
+    
+  </nav>
+  <div class="drawer__footer">
+    <a class="btn btn--primary drawer__cta" href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="drawer">Book now</a>
+    <div class="drawer__socials">
+      <a href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="drawer" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 1.8a8.2 8.2 0 0 1 6.9 12.6l.7 2.5-2.6-.7A8.2 8.2 0 1 1 12 3.8zm-3 3.6c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.3s1 2.6 1.1 2.8c.1.2 2 3.1 4.9 4.2 2.4 1 2.9.8 3.4.8.5-.1 1.6-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3-.3-.2-1.6-.8-1.9-.9-.2-.1-.4-.1-.6.1-.2.3-.6.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.8-.1-.3 0-.4.1-.5l.4-.5c.2-.1.2-.3.3-.4.1-.2 0-.3 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4z"/></svg>
+        <span>WhatsApp</span>
+      </a>
+      <a href="https://t.me/doctor_cosmetolog_pro?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="telegram" data-place="drawer" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.7.8l-4.6-3.4-2.2 2.1c-.3.3-.5.5-1 .5l.3-4.7L18 5.7c.4-.3-.1-.5-.6-.2L7 11.7l-4.5-1.4c-1-.3-1-1 .2-1.4l17.6-6.8c.8-.3 1.5.2 1.2 1.6z"/></svg>
+        <span>Telegram</span>
+      </a>
+      <a href="https://instagram.com/vn.neva.beauty" target="_blank" rel="noopener" data-contact="instagram" data-place="drawer" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        <span>Instagram</span>
+      </a>
+    </div>
+  </div>
+</aside>
+  <main id="main">
+<section class="section">
+  <div class="legal-page">
+    <h1>Policy on the Processing of Personal Data</h1>
+    <p>This English version is a translation provided for convenience. In the event of any discrepancy between this translation and the Russian version, the Russian version shall prevail. The Russian version is available at <a href="https://vn.neva.beauty/privacy/" hreflang="ru">https://vn.neva.beauty/privacy/</a>.</p>
+
+    <h2>1. General Provisions</h2>
+    <p>This personal data processing policy has been drawn up in accordance with the requirements of Federal Law No. 152-FZ of July 27, 2006 “On Personal Data” and defines the procedure for processing personal data and the measures taken by Neva Beauty (hereinafter, the “Operator”) to ensure the security of personal data.</p>
+    <p>1.1. The Operator sets as its most important goal the observance of the rights and freedoms of the individual in the processing of his or her personal data, including the protection of the rights to inviolability of private life and to personal and family secrets.</p>
+    <p>1.2. This Policy applies to all information that the Operator may obtain about visitors to the website <a href="https://vn.neva.beauty">https://vn.neva.beauty</a>.</p>
+
+    <h2>2. Basic Terms</h2>
+    <p>2.1. <strong>Automated processing</strong> — processing of personal data by means of computer technology.</p>
+    <p>2.2. <strong>Blocking</strong> — temporary suspension of the processing of personal data.</p>
+    <p>2.3. <strong>Website</strong> — the set of materials and programs available on the internet at <a href="https://vn.neva.beauty">https://vn.neva.beauty</a>.</p>
+    <p>2.4. <strong>Processing of personal data</strong> — any actions performed with personal data, including collection, recording, storage, modification, use, transfer, depersonalization, blocking, deletion, and destruction.</p>
+    <p>2.5. <strong>Operator</strong> — a person who organizes and/or carries out the processing of personal data and determines the purposes of such processing.</p>
+    <p>2.6. <strong>Personal data</strong> — any information relating directly or indirectly to a specific user of the website <a href="https://vn.neva.beauty">https://vn.neva.beauty</a>.</p>
+    <p>2.7. <strong>User</strong> — any visitor to the website <a href="https://vn.neva.beauty">https://vn.neva.beauty</a>.</p>
+    <p>2.8. <strong>Cross-border transfer</strong> — transfer of personal data to the territory of a foreign state.</p>
+    <p>2.9. <strong>Destruction</strong> — actions as a result of which personal data is irreversibly destroyed.</p>
+
+    <h2>3. Basic Rights and Obligations of the Operator</h2>
+    <p>3.1. The Operator has the right to:</p>
+    <ul>
+      <li>receive reliable information from the personal data subject;</li>
+      <li>continue processing personal data without the subject’s consent where there are grounds specified by law;</li>
+      <li>independently determine the set of measures necessary to comply with the requirements of legislation.</li>
+    </ul>
+    <p>3.2. The Operator is obliged to:</p>
+    <ul>
+      <li>provide the subject with information concerning the processing of his or her personal data;</li>
+      <li>organize processing in the manner established by applicable legislation;</li>
+      <li>respond to inquiries and requests from personal data subjects;</li>
+      <li>publish this Policy in publicly accessible form;</li>
+      <li>take technical and organizational measures to protect personal data against unlawful access, destruction, or alteration.</li>
+    </ul>
+
+    <h2>4. Basic Rights and Obligations of Personal Data Subjects</h2>
+    <p>4.1. Personal data subjects have the right to:</p>
+    <ul>
+      <li>receive information about the processing of their personal data;</li>
+      <li>demand the rectification, blocking, or destruction of personal data;</li>
+      <li>withdraw consent to the processing of personal data;</li>
+      <li>appeal against unlawful actions of the Operator to the authorized body or a court.</li>
+    </ul>
+    <p>4.2. Personal data subjects are obliged to provide the Operator with reliable data about themselves and to report changes to such data.</p>
+
+    <h2>5. Principles of Personal Data Processing</h2>
+    <p>5.1. Processing is carried out on a lawful and fair basis.</p>
+    <p>5.2. Processing is limited to the achievement of specific, predetermined, and lawful purposes.</p>
+    <p>5.3. Only data that corresponds to the purposes of its processing is subject to processing.</p>
+    <p>5.4. Personal data is stored for no longer than the purposes of processing require.</p>
+
+    <h2>6. Purposes of Personal Data Processing</h2>
+    <table role="table">
+      <caption class="visually-hidden">Purposes of personal data processing</caption>
+      <thead role="rowgroup">
+        <tr role="row">
+          <th role="columnheader">Purpose of processing</th>
+          <th role="columnheader">Personal data</th>
+          <th role="columnheader">Legal grounds</th>
+          <th role="columnheader">Types of processing</th>
+        </tr>
+      </thead>
+      <tbody role="rowgroup">
+        <tr role="row">
+          <td role="rowheader">Providing access to the services and materials of the website</td>
+          <td role="cell" data-label="Personal data">Name, phone numbers</td>
+          <td role="cell" data-label="Legal grounds">Federal Law No. 149-FZ of July 27, 2006 “On Information, Information Technologies and Protection of Information”</td>
+          <td role="cell" data-label="Types of processing">Collection, recording, storage, destruction, and depersonalization; sending of informational letters</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>7. Conditions for Personal Data Processing</h2>
+    <p>7.1. Processing is carried out with the consent of the personal data subject.</p>
+    <p>7.2. Processing may be carried out without consent in cases provided for by the legislation of the Russian Federation.</p>
+    <p>7.3. Processing is necessary for the performance of a contract to which the personal data subject is a party or of which the personal data subject is a beneficiary.</p>
+
+    <h2>8. Procedure for Collecting, Storing, and Transferring Personal Data</h2>
+    <p>8.1. The Operator ensures the safekeeping of personal data and takes all possible measures that preclude unauthorized access to it.</p>
+    <p>8.2. The User’s personal data will under no circumstances be transferred to third parties, except in cases related to compliance with applicable legislation.</p>
+    <p>8.3. If inaccuracies are found in the personal data, the User may update it by sending a notice marked “Personal Data Update” to the Operator’s email address <a href="mailto:vaarootman@gmail.com">vaarootman@gmail.com</a>.</p>
+    <p>8.4. The period of processing is determined by the achievement of the purposes for which the data was collected. The User may withdraw his or her consent at any time by sending a notice marked “Withdrawal of Consent to Personal Data Processing” to <a href="mailto:vaarootman@gmail.com">vaarootman@gmail.com</a>.</p>
+    <p>8.5. The Operator is not responsible for the actions of third-party services and service providers that process data in accordance with their own privacy policies.</p>
+    <p>8.6. The Operator ensures the confidentiality of personal data.</p>
+
+    <h2>9. List of Actions Performed with Personal Data</h2>
+    <p>9.1. The Operator carries out the collection, recording, systematization, accumulation, storage, rectification, retrieval, use, transfer, depersonalization, blocking, deletion, and destruction of personal data.</p>
+    <p>9.2. The Operator carries out automated processing of personal data with the receipt and/or transmission of information over information and telecommunications networks.</p>
+
+    <h2>10. Cross-Border Transfer of Personal Data</h2>
+    <p>10.1. The Operator is obliged to notify the authorized body of its intention to carry out cross-border transfers of personal data before commencing such activity.</p>
+    <p>10.2. The Operator is obliged to obtain the necessary information from the foreign persons to whom a cross-border transfer of data is planned.</p>
+
+    <h2>11. Confidentiality of Personal Data</h2>
+    <p>The Operator and other persons who have obtained access to personal data are obliged not to disclose it to third parties and not to distribute it without the consent of the personal data subject, unless otherwise provided by federal law.</p>
+
+    <h2>12. Final Provisions</h2>
+    <p>12.1. Any clarifications on matters related to the processing of personal data may be obtained by contacting the Operator by email at <a href="mailto:vaarootman@gmail.com">vaarootman@gmail.com</a>.</p>
+    <p>12.2. All changes to the personal data processing policy will be reflected in this document. The Policy remains in effect indefinitely until it is replaced by a new version.</p>
+    <p>12.3. The current version of the Policy is available at <a href="https://vn.neva.beauty/en/privacy/">https://vn.neva.beauty/en/privacy/</a>.</p>
+    <p>For questions related to the processing of personal data, you can contact us:</p>
+    <ul>
+      <li>WhatsApp / Telegram: <a href="https://wa.me/84357132621">+84 357 132 621</a></li>
+      <li>Telegram: <a href="https://t.me/doctor_cosmetolog_pro">@doctor_cosmetolog_pro</a></li>
+      <li>Instagram: <a href="https://instagram.com/vn.neva.beauty">@vn.neva.beauty</a></li>
+      <li>Email: <a href="mailto:vaarootman@gmail.com">vaarootman@gmail.com</a></li>
+    </ul>
+  </div>
+</section>
+</main>
+  
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__col site-footer__brand">
+      <span class="site-footer__logo brand-mark"><svg class="brand-mark__flower"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="332 279.5 336 323"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(-62 500 586.14)"/>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(62 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(-38 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(38 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(-17 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(17 500 586.14)"/>
+  <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" transform="rotate(0 500 586.14)"/>
+</svg>
+
+<span class="brand-mark__text">
+  <span class="brand-mark__name">Neva Beauty</span>
+  <span class="brand-mark__loc">Da Nang</span>
+</span></span>
+      <div class="site-footer__places">
+  <h2 class="site-footer__title">Our locations</h2>
+  
+  <a class="site-footer__place" href="https://th.neva.beauty" hreflang="ru" rel="noopener">
+    <svg class="site-footer__place-pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+    <span>Koh Samui, Thailand · site in Russian</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg>
+  </a>
+  
+  <a class="site-footer__place is-current" href="/en/" aria-current="page">
+    <svg class="site-footer__place-pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+    <span>Da Nang, Vietnam</span><span class="site-footer__place-here">you are here</span>
+  </a>
+  
+</div>
+    </div>
+    <nav class="site-footer__col" aria-label="Services">
+      <h2 class="site-footer__title">Services</h2>
+      
+        
+      
+        <a class="site-footer__link" href="/en/lpg-massage/">LPG Massage</a><a class="site-footer__link" href="/en/endosphere-therapy/">Endosphere Therapy</a><a class="site-footer__link" href="/en/ultrasonic-cavitation/">Ultrasonic Cavitation</a>
+        
+      
+        <a class="site-footer__link" href="/en/hifu-treatment/">HIFU Treatment</a><a class="site-footer__link" href="/en/morpheus8-rf-microneedling/">Morpheus8 RF Microneedling</a><a class="site-footer__link" href="/en/m22-photorejuvenation/">M22 Photorejuvenation</a>
+        
+      
+        <a class="site-footer__link" href="/en/laser-hair-removal/">Laser Hair Removal</a><a class="site-footer__link" href="/en/laser-tattoo-removal/">Laser Tattoo Removal</a><a class="site-footer__link" href="/en/permanent-makeup-removal/">Permanent Makeup Removal</a><a class="site-footer__link" href="/en/carbon-laser-peel/">Carbon Laser Peel</a>
+        
+      
+        <a class="site-footer__link" href="/en/facial-treatments/">Facials</a>
+        
+      
+    </nav>
+    <div class="site-footer__col">
+      <h2 class="site-footer__title">Contact</h2>
+      <a class="site-footer__link" href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="footer">WhatsApp</a>
+      <a class="site-footer__link" href="https://t.me/doctor_cosmetolog_pro?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="telegram" data-place="footer">Telegram</a>
+      <a class="site-footer__link" href="https://instagram.com/vn.neva.beauty" target="_blank" rel="noopener" data-contact="instagram" data-place="footer">Instagram</a>
+    </div>
+  </div>
+  <div class="site-footer__bottom container">
+    <span>© Neva Beauty — Da Nang, Vietnam</span>
+    <a href="/en/privacy/">Privacy Policy</a>
+  </div>
+</footer>
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/reveal.js"></script>
+  
+  
+<!-- Yandex.Metrika counter --><script>
+(function (w, d) {
+  w.ym = w.ym || function () { (w.ym.a = w.ym.a || []).push(arguments) };
+  w.ym.l = 1 * new Date();
+  ym(106778458, "init", {
+       clickmap:true,
+       trackLinks:true,
+       accurateTrackBounce:true,
+       webvisor:false
+  });
+  var PAGE = "privacy";
+  function reportContact(event) {
+    var link = event.target.closest && event.target.closest("[data-contact]");
+    if (!link) return;
+    ym(106778458, "reachGoal", "contact", {
+      channel: link.getAttribute("data-contact"),
+      lang: d.documentElement.lang,
+      page: PAGE,
+      place: link.getAttribute("data-place")
+    });
+  }
+  d.addEventListener("click", reportContact);
+
+  var SRC = "https://mc.yandex.ru/metrika/tag.js";
+  var started = false;
+
+  function start() {
+    if (started) return;
+    started = true;
+    for (var i = 0; i < d.scripts.length; i++) if (d.scripts[i].src === SRC) return;
+    var s = d.createElement("script");
+    s.async = 1;
+    s.src = SRC;
+    d.head.appendChild(s);
+  }
+
+  ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (name) {
+    addEventListener(name, start, { once: true, passive: true });
+  });
+
+  function afterLoad() { setTimeout(start, 1200); }
+  if (d.readyState === "complete") afterLoad();
+  else addEventListener("load", afterLoad, { once: true });
+})(window, document);
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/106778458" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+</body>
+</html>
