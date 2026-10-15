@@ -219,6 +219,12 @@
 .lang-pill:hover{border-color:var(--rose-soft);color:var(--rose)}
 .lang-pill::after{content:"";position:absolute;inset:-7px -2px}
 @media(min-width:1024px){.nav{margin-inline:auto}.lang-pill{margin-left:0}}
+/* 320 px: логотип, пилюля и бургер шире экрана, и ужимался знак-лотос. Ужимается
+   видимая пилюля и подходит к бургеру (у того 10 px своих полей) — зона нажатия та же. */
+@media(max-width:359.98px){
+  .lang-pill{min-width:1.875rem;height:1.625rem;padding:0 .35rem;margin-right:-6px}
+  .lang-pill::after{inset:-9px -3px -9px -11px}
+}
 
 /* Строка «Русский · English» в мобильном меню и подвале. Текущий язык — текст, не ссылка. */
 .lang-line{display:flex;align-items:center;flex-wrap:wrap;margin:0;font-size:var(--fs-200);color:var(--muted)}
