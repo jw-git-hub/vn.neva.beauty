@@ -1,0 +1,124 @@
+# Перевод строк прайса (generator/data/prices.json) на английский.
+# Ключ — русская строка дословно, значение — перевод по глоссарию (EN-глоссарий.md, разделы 1–3 и 8).
+# В descs числа заменены масками {0}, {1}… по порядку; сборка подставит их из русской строки.
+# Цен и цифр перед đ здесь нет по построению.
+# overrides не нужны: каждая русская строка во всех услугах переводится одинаково (глоссарий, раздел 2).
+
+sections:
+  'Цены': 'Prices'
+  'Цены - Женщины': 'Prices - Women'
+  'Цены - Мужчины': 'Prices - Men'
+  'Прайс-лист на услуги чистки': 'Cleansing facials price list'
+
+names:
+  # Лазерная эпиляция
+  'КОМБО 1 (подмышки, глуб. бикини, голени)': 'Combo 1 (underarms, Brazilian, lower legs)'
+  'КОМБО 2 (подмышки, глуб. бикини, ноги полностью)': 'Combo 2 (underarms, Brazilian, full legs)'
+  'КОМБО 3 (подмышки, глуб. бикини)': 'Combo 3 (underarms, Brazilian)'
+  'Лоб': 'Forehead'
+  'Верхняя губа': 'Upper lip'
+  'Лицо полностью': 'Full face'
+  'Шея': 'Neck'
+  'Грудь': 'Chest'
+  'Ареолы': 'Areolas'
+  'Живот': 'Abdomen'
+  'Плечо': 'Upper arms'
+  'Предплечье': 'Forearms'
+  'Руки полностью': 'Full arms'
+  'Подмышечные впадины': 'Underarms'
+  'Спина': 'Back'
+  'Классическое бикини': 'Bikini line'
+  'Глубокое бикини': 'Brazilian'
+  'Голени': 'Lower legs'
+  'Бедра': 'Thighs'
+  'Ягодицы': 'Buttocks'
+  'Ноги полностью': 'Full legs'
+  'Все тело': 'Full body'
+
+  # LPG-массаж
+  'LPG Массаж - Тело': 'LPG Massage - Body'
+  'LPG Массаж - Лицо': 'LPG Massage - Face'
+  'Костюм для LPG': 'LPG bodysuit'
+
+  # Эндосфера-терапия
+  'Эндосфера-терапия - Тело': 'Endosphere Therapy - Body'
+  'Эндосфера-терапия - Лицо': 'Endosphere Therapy - Face'
+
+  # Ультразвуковая кавитация
+  'УЗ-кавитация': 'Ultrasonic cavitation'
+
+  # Эстетический уход за лицом
+  'Пилинг по типу кожи': 'Peel for your skin type'
+  'Пилинг BioRePeel Cl3': 'BioRePeel Cl3 peel'
+  'Пилинг PRX T33': 'PRX-T33 peel'
+  'Карбокситерапия': 'Non-invasive carboxytherapy'
+  'Маска HydroPeptid': 'HydroPeptid mask'
+  'Чистка лица': 'Deep cleansing facial'
+  'Ультразвуковая чистка': 'Ultrasonic cleansing facial'
+  'HydraFacial': 'HydraFacial'
+  'Комбо: Чистка + Пилинг': 'Combo: Deep cleansing facial + peel'
+  'RF-терапия': 'RF therapy'
+  'Ультразвуковая терапия': 'Ultrasound therapy'
+  'Сыворотка высококонцентрированная': 'Highly concentrated serum'
+  'Альгинатная маска': 'Alginate mask'
+
+  # Ультразвуковой SMAS-лифтинг (Шея, Живот, Бедра — общие с эпиляцией)
+  'Комбо 1': 'Combo 1'
+  'Комбо 2': 'Combo 2'
+  'Комбо 3': 'Combo 3'
+  'Комбо 4': 'Combo 4'
+  'Комбо 5': 'Combo 5'
+  'Глаза': 'Eye area'
+  'Лицо': 'Face'
+  'Подчелюстная зона': 'Under-chin area'
+  'Декольте': 'Decollete'
+  'Руки': 'Arms'
+  'Колени': 'Knees'
+
+  # Лазерное удаление татуировок
+  '3 × 5 см': '3 × 5 cm'
+  '4 × 7.5 см': '4 × 7.5 cm'
+  '5 × 10.5 см': '5 × 10.5 cm'
+  '7 × 15 см': '7 × 15 cm'
+  '10 × 15 см': '10 × 15 cm'
+  '15 × 21 см': '15 × 21 cm'
+  '21 × 30 см': '21 × 30 cm'
+
+  # Удаление перманентного макияжа
+  'Брови': 'Eyebrows'
+  'Веки': 'Eyelids'
+  'Губы': 'Lips'
+
+  # Карбоновый лазерный пилинг
+  'Карбоновый лазерный пилинг': 'Carbon Laser Peel'
+
+  # Игольчатый RF-лифтинг Morpheus 8 (Лицо, Глаза, Шея, Декольте, Колени — общие с SMAS-лифтингом)
+  'Кисти': 'Hands'
+  'Живот полностью': 'Full abdomen'
+  'Внутренняя часть бедра': 'Inner thighs'
+  'Руки до локтя': 'Forearms'
+  'Руки от локтя до плеча': 'Upper arms'
+  'Лицо + шея + глаза': 'Face + neck + eye area'
+  'Лицо + шея + декольте': 'Face + neck + decollete'
+  'Удаление шрамов': 'Scar removal'
+
+  # Фотоомоложение M22 (Лицо, Шея — общие)
+  'Лицо + шея': 'Face + neck'
+  'Шея + декольте': 'Neck + decollete'
+  'Кисти рук': 'Hands'
+
+descs:
+  # «{0} сеанс» в прайсе всегда с 1, «{0} сеансов» — с 5 и 10.
+  '{0} сеанс': '{0} session'
+  '{0} сеансов': '{0} sessions'
+  '{0} сеансов — при покупке курса стоимость процедуры {1} đ': '{0} sessions — {1} đ per session when you buy the course'
+  'Приобретается отдельно': 'Sold separately'
+  'Дополнительно к процедурам': 'Add-on to a treatment'
+  'Косметика Christina': 'Christina skincare products'
+  'Лицо + подчелюстная зона': 'Face + under-chin area'
+  'Лицо + подчелюстная зона + шея': 'Face + under-chin area + neck'
+  'Лицо + подчелюстная зона + шея + декольте': 'Face + under-chin area + neck + decollete'
+  'Подчелюстная зона + шея': 'Under-chin area + neck'
+  'Скулы + щеки + подчелюстная зона + верхняя треть шеи': 'Cheekbones + cheeks + under-chin area + upper third of the neck'
+  'Зависит от размера и вида шрама': 'Depends on the size and type of scar'
+  'Лечение акне': 'Acne treatment'

@@ -25,6 +25,103 @@ slugs:
   lifting-i-omolozhenie: non-surgical-face-lift
   lazernye-procedury: laser-treatments
 
-ui: {}
+ui:
+  nav:
+    home: "Home"
+    main_label: "Main navigation"
+    open_menu: "Open menu"
+    close_menu: "Close menu"
+    drawer_label: "Mobile menu"
+    breadcrumbs_label: "Breadcrumb"
+  cta:
+    book: "Book now"
+    services: "Services"
+    more: "Learn more"
+    to_home: "Back to home"
+  # Тексты обращения — спека, раздел 15.
+  contact:
+    text_generic: "Hello! I'd like to book an appointment"
+    text_page: "Hello! I'd like to book: {title}"
+  locations:
+    title: "Our locations"
+    here: "you are here"
+    language_note: "site in {language}"
+  # Названия языков для пометки у ссылки на сайт другого салона (locations.language_note).
+  languages:
+    ru: "Russian"
+  footer:
+    services_title: "Services"
+    contacts_title: "Contact"
+    copyright: "© Neva Beauty — Da Nang, Vietnam"
+    privacy: "Privacy Policy"
+  home:
+    hero_alt: "Woman with smooth skin and makeup — Neva Beauty, a beauty center"
+    services_eyebrow: "Services"
+    services_title: "Beauty treatments"
+    services_lead: "Device-based treatments and facials suited to your goals."
+    benefits_eyebrow: "Why Neva Beauty"
+    benefits_title: "Care in every detail"
+    popular_eyebrow: "Popular"
+    popular_title: "Frequently booked treatments"
+    popular_lead: "Prices are listed in Vietnamese dong (đ)."
+    faq_title: "Neva Beauty at a glance"
+    seo_title_default: "Beauty Center in Da Nang | Neva Beauty"
+  faq:
+    eyebrow: "Questions & answers"
+    title: "Frequently asked questions — {title}"
+  booking:
+    eyebrow: "Booking"
+    lead: "We'll reply by message and find a time that works for you."
+  # price_title, benefits_title и related_title несут название услуги: в русском эти
+  # h2 одинаковы на всех страницах услуг, в английском — нет (спека, раздел 12).
+  service:
+    hero_alt: "{title} — Neva Beauty, Da Nang"
+    benefits_eyebrow: "Benefits"
+    benefits_title: "Why {title} works"
+    price_eyebrow: "Pricing"
+    price_title: "Prices — {title}"
+    price_lead: "Prices are listed in Vietnamese dong (đ)."
+    price_tabs_label: "Price list sections"
+    price_section_default: "Prices"
+    col_service: "Service"
+    col_price: "Price"
+    col_compare: "Treatment and what it addresses"
+    related_eyebrow: "Round out your care"
+    related_title: "Related to {title}"
+    catalog_name: "{title} — prices"
+  category:
+    eyebrow: "Treatment category"
+    card_alt: "{title} — {category} at Neva Beauty, Da Nang"
+    others_eyebrow: "Other treatment categories"
+    others_title: "What else Neva Beauty offers besides {title}"
+  price:
+    from: "from {price}"
+  privacy:
+    seo_title: "Privacy Policy | Neva Beauty"
+  not_found:
+    seo_title: "Page Not Found | Neva Beauty"
+    title: "Page not found"
+    text: "This link may be out of date. Go back to the home page or choose a service from the menu."
+  llms:
+    summary: "> Beauty center in Da Nang (Vietnam): device-based treatments, laser hair removal, non-surgical lifting and rejuvenation, facials and body contouring. Service in Russian and English."
+    about_title: "## About the center"
+    city: "- City: {location}. The exact address is shared when you book"
+    booking: "- Visits: by appointment, booked in advance"
+    languages: "- Service languages: Russian and English"
+    currency: "- Price currency: Vietnamese dong (đ, {currency})"
+    categories_title: "## Treatment categories"
+    services_title: "## Services"
+    price: " Price: {price}."
+    contacts_title: "## Contact"
 
-site: {}
+# Строки site.yml на английском. locations — в том же порядке, что в site.yml.
+site:
+  tagline: "Beauty Center · Da Nang"
+  location: "Da Nang, Vietnam"
+  hours: "By appointment only"
+  locations:
+    # Так салон на Самуи называет себя латиницей на своём сайте (th.neva.beauty).
+    - city: "Koh Samui"
+      country: "Thailand"
+    - city: "Da Nang"
+      country: "Vietnam"
