@@ -27,6 +27,10 @@ ui:
   locations:
     title: "Наши салоны"
     here: "вы здесь"
+    language_note: "сайт на {language}"
+  # Названия языков для пометки у ссылки на сайт другого салона (locations.language_note).
+  languages:
+    ru: "русском"
   footer:
     services_title: "Услуги"
     contacts_title: "Контакты"

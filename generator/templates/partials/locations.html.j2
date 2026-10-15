@@ -11,6 +11,15 @@
 {{ href('home') if place.current else place.url }}
 {%- endmacro %}
 
+{# Пометка языка чужого сайта: только если он на другом языке, чем эта страница. #}
+{% macro _lang_attr(place) -%}
+{%- if place.language and place.language != locale.code %} hreflang="{{ place.language }}"{% endif -%}
+{%- endmacro %}
+
+{% macro _lang_note(place) -%}
+{%- if place.language and place.language != locale.code %} · {{ t('locations.language_note', language=t('languages.' ~ place.language)) }}{% endif -%}
+{%- endmacro %}
+
 {# Переключатель в шапке. Строка города под названием и так стояла в фирменном
    замке — она и становится кнопкой: ширины шапке добавляет только галочка, а
    свободного места там 47 px на 1024 (см. комментарий у .site-header__cta). #}
@@ -24,9 +33,9 @@
   <div class="loc__menu">
     <p class="loc__lead">{{ t('locations.title') }}</p>
     {% for place in site.locations %}
-    <a class="loc__item{% if place.current %} is-active{% endif %}" href="{{ _href(place) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
+    <a class="loc__item{% if place.current %} is-active{% endif %}" href="{{ _href(place) }}"{{ _lang_attr(place) }}{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
       {{ icon('map-pin', 'loc__pin') }}
-      <span class="loc__place"><span class="loc__city">{{ place.city }}</span><span class="loc__country">{{ place.country }}</span></span>
+      <span class="loc__place"><span class="loc__city">{{ place.city }}</span><span class="loc__country">{{ place.country }}{{ _lang_note(place) }}</span></span>
     </a>
     {% endfor %}
   </div>
@@ -39,9 +48,9 @@
 <div class="site-footer__places">
   <h2 class="site-footer__title">{{ t('locations.title') }}</h2>
   {% for place in site.locations %}
-  <a class="site-footer__place{% if place.current %} is-current{% endif %}" href="{{ _href(place) }}"{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
+  <a class="site-footer__place{% if place.current %} is-current{% endif %}" href="{{ _href(place) }}"{{ _lang_attr(place) }}{% if not place.current %} rel="noopener"{% endif %}{% if place.current %} aria-current="page"{% endif %}>
     {{ icon('map-pin', 'site-footer__place-pin') }}
-    <span>{{ place.city }}, {{ place.country }}</span>
+    <span>{{ place.city }}, {{ place.country }}{{ _lang_note(place) }}</span>
     {%- if place.current %}<span class="site-footer__place-here">{{ t('locations.here') }}</span>
     {%- else %}<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg>
     {%- endif %}

@@ -63,9 +63,9 @@ class HreflangInBuiltPagesTest(unittest.TestCase):
             self.assertIn(f'<link rel="alternate" hreflang="{hreflang}" href="{address}">', html)
 
     def test_service_page_declares_its_own_language(self):
-        html = self.pages["en/privacy/index.html"]
-        self.assertIn('hreflang="en"', html)
-        self.assertNotIn('hreflang="ru"', html)
+        head = self.pages["en/privacy/index.html"].split("</head>")[0]
+        self.assertIn('hreflang="en"', head)
+        self.assertNotIn('hreflang="ru"', head)
 
 
 class LoadLocalesTest(unittest.TestCase):
@@ -148,6 +148,9 @@ class ContactLinksInBuiltPagesTest(unittest.TestCase):
         self.assertEqual(contact_texts(" ".join(f'href="{url}"' for url in faq_links)),
                          {"Здравствуйте! Хочу записаться на: LPG-массаж"})
 
+    def test_russian_page_has_no_language_note(self):
+        self.assertNotIn('hreflang="ru" ', self.pages["index.html"].split("<body>")[1])
+
     def test_metrika_reports_contact_with_page_id(self):
         html = self.pages["lpg-massazh/index.html"]
         self.assertIn('var PAGE = "lpg-massazh";', html)
@@ -182,3 +185,8 @@ class TranslatedEnglishPagesTest(unittest.TestCase):
 
     def test_page_text_is_translated(self):
         self.assertIn("<h1>EN LPG-массаж</h1>", self.pages["en/lpg-massazh/index.html"])
+
+    def test_samui_link_says_site_is_russian(self):
+        html = self.pages["en/index.html"]
+        self.assertIn('href="https://th.neva.beauty" hreflang="ru"', html)
+        self.assertIn("сайт на русском", html)  # псевдоперевод берёт строки интерфейса русского
