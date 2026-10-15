@@ -1,6 +1,8 @@
 import unittest
 
-from locales import parse_locale
+import build
+import taxonomy
+from locales import load_locale, parse_locale
 from routes import HOME, NOT_FOUND, PRIVACY, Routes
 
 
@@ -195,3 +197,41 @@ class LocalizeLinksTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+APPROVED_ENGLISH_PATHS = {
+    "home": "/en/",
+    "lazernaya-epilyaciya": "/en/laser-hair-removal/",
+    "lpg-massazh": "/en/lpg-massage/",
+    "endosfera-terapiya": "/en/endosphere-therapy/",
+    "ultrazvukovaya-kavitaciya": "/en/ultrasonic-cavitation/",
+    "smas-lifting": "/en/hifu-treatment/",
+    "udalenie-tatuirovok-lazerom": "/en/laser-tattoo-removal/",
+    "udalenye-permanentnogo-makiyazha": "/en/permanent-makeup-removal/",
+    "karbonovyy-lazernyy-piling": "/en/carbon-laser-peel/",
+    "morpheus-8-rf-lifting": "/en/morpheus8-rf-microneedling/",
+    "fotoomolozhenie-m22": "/en/m22-photorejuvenation/",
+    "esteticheskaya-kosmetologiya-i-uhod": "/en/facial-treatments/",
+    "korrekciya-figury": "/en/body-contouring/",
+    "lifting-i-omolozhenie": "/en/non-surgical-face-lift/",
+    "lazernye-procedury": "/en/laser-treatments/",
+    "privacy": "/en/privacy/",
+    "404": "/en/404.html",
+}
+
+
+class EnglishLocaleFileTest(unittest.TestCase):
+    """Адреса утверждены владельцем 2026-10-14 (EN-остановка-1.md, раздел 3) и заморожены."""
+
+    def test_every_page_has_approved_english_path(self):
+        _, content, _ = build.load()
+        russian, english = load_locale("ru"), load_locale("en")
+        routes = Routes([russian, english], taxonomy.page_ids(content),
+                        "https://vn.neva.beauty", "ru")
+        actual = {page_id: routes.path(english, page_id) for page_id in APPROVED_ENGLISH_PATHS}
+        self.assertEqual(actual, APPROVED_ENGLISH_PATHS)
+
+    def test_codes(self):
+        english = load_locale("en")
+        self.assertEqual((english.code, english.html_lang, english.og_locale, english.url_prefix),
+                         ("en", "en", "en_US", "/en"))

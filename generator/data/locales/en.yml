@@ -1,0 +1,30 @@
+# Английский язык сайта. Тексты страниц, прайса и политики лежат рядом, в en/;
+# строки интерфейса (ui) переводит этап 7. Пока ui пуст, язык не включён в site.yml.
+# Строка с параметрами ({title}, {price}, ...) форматируется через str.format, поэтому
+# буквальные фигурные скобки пишутся удвоенными: {{ и }}.
+code: en
+html_lang: en
+og_locale: en_US
+url_prefix: "/en"
+
+# Адреса утверждены владельцем 2026-10-14 и заморожены: смена слага после запуска
+# ломает ссылки и сбрасывает накопленное в поиске.
+slugs:
+  lazernaya-epilyaciya: laser-hair-removal
+  lpg-massazh: lpg-massage
+  endosfera-terapiya: endosphere-therapy
+  ultrazvukovaya-kavitaciya: ultrasonic-cavitation
+  smas-lifting: hifu-treatment
+  udalenie-tatuirovok-lazerom: laser-tattoo-removal
+  udalenye-permanentnogo-makiyazha: permanent-makeup-removal
+  karbonovyy-lazernyy-piling: carbon-laser-peel
+  morpheus-8-rf-lifting: morpheus8-rf-microneedling
+  fotoomolozhenie-m22: m22-photorejuvenation
+  esteticheskaya-kosmetologiya-i-uhod: facial-treatments
+  korrekciya-figury: body-contouring
+  lifting-i-omolozhenie: non-surgical-face-lift
+  lazernye-procedury: laser-treatments
+
+ui: {}
+
+site: {}
