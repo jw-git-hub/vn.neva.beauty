@@ -227,18 +227,34 @@ class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
     def setUpClass(cls):
         cls.ru, cls.en = build_real_pages("ru"), build_real_pages("en")
 
-    def test_russian_page_has_english_pill(self):
-        self.assertIn('<a class="lang-pill" href="/en/lpg-massage/" hreflang="en" lang="en" '
-                      'aria-label="EN — English version" data-lang="en">EN</a>',
-                      self.ru["lpg-massazh/index.html"])
-
-    def test_english_page_has_russian_pill(self):
-        self.assertIn('<a class="lang-pill" href="/lpg-massazh/" hreflang="ru" lang="ru" '
-                      'aria-label="RU — русская версия" data-lang="ru">RU</a>',
-                      self.en["en/lpg-massage/index.html"])
-
-    def test_language_line_marks_current_without_link(self):
+    def test_russian_page_has_english_pill_in_header_and_drawer(self):
+        pill = ('<a class="lang-pill" href="/en/lpg-massage/" hreflang="en" lang="en" '
+                'aria-label="EN — English version" data-lang="en">EN</a>')
         html = self.ru["lpg-massazh/index.html"]
+        self.assertEqual(html.count(pill), 2)  # шапка (с 1024 px) и мобильное меню
+        self.assertIn(pill, self.drawer_footer(html))
+
+    def test_english_page_has_russian_pill_in_header_and_drawer(self):
+        pill = ('<a class="lang-pill" href="/lpg-massazh/" hreflang="ru" lang="ru" '
+                'aria-label="RU — русская версия" data-lang="ru">RU</a>')
+        html = self.en["en/lpg-massage/index.html"]
+        self.assertEqual(html.count(pill), 2)
+        self.assertIn(pill, self.drawer_footer(html))
+
+    @staticmethod
+    def drawer_footer(html):
+        start = html.index('<div class="drawer__footer">')
+        return html[start:html.index('</aside>', start)]
+
+    def test_drawer_has_pill_instead_of_language_line(self):
+        footer = self.drawer_footer(self.ru["lpg-massazh/index.html"])
+        self.assertNotIn('lang-line', footer)
+        self.assertNotIn('drawer__langs', footer)
+
+    def test_language_line_only_in_site_footer(self):
+        html = self.ru["lpg-massazh/index.html"]
+        self.assertEqual(html.count('<p class="lang-line'), 1)
+        self.assertIn('<p class="lang-line site-footer__langs">', html)
         self.assertEqual(html.count('<span class="lang-line__current" lang="ru" aria-current="true">'
-                                    'Русский</span>'), 2)  # мобильное меню и подвал
-        self.assertEqual(html.count('data-lang="en">English</a>'), 2)
+                                    'Русский</span>'), 1)  # только подвал
+        self.assertEqual(html.count('data-lang="en">English</a>'), 1)

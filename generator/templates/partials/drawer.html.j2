@@ -1,5 +1,5 @@
 {% from 'partials/brand.html.j2' import brand_mark %}
-{%- from 'partials/language_switch.html.j2' import lang_line %}
+{%- from 'partials/language_switch.html.j2' import lang_pill %}
 <div class="overlay" data-overlay data-drawer-close aria-hidden="true"></div>
 <aside class="drawer" data-drawer role="dialog" aria-modal="true" aria-label="{{ t('nav.drawer_label') }}">
   <div class="drawer__top">
@@ -21,7 +21,7 @@
     {% endfor %}
   </nav>
   <div class="drawer__footer">
-    {{ lang_line(page, 'drawer__langs') }}
+    {{ lang_pill(page) }}
     <a class="btn btn--primary drawer__cta" {{ contact('whatsapp', 'drawer', page) }}>{{ t('cta.book') }}</a>
     <div class="drawer__socials">
       <a {{ contact('whatsapp', 'drawer', page) }} aria-label="WhatsApp">
