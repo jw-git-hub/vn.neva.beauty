@@ -108,7 +108,7 @@ ui:
     title: "Page Not Found"
     text: "This link may be out of date. Go back to the home page or choose a service from the menu."
   llms:
-    summary: "> Beauty center in Da Nang (Vietnam): device-based treatments, laser hair removal, non-surgical lifting and rejuvenation, facials and body contouring. Service in Russian and English."
+    summary: "> Beauty center in Da Nang (Vietnam): device-based treatments, laser hair removal, non-surgical lifting and rejuvenation, facials and non-surgical body contouring. Service in Russian and English."
     about_title: "## About the Center"
     city: "- City: {location}. The exact address is shared when you book"
     booking: "- Visits: by appointment only"

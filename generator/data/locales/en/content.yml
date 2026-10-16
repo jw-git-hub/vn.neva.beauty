@@ -12,7 +12,7 @@ home:
     equipment, in the heart of Da Nang.
   about_lead: Neva Beauty is a beauty center in Da Nang, Vietnam. At the consultation, the center's aesthetician
     chooses what suits you from device-based treatments, laser hair removal, non-surgical lifting and
-    rejuvenation, facials and body contouring. Visits are by appointment only, and service is provided
+    rejuvenation, facials and non-surgical body contouring. Visits are by appointment only, and service is provided
     in Russian and English.
   faq:
   - q: Where is Neva Beauty located?
@@ -30,7 +30,7 @@ home:
       removal</a> and the <a href="/karbonovyy-lazernyy-piling/">carbon laser peel</a>, <a href="/lifting-i-omolozhenie/">non-surgical
       lifting and rejuvenation</a> (<a href="/smas-lifting/">HIFU</a>, <a href="/morpheus-8-rf-lifting/">Morpheus8</a>,
       <a href="/fotoomolozhenie-m22/">M22 photorejuvenation</a>), <a href="/esteticheskaya-kosmetologiya-i-uhod/">facials</a>
-      and <a href="/korrekciya-figury/">body contouring</a> (<a href="/lpg-massazh/">LPG massage</a>,
+      and <a href="/korrekciya-figury/">non-surgical body contouring</a> (<a href="/lpg-massazh/">LPG massage</a>,
       <a href="/endosfera-terapiya/">Endosphere therapy</a>, <a href="/ultrazvukovaya-kavitaciya/">ultrasonic
       cavitation</a>).
   - q: What currency are the prices in?
@@ -353,7 +353,7 @@ services:
       text: Ultrasound stimulates the production of your own collagen and elastin, triggering natural
         regeneration processes from within.
     - title: A Versatile Method
-      text: Suits any skin type and can address both the delicate area around the eyes and volume in the
+      text: Suits any skin type and can both treat the delicate area around the eyes and correct volume in the
         abdomen or thighs.
     faq:
     - q: Is HIFU treatment painful?
@@ -410,8 +410,8 @@ services:
         when you live in the tropics.
     faq:
     - q: Is Morpheus8 painful?
-      a: Morpheus8 RF microneedling at Neva Beauty in Da Nang is a microneedling treatment, so it is felt
-        more than needle-free lifting methods. Insulated needles allow precise control of the treatment
+      a: Morpheus8 at Neva Beauty in Da Nang is an RF microneedling treatment, so it is felt
+        more strongly than needle-free lifting methods. Insulated needles allow precise control of the treatment
         depth, keeping damage to the surface of the skin to a minimum, and the intensity is tailored individually
         to your sensitivity. The treatment does not require a lengthy recovery.
     - q: How many Morpheus8 treatments do I need?
@@ -497,7 +497,7 @@ services:
     seo_desc: 'Facials in Da Nang at Neva Beauty: deep cleansing facials, chemical peels, HydraFacial
       and masks for your skin type. Prices in VND. Message us to book.'
     intro: 'Facial treatments at Neva Beauty, a beauty center in Da Nang, are professional skincare programs:
-      deep cleansing facials, professional chemical peels, HydraFacial and non-invasive carboxytherapy,
+      cleansing facials, professional chemical peels, HydraFacial and non-invasive carboxytherapy,
       as well as facial masks and device-based treatments. They deeply cleanse the skin, restore the skin
       barrier and bring back an even skin tone and radiance, neutralizing the effects of the tropical
       sun and humidity of Da Nang. The program and the number of treatments are tailored individually
@@ -536,9 +536,9 @@ services:
         and regular care helps keep the skin firm. The exact plan is drawn up by the aesthetician after
         a skin assessment.
     - q: How much does a facial cost in Da Nang?
-      a: 'The price of a facial at Neva Beauty in Da Nang depends on the treatment: deep cleansing facials,
+      a: 'The price of a facial at Neva Beauty in Da Nang depends on the treatment: cleansing facials,
         chemical peels, HydraFacial, non-invasive carboxytherapy and facial masks are priced separately,
-        while add-ons (RF or ultrasound therapy, serum, alginate mask) are combined with the base facial. Current
+        while add-ons (RF or ultrasound therapy, serum, alginate mask) are charged on top of the base facial. Current
         prices in Vietnamese dong (đ) are in the price list on this page. Related device-based rejuvenation
         treatments, <a href="/fotoomolozhenie-m22/">M22 photorejuvenation</a> and <a href="/morpheus-8-rf-lifting/">Morpheus8
         RF microneedling</a>, are priced separately.'
