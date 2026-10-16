@@ -15,13 +15,17 @@
         <a class="drawer__group-label" href="{{ item.href }}">{{ item.title }}<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
         {% for c in item.children %}<a class="drawer__sub" href="{{ c.href }}">{{ c.label }}</a>{% endfor %}
       </div>
+      {% elif item.is_home %}
+      <div class="drawer__home-row" style="--i:{{ loop.index }}">
+        <a class="drawer__link" href="{{ item.href }}">{{ item.title }}</a>
+        {{ lang_pill(page) }}
+      </div>
       {% else %}
       <a class="drawer__link" href="{{ item.href }}" style="--i:{{ loop.index }}">{{ item.title }}</a>
       {% endif %}
     {% endfor %}
   </nav>
   <div class="drawer__footer">
-    {{ lang_pill(page) }}
     <a class="btn btn--primary drawer__cta" {{ contact('whatsapp', 'drawer', page) }}>{{ t('cta.book') }}</a>
     <div class="drawer__socials">
       <a {{ contact('whatsapp', 'drawer', page) }} aria-label="WhatsApp">

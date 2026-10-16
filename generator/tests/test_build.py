@@ -232,19 +232,41 @@ class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
                 'aria-label="EN — English version" data-lang="en">EN</a>')
         html = self.ru["lpg-massazh/index.html"]
         self.assertEqual(html.count(pill), 2)  # шапка (с 1024 px) и мобильное меню
-        self.assertIn(pill, self.drawer_footer(html))
+        self.assertIn(pill, self.drawer_home_row(html))
+        self.assertNotIn('lang-pill', self.drawer_footer(html))
 
     def test_english_page_has_russian_pill_in_header_and_drawer(self):
         pill = ('<a class="lang-pill" href="/lpg-massazh/" hreflang="ru" lang="ru" '
                 'aria-label="RU — русская версия" data-lang="ru">RU</a>')
         html = self.en["en/lpg-massage/index.html"]
         self.assertEqual(html.count(pill), 2)
-        self.assertIn(pill, self.drawer_footer(html))
+        self.assertIn(pill, self.drawer_home_row(html))
+        self.assertNotIn('lang-pill', self.drawer_footer(html))
 
     @staticmethod
     def drawer_footer(html):
         start = html.index('<div class="drawer__footer">')
         return html[start:html.index('</aside>', start)]
+
+    @staticmethod
+    def drawer_home_row(html):
+        nav = html[html.index('<nav class="drawer__nav">'):]
+        nav = nav[:nav.index('</nav>')]
+        start = nav.index('<div class="drawer__home-row"')
+        return nav[start:nav.index('</div>', start)]
+
+    def test_drawer_pill_follows_home_link_in_one_row(self):
+        row = self.drawer_home_row(self.ru["lpg-massazh/index.html"])
+        self.assertIn('style="--i:1"', row)  # строка появляется как пункт «Главная»
+        self.assertLess(row.index('<a class="drawer__link" href="/"'), row.index('class="lang-pill"'))
+        self.assertEqual(row.count('<a '), 2)
+        english = self.drawer_home_row(self.en["en/lpg-massage/index.html"])
+        self.assertLess(english.index('<a class="drawer__link" href="/en/"'), english.index('class="lang-pill"'))
+
+    def test_drawer_home_row_is_first_in_nav(self):
+        nav = self.ru["lpg-massazh/index.html"]
+        nav = nav[nav.index('<nav class="drawer__nav">'):]
+        self.assertLess(nav.index('drawer__home-row'), nav.index('drawer__group'))
 
     def test_drawer_has_pill_instead_of_language_line(self):
         footer = self.drawer_footer(self.ru["lpg-massazh/index.html"])
