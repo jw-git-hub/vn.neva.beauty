@@ -211,20 +211,22 @@
    меню центрируется своими auto-отступами между логотипом и группой «пилюля + кнопка»
    (сдвиг влево на половину ширины пилюли с зазором, ~33 px), а пилюля встаёт рядом
    с кнопкой; при space-between она висела бы посередине между меню и кнопкой.
-   Видимая пилюля 40×30 px, зона нажатия 44×44 — псевдоэлементом, без сдвига потока. */
+   Видимая пилюля 40×30 px, зона нажатия 44×44 — псевдоэлементом, без сдвига потока.
+   inset считается от внутреннего края рамки (1 px), поэтому он на 1 px больше нужного
+   с каждой стороны: -7px -2px давали 42×42. */
 .lang-pill{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;
   min-width:2.5rem;height:1.875rem;padding:0 .7rem;margin-left:auto;
   border:1px solid var(--line);border-radius:var(--radius-pill);
   font-family:var(--font-body);font-size:.75rem;font-weight:600;letter-spacing:.08em;line-height:1;
   color:var(--ink);transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
 .lang-pill:hover{border-color:var(--rose-soft);color:var(--rose)}
-.lang-pill::after{content:"";position:absolute;inset:-7px -2px}
+.lang-pill::after{content:"";position:absolute;inset:-8px -3px}
 @media(min-width:1024px){.nav{margin-inline:auto}.lang-pill{margin-left:0}}
 /* 320 px: логотип, пилюля и бургер шире экрана, и ужимался знак-лотос. Ужимается
    видимая пилюля и подходит к бургеру (у того 10 px своих полей) — зона нажатия та же. */
 @media(max-width:359.98px){
   .lang-pill{min-width:1.875rem;height:1.625rem;padding:0 .35rem;margin-right:-6px}
-  .lang-pill::after{inset:-9px -3px -9px -11px}
+  .lang-pill::after{inset:-10px -4px -10px -11px;min-width:44px}
 }
 
 /* Строка «Русский · English» в мобильном меню и подвале. Текущий язык — текст, не ссылка. */
@@ -399,3 +401,42 @@ html.no-scroll,body.no-scroll{overflow:hidden;overscroll-behavior:none}
 .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;
   transition:transform var(--t-mid) var(--ease),box-shadow var(--t-mid) var(--ease),border-color var(--t-mid) var(--ease)}
 .card:hover{transform:translateY(-6px);box-shadow:0 22px 50px rgba(74,59,56,.14);border-color:var(--rose-soft)}
+
+/* ===== УЗКИЕ ЭКРАНЫ: телефоны-раскладушки, 250–349 px ===== */
+/* Все правила блока стоят внутри max-width:349.98px: на 350 px и шире вид прежний. */
+@media(max-width:349.98px){
+  /* Бургер не сжимается: на 320 px он терял 0,3 px и зона нажатия была 43,7 вместо 44. */
+  .burger{flex:none}
+  /* Единственная колонка сетки FAQ — это auto, а не 0…1fr: длинное слово вопроса
+     («photorejuvenation» в 20 px — около 170 px) раздвигало колонку шире окна, и
+     карточки уезжали за край. Теперь колонка не шире контейнера, а слово, которому
+     не хватило места, переносится. На экране, где слово помещается, вид прежний. */
+  .faq{grid-template-columns:minmax(0,1fr)}
+  .faq__q,.faq__a{overflow-wrap:anywhere}
+}
+@media(max-width:299.98px){
+  /* Логотип, пилюля и бургер вместе шире окна, и знак-лотос сжимался до нуля.
+     Поля шапки 24 → 12 px, зазор лотоса до надписи 13 → 8 px, а у бургера уходят
+     10 px его собственных полей: полоски встают вровень с краем, как логотип слева. */
+  .site-header__inner{padding-inline:var(--sp-3)}
+  .site-header .brand-mark{gap:var(--sp-2)}
+  .burger{margin-right:-10px}
+  /* Меню шириной 86% окна — на 250 px это 215 px. Три подписи соцсетей («Instagram»
+     и две другие) с зазорами и полями не помещались в строку и выходили за край меню:
+     поля подвала меню 24 → 16 px, а зазор и боковые поля у самих ссылок убраны. */
+  .drawer__footer{padding-inline:var(--sp-4)}
+  .drawer__socials{gap:var(--sp-1)}
+  /* Колонка одной ссылки — около 55 px, а подпись в 13 px («WhatsApp», «Instagram») шириной
+     почти с неё: подписи слипались. 11 px (.6875rem, как строка «DA NANG») оставляют зазор. */
+  .drawer__socials a{padding-inline:0;font-size:.6875rem}
+  /* Шапка меню: надпись и крестик занимают 175 из 215 px, лотосу не оставалось места.
+     Поля слева 24 → 16 px, справа 24 → 8 (у крестика свои 10 px пустоты), зазор лотоса меньше. */
+  .drawer__top{padding-inline:var(--sp-4) var(--sp-2)}
+  .drawer__brand{gap:var(--sp-2)}
+}
+@media(max-width:269.98px){
+  /* На 250 px даже так лотос выходит в 12 px: поля шапки 12 → 8 px возвращают ему ширину.
+     Бургер выходит за поля не больше, чем они есть, иначе его зона нажатия уйдёт за окно. */
+  .site-header__inner{padding-inline:var(--sp-2)}
+  .burger{margin-right:calc(-1 * var(--sp-2))}
+}

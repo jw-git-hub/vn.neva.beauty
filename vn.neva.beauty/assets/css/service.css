@@ -87,3 +87,23 @@
 .related-card__more{display:inline-flex;align-items:center;gap:6px;color:var(--rose);font-weight:600;font-size:var(--fs-300)}
 .related-card__more .icon{width:16px;height:16px;transition:transform var(--t-mid) var(--ease)}
 .related-card:hover .related-card__more .icon{transform:translateX(4px)}
+
+/* ===== УЗКИЕ ЭКРАНЫ: 250–349 px ===== */
+@media(max-width:349.98px){
+  /* Та же причина, что у .faq в components.css: колонка героя была auto и растягивалась
+     под длинное слово заголовка («Photorejuvenation» в 36 px — около 290 px). */
+  .svc-hero__inner{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:299.98px){
+  /* Таблица прайса и сравнения на 250 px: цена не переносится (в ней обычные пробелы между
+     разрядами, nowrap обязателен) и занимает до 129 px из 160, а колонка названия
+     сжималась до 31 px — слова шли по букве в строку, таблица вытягивалась на 8000 px.
+     Строка становится карточкой: название сверху, цена под ним; пунктир между
+     строками переходит с ячеек на саму строку. */
+  .pricelist__rows{padding-inline:var(--sp-4)}
+  .pricelist__table,.pricelist__table tbody,.pricelist__row{display:block}
+  .pricelist__row{padding-block:var(--sp-4);border-bottom:1px dashed var(--line)}
+  .pricelist__row:last-child{border-bottom:none}
+  .pricelist__name,.pricelist__price{display:block;padding:0;border-bottom:none}
+  .pricelist__price{margin-top:var(--sp-2);text-align:left}
+}
