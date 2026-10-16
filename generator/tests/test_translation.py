@@ -5,7 +5,8 @@ from unittest import mock
 import build
 import translation
 from locales import load_locale
-from tests.pseudo_translation import PREFIX, pseudo_content, pseudo_prices, pseudo_site
+from tests.pseudo_translation import (PREFIX, pseudo_content, pseudo_pair_patches, pseudo_prices,
+                                      pseudo_site)
 
 
 class TranslationTest(unittest.TestCase):
@@ -16,12 +17,13 @@ class TranslationTest(unittest.TestCase):
         self.english = replace(self.main, code="en", html_lang="en", url_prefix="/en",
                                site=pseudo_site(self.site))
 
-    def patched(self, overlay=None, catalog=None, privacy=True):
+    def patched(self, overlay=None, catalog=None, privacy=True, exceptions=()):
         return [mock.patch("translation.load_overlay",
                            return_value=pseudo_content(self.content) if overlay is None else overlay),
                 mock.patch("translation.load_price_catalog",
                            return_value=pseudo_prices(self.prices) if catalog is None else catalog),
-                mock.patch("translation.privacy_exists", return_value=privacy)]
+                mock.patch("translation.privacy_exists", return_value=privacy),
+                *pseudo_pair_patches(exceptions)]
 
     def problems(self, **kwargs):
         patches = self.patched(**kwargs)
@@ -65,6 +67,18 @@ class TranslationTest(unittest.TestCase):
         problems = self.problems()
         for field in ("tagline", "location", "hours", "locations[0].city", "locations[1].country"):
             self.assertIn(f"site {field}: нет перевода", problems)
+
+    def test_pair_findings_are_part_of_translation_problems(self):
+        overlay = pseudo_content(self.content)
+        overlay["home"]["seo_title"] += " 5"
+        self.assertIn("home.seo_title: числа: в русском [], в переводе [5]",
+                      self.problems(overlay=overlay))
+
+    def test_pair_exceptions_are_applied(self):
+        overlay = pseudo_content(self.content)
+        overlay["home"]["seo_title"] += " 5"
+        exceptions = [{"path": "home.seo_title", "check": "numbers", "reason": "тест"}]
+        self.assertEqual(self.problems(overlay=overlay, exceptions=exceptions), [])
 
     def test_stale_lock_is_a_problem(self):
         with mock.patch("translation.translation_lock.load_lock",

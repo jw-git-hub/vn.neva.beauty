@@ -9,7 +9,8 @@ import build
 import translation
 from locales import load_locale
 
-GROUP_OF_PREFIX = (("ui ", "ui"), ("site ", "site"), ("prices", "prices"), ("privacy", "privacy"), ("замок", "замок"))
+GROUP_OF_PREFIX = (("ui ", "ui"), ("site ", "site"), ("prices", "prices"), ("privacy", "privacy"), ("замок", "замок"),
+                   ("pair_exceptions", "pair_exceptions"))
 CONTENT_GROUP = "content"
 
 

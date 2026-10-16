@@ -1,3 +1,4 @@
+import contextlib
 import copy
 import re
 import unittest
@@ -13,7 +14,8 @@ import pages
 import taxonomy
 from locales import load_locale
 from routes import Routes
-from tests.pseudo_translation import pseudo_content, pseudo_prices, pseudo_site
+from tests.pseudo_translation import (pseudo_content, pseudo_pair_patches, pseudo_prices,
+                                      pseudo_site)
 
 
 class BuildLocaleIsolationTest(unittest.TestCase):
@@ -47,7 +49,10 @@ def build_pages_of_test_english(x_default_locale="en", ui_overrides=None):
             mock.patch("build.load_privacy", return_value=Markup("<p>Privacy</p>")), \
             mock.patch("translation.load_overlay", return_value=pseudo_content(content)), \
             mock.patch("translation.load_price_catalog", return_value=pseudo_prices(prices)), \
-            mock.patch("translation.privacy_exists", return_value=True):
+            mock.patch("translation.privacy_exists", return_value=True), \
+            contextlib.ExitStack() as stack:
+        for patch in pseudo_pair_patches():
+            stack.enter_context(patch)
         build.build_locale(site, content, prices, english, routes, "", russian)
     return {path.relative_to(build.OUT).as_posix(): html for path, html in written.items()}
 

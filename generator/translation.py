@@ -11,8 +11,11 @@ from dataclasses import dataclass
 import yaml
 
 import overlay
+import pair_exceptions
+import pair_terms
 import price_translation
 import translation_lock
+import translation_pairs
 from locales import LOCALES_DIR, load_privacy, site_problems, ui_problems
 
 CONTENT_FILE = "content.yml"
@@ -66,6 +69,24 @@ def _data_problems(site, prices, catalog, locale, main_locale):
     return problems
 
 
+def _privacy_texts(locale, main_locale):
+    """(русский html, перевод html) политики или None, если перевода нет."""
+    if not privacy_exists(locale.code):
+        return None
+    return str(load_privacy(main_locale.code)), str(load_privacy(locale.code))
+
+
+def _pair_problems(site, content, prices, merged, merge_problems, catalog, locale, main_locale):
+    """Автотест пар «русская — английская строка»: числа, ссылки, теги, термины."""
+    untranslated = {problem.partition(":")[0] for problem in merge_problems}
+    pairs = (translation_pairs.content_pairs(content, merged, untranslated)
+             + translation_pairs.site_pairs(site, locale.site)
+             + translation_pairs.price_pairs(prices, catalog)
+             + translation_pairs.privacy_pairs(_privacy_texts(locale, main_locale)))
+    return translation_pairs.pair_problems(pairs, pair_terms.load_terms(locale.code),
+                                           pair_exceptions.load_exceptions(locale.code))
+
+
 def translation_problems(site, content, prices, locale, main_locale, check_lock=True):
     """(данные языка, все проблемы перевода). Основной язык проблем не имеет."""
     if locale.code == main_locale.code:
@@ -73,7 +94,10 @@ def translation_problems(site, content, prices, locale, main_locale, check_lock=
                             price_translation.PriceTranslation.identity()), []
     merged, problems = overlay.merge_translation(content, load_overlay(locale.code))
     catalog = load_price_catalog(locale.code)
+    merge_problems = list(problems)
     problems += _data_problems(site, prices, catalog, locale, main_locale)
+    problems += _pair_problems(site, content, prices, merged, merge_problems, catalog,
+                               locale, main_locale)
     if check_lock:
         problems += _lock_problems(site, content, locale, main_locale)
     return LanguageData(merged, price_translation.PriceTranslation(catalog)), problems
