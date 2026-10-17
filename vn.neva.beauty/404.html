@@ -3,6 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+(function (R) {
+  var path = location.pathname;
+  for (var i = 0; i < R.length; i++) {
+    if (path.indexOf(R[i].prefix) === 0 && path !== R[i].page) {
+      location.replace(R[i].page);
+      return;
+    }
+  }
+})([{"page": "/en/404.html", "prefix": "/en/"}]);
+</script>
   
   <link rel="stylesheet" href="/assets/css/bundle.min.css?v=9b35ae49">
   

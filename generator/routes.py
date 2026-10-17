@@ -123,6 +123,15 @@ class Routes:
         """Ссылка для разметки: путь с base_path (превью по подпути)."""
         return self._base_path + self.path(locale, page_id)
 
+    def not_found_redirects(self, locale):
+        """Куда корневая 404 отправляет чужие языки: у основного языка — по префиксу и
+        странице 404 каждого неосновного; у неосновного (своя 404 лежит у него) — никуда."""
+        if locale.code != self._locales[0].code:
+            return []
+        return [{"prefix": f"{self._base_path}{other.url_prefix}/",
+                 "page": self.href(other, NOT_FOUND)}
+                for other in self._locales[1:]]
+
     def url(self, locale, page_id):
         """Абсолютный адрес для canonical, hreflang, sitemap и JSON-LD."""
         return self._base_url + self.path(locale, page_id)

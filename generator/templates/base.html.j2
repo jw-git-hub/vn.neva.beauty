@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- set not_found_targets = not_found_redirects(page) %}
+  {%- if not_found_targets %}
+  {% include 'partials/not_found_redirect.html.j2' %}
+  {%- endif %}
   {%- set redirect = language_redirect_config(page) %}
   {%- if redirect %}
   {% include 'partials/language_redirect.html.j2' %}

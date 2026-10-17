@@ -1,0 +1,16 @@
+{#- Корневая 404: GitHub Pages отдаёт её на любой неизвестный адрес, в том числе под
+    /en/. Скрипт отправляет такой адрес на 404 его языка (routes.not_found_redirects).
+    Свою 404 языка не трогает (pathname равен page), чтобы не зациклиться. replace не
+    оставляет записи в истории. Комментариев внутри скрипта нет: только данные
+    переходов, без кириллицы. -#}
+<script>
+(function (R) {
+  var path = location.pathname;
+  for (var i = 0; i < R.length; i++) {
+    if (path.indexOf(R[i].prefix) === 0 && path !== R[i].page) {
+      location.replace(R[i].page);
+      return;
+    }
+  }
+})({{ not_found_targets | tojson }});
+</script>

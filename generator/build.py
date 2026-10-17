@@ -4,7 +4,7 @@ from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import contacts, images, language_redirect, language_switch, pages, sitewide, taxonomy, translation
 from locales import load_locale, load_privacy, localized_site
-from routes import Routes
+from routes import NOT_FOUND, Routes
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT.parent / "vn.neva.beauty"
@@ -62,6 +62,9 @@ def make_env(locale, routes, base_path, site):
         language_links=lambda page: language_switch.language_links(routes, locale, page["id"]),
         language_redirect_config=lambda page: language_redirect.config(site, routes, locale, page["id"]),
         language_source_key=language_redirect.SOURCE_KEY,
+        # Корневая 404 переадресует неизвестные адреса чужого языка на его 404.
+        not_found_redirects=lambda page: (
+            routes.not_found_redirects(locale) if page["id"] == NOT_FOUND else []),
         # Ссылка связи: адрес с текстом страницы и метки канала и места (contacts.py).
         contact=lambda channel, place, page: contacts.link_attrs(
             site["contacts"], channel, place,

@@ -195,6 +195,19 @@ class LocalizeLinksTest(unittest.TestCase):
                          '<a href="/en/privacy/">p</a>')
 
 
+class NotFoundRedirectsTest(unittest.TestCase):
+    def test_main_locale_lists_other_locales(self):
+        self.assertEqual(make_routes().not_found_redirects(RU),
+                         [{"prefix": "/en/", "page": "/en/404.html"}])
+
+    def test_other_locale_has_no_redirects(self):
+        self.assertEqual(make_routes().not_found_redirects(EN), [])
+
+    def test_base_path_is_prefixed(self):
+        self.assertEqual(make_routes("/vn.neva.beauty").not_found_redirects(RU),
+                         [{"prefix": "/vn.neva.beauty/en/", "page": "/vn.neva.beauty/en/404.html"}])
+
+
 if __name__ == "__main__":
     unittest.main()
 
