@@ -99,7 +99,7 @@ def build_locale(site, content, prices, locale, routes, base_path, main_locale):
     return changed, content
 
 def write_sitewide(site, contents, prices, locales, routes, changed, urls, base_path):
-    """Файлы уровня сайта. llms.txt и манифест пока строятся по основному языку."""
+    """Файлы уровня сайта. llms.txt пока строится по основному языку, манифест — по каждому."""
     main_locale = locales[0]
     main_site = localized_site(site, main_locale)
     sitemap_path = OUT/"sitemap.xml"
@@ -107,7 +107,10 @@ def write_sitewide(site, contents, prices, locales, routes, changed, urls, base_
     write(sitemap_path, sitewide.build_sitemap(site["base_url"], urls, changed, known_lastmods))
     write(OUT/"llms.txt", sitewide.build_llms(main_site, contents[main_locale.code], prices,
                                               main_locale, routes))
-    write(OUT/"site.webmanifest", sitewide.build_manifest(main_site, base_path, THEME_COLOR))
+    for locale in locales:
+        manifest = sitewide.build_manifest(localized_site(site, locale), base_path,
+                                           THEME_COLOR, locale.url_prefix)
+        write(OUT/locale.url_prefix.lstrip("/")/"site.webmanifest", manifest)
     # CNAME — боевой домен для GitHub Pages. Кладём в артефакт, иначе workflow-деплой
     # каждый раз сбрасывает кастомный домен в настройках Pages. Хост берём из base_url.
     write(OUT/"CNAME", urllib.parse.urlsplit(site["base_url"]).netloc + "\n")

@@ -14,8 +14,11 @@ build.py их не трогает и не пересобирает.
 их даёт только браузерный движок, поэтому она рендерится системным qlmanage (macOS).
 
 Требования: pip install pillow, macOS.
-Запуск: python generator/make_brand_assets.py
+Запуск: python generator/make_brand_assets.py          — всё: иконки, логотип, карточка основного языка
+        python generator/make_brand_assets.py --card en — только карточка языка en
+                                                          (в файл locale.og_image)
 """
+import argparse
 import math
 import re
 import subprocess
@@ -25,6 +28,10 @@ from pathlib import Path
 import yaml
 from PIL import Image, ImageDraw
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+import build
+import translation
+from locales import localized_site
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT.parent / "vn.neva.beauty"
@@ -200,12 +207,12 @@ def render_page(html, width, height):
             page.unlink(missing_ok=True)
 
 
-def card_html(site, categories):
+def card_html(site, categories, html_lang="ru"):
     """Разметка карточки превью из шаблона og-card.html.j2 и данных сайта."""
     env = Environment(loader=FileSystemLoader(ROOT / "templates"),
                       autoescape=select_autoescape(["html", "j2"]))
     return env.get_template("og-card.html.j2").render(
-        width=OG_WIDTH, height=OG_HEIGHT,
+        width=OG_WIDTH, height=OG_HEIGHT, html_lang=html_lang,
         brand=site["brand"], loc=site["brand_location"],
         services=[cat["title"] for cat in categories],
         logo_src=SEAL_SVG.relative_to(OUT).as_posix(),
@@ -234,6 +241,16 @@ def build_social(site, categories):
     report(card)
 
 
+def build_locale_card(site, content, prices, locale, main_locale):
+    """Карточка превью одного языка: сайт и названия направлений — на его языке,
+    результат — в файл locale.og_image."""
+    categories = translation.prepare(site, content, prices, locale, main_locale).content["categories"]
+    card = OUT / locale.og_image.lstrip("/")
+    render_page(card_html(localized_site(site, locale), categories, locale.html_lang),
+                OG_WIDTH, OG_HEIGHT).save(card, quality=OG_QUALITY, optimize=True)
+    report(card)
+
+
 # ---------- вспомогательное ----------
 
 def write_text(path, text):
@@ -245,7 +262,23 @@ def report(path):
     print("→", path.relative_to(OUT.parent), f"({path.stat().st_size / 1024:.1f} KB)")
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    parser.add_argument("--card", metavar="КОД",
+                        help="нарисовать только карточку превью этого языка (например, en)")
+    return parser.parse_args()
+
+
 def main():
+    card_code = parse_args().card
+    if card_code:
+        site, content, prices = build.load()
+        locales = build.load_locales(site)
+        locale = next((item for item in locales if item.code == card_code), None)
+        if locale is None:
+            raise SystemExit(f"Нет языка {card_code!r} среди {[item.code for item in locales]}")
+        build_locale_card(site, content, prices, locale, locales[0])
+        return
     site = yaml.safe_load((ROOT / "data/site.yml").read_text(encoding="utf-8"))
     content = yaml.safe_load((ROOT / "data/content.yml").read_text(encoding="utf-8"))
     build_icons()

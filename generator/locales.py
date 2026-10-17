@@ -13,6 +13,7 @@ from markupsafe import Markup
 
 ROOT = Path(__file__).resolve().parent
 LOCALES_DIR = ROOT / "data" / "locales"
+DEFAULT_OG_IMAGE = "/assets/img/og-default.jpg"
 REQUIRED_KEYS = ("code", "html_lang", "og_locale", "url_prefix", "ui")
 
 
@@ -38,6 +39,7 @@ class Locale:
     slugs: dict = field(default_factory=dict)
     site: dict = field(default_factory=dict)
     browser_languages: tuple = ()
+    og_image: str = DEFAULT_OG_IMAGE  # карточка превью ссылок этого языка
 
     def t(self, key, **params):
         """Строка интерфейса по ключу. Неизвестный ключ — ошибка сборки:
@@ -69,6 +71,7 @@ def parse_locale(data, source):
         url_prefix=data["url_prefix"].rstrip("/"), ui=_flatten(data["ui"]),
         slugs=data.get("slugs") or {}, site=data.get("site") or {},
         browser_languages=tuple(data.get("browser_languages") or ()),
+        og_image=data.get("og_image", DEFAULT_OG_IMAGE),
     )
 
 

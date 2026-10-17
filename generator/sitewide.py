@@ -110,18 +110,20 @@ def build_llms(site, content, prices, locale, routes):
     return "\n".join(lines)
 
 
-def build_manifest(site, base_path, theme_color):
+def build_manifest(site, base_path, theme_color, url_prefix=""):
     """site.webmanifest — имя и иконка для «добавить на главный экран» на Android.
     Собирается, а не лежит статикой: пути внутри должны учитывать base_path, иначе
     на превью по подпути GitHub Pages манифест уводит на несуществующие иконки.
     purpose «any maskable» — одна иконка и как есть, и под маску адаптивных иконок:
-    лотос занимает ~55 % кадра и не обрезается ни одной формой маски."""
+    лотос занимает ~55 % кадра и не обрезается ни одной формой маски.
+    url_prefix — префикс языка: манифест языка стартует с его главной (`/en/`), а
+    иконки общие на весь сайт и лежат в корне."""
     icons = [{"src": f"{base_path}/icon-{size}.png", "sizes": f"{size}x{size}",
               "type": "image/png", "purpose": "any maskable"} for size in (192, 512)]
     manifest = {
         "name": f"{site['brand']} — {site['tagline']}",
         "short_name": site["brand"],
-        "start_url": f"{base_path}/",
+        "start_url": f"{base_path}{url_prefix}/",
         "display": "standalone",
         "background_color": theme_color,
         "theme_color": theme_color,

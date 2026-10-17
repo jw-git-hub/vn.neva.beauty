@@ -34,6 +34,13 @@ class ParseLocaleTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "en.yml.*url_prefix"):
                 parse_locale({**RAW, "url_prefix": bad}, "en.yml")
 
+    def test_og_image_defaults_to_shared_card(self):
+        self.assertEqual(parse_locale(RAW, "ru.yml").og_image, "/assets/img/og-default.jpg")
+
+    def test_og_image_can_be_overridden_by_locale_file(self):
+        locale = parse_locale({**RAW, "og_image": "/assets/img/og-default-en.jpg"}, "en.yml")
+        self.assertEqual(locale.og_image, "/assets/img/og-default-en.jpg")
+
 
 class TranslateTest(unittest.TestCase):
     def setUp(self):

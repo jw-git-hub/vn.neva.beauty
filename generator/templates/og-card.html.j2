@@ -1,5 +1,6 @@
 {# Карточка превью ссылки 1200×630. Рендерится не при сборке сайта, а вручную скриптом
-   generator/make_brand_assets.py → assets/img/og-default.jpg. Файл кладётся в корень
+   generator/make_brand_assets.py → assets/img/og-default.jpg (у каждого языка свой файл:
+   locale.og_image, скрипт с --card <код>). Файл кладётся в корень
    собранного сайта, поэтому относительные пути к шрифтам, токенам и печати рабочие:
    типографика и палитра здесь те же, что на страницах, из тех же файлов.
 
@@ -17,7 +18,7 @@
    Прозрачные концы градиентов заданы через rgba того же цвета: ключевое слово
    transparent часть движков разворачивает в прозрачный чёрный и подмешивает серый. #}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ html_lang }}">
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="assets/css/fonts.css">

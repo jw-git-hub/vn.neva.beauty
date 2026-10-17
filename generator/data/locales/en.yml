@@ -6,6 +6,8 @@ code: en
 html_lang: en
 og_locale: en_US
 url_prefix: "/en"
+# Карточка превью ссылок с английскими направлениями: рисует make_brand_assets.py --card en.
+og_image: "/assets/img/og-default-en.jpg"
 
 # Адреса утверждены владельцем 2026-10-14 и заморожены: смена слага после запуска
 # ломает ссылки и сбрасывает накопленное в поиске.

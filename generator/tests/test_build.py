@@ -249,6 +249,17 @@ class PageHeadInBuiltPagesTest(unittest.TestCase):
         self.assertNotIn('og:locale:alternate" content="ru_RU"', self.ru["index.html"])
         self.assertNotIn('og:locale:alternate" content="en_US"', self.en["en/index.html"])
 
+    def test_english_page_has_own_manifest_and_card(self):
+        head = self.head_of(self.en["en/index.html"])
+        self.assertIn('<link rel="manifest" href="/en/site.webmanifest">', head)
+        self.assertIn('<meta property="og:image" content="https://vn.neva.beauty/assets/img/og-default-en.jpg">', head)
+        self.assertIn('<meta name="twitter:image" content="https://vn.neva.beauty/assets/img/og-default-en.jpg">', head)
+
+    def test_russian_page_keeps_root_manifest_and_card(self):
+        head = self.head_of(self.ru["index.html"])
+        self.assertIn('<link rel="manifest" href="/site.webmanifest">', head)
+        self.assertIn('<meta property="og:image" content="https://vn.neva.beauty/assets/img/og-default.jpg">', head)
+
     def test_english_head_has_no_cyrillic(self):
         for path, html in self.en.items():
             with self.subTest(path=path):

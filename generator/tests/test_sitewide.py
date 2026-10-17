@@ -1,3 +1,4 @@
+import json
 import unittest
 
 import sitewide
@@ -42,3 +43,51 @@ class SitemapLastmodTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+RU_MANIFEST = """{
+  "name": "Neva Beauty — Центр красоты · Дананг",
+  "short_name": "Neva Beauty",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBF4F0",
+  "theme_color": "#FBF4F0",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+"""
+THEME_COLOR = "#FBF4F0"
+SITE_RU = {"brand": "Neva Beauty", "tagline": "Центр красоты · Дананг"}
+SITE_EN = {"brand": "Neva Beauty", "tagline": "Beauty Center · Da Nang"}
+
+
+class BuildManifestTest(unittest.TestCase):
+    def test_russian_manifest_is_unchanged(self):
+        self.assertEqual(sitewide.build_manifest(SITE_RU, "", THEME_COLOR), RU_MANIFEST)
+
+    def test_english_manifest_starts_at_language_root(self):
+        manifest = json.loads(sitewide.build_manifest(SITE_EN, "", THEME_COLOR, "/en"))
+        self.assertEqual(manifest["start_url"], "/en/")
+        self.assertEqual(manifest["name"], "Neva Beauty — Beauty Center · Da Nang")
+
+    def test_english_manifest_shares_icons_with_russian(self):
+        manifest = json.loads(sitewide.build_manifest(SITE_EN, "", THEME_COLOR, "/en"))
+        self.assertEqual([icon["src"] for icon in manifest["icons"]],
+                         ["/icon-192.png", "/icon-512.png"])
+
+    def test_base_path_precedes_language_prefix_in_start_url_only(self):
+        manifest = json.loads(sitewide.build_manifest(SITE_EN, "/preview", THEME_COLOR, "/en"))
+        self.assertEqual(manifest["start_url"], "/preview/en/")
+        self.assertEqual(manifest["icons"][0]["src"], "/preview/icon-192.png")
