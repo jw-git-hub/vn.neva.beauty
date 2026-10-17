@@ -67,6 +67,9 @@ def make_env(locale, routes, base_path, site):
             site["contacts"], channel, place,
             contacts.contact_message(locale, page.get("contact_title"))),
         alternates=routes.alternates, x_default=routes.x_default,
+        # og:locale других языков для og:locale:alternate — в порядке таблицы маршрутов.
+        alternate_og_locales=[other.og_locale for other in routes.locales
+                              if other.code != locale.code],
         # Адаптивные картинки: ширины, sizes и пропорции берутся из images.py — оттуда же
         # make_images.py режет производные, поэтому разметка и файлы не разъезжаются.
         srcset=lambda stem, slot: images.srcset(stem, slot, base_path),

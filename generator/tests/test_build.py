@@ -69,11 +69,6 @@ class HreflangInBuiltPagesTest(unittest.TestCase):
                                   ("x-default", "https://vn.neva.beauty/en/")):
             self.assertIn(f'<link rel="alternate" hreflang="{hreflang}" href="{address}">', html)
 
-    def test_service_page_declares_its_own_language(self):
-        head = self.pages["en/privacy/index.html"].split("</head>")[0]
-        self.assertIn('hreflang="en"', head)
-        self.assertNotIn('hreflang="ru"', head)
-
 
 class LoadLocalesTest(unittest.TestCase):
     def test_loads_languages_listed_in_site(self):
@@ -225,6 +220,38 @@ def build_real_pages(code):
     with mock.patch("build.write", side_effect=lambda path, html: written.update({path: html})):
         build.build_locale(site, content, prices, locale, routes, "", locales[0])
     return {path.relative_to(build.OUT).as_posix(): html for path, html in written.items()}
+
+
+class PageHeadInBuiltPagesTest(unittest.TestCase):
+    NOINDEX_PATHS = {"ru": ("privacy/index.html", "404.html"),
+                     "en": ("en/privacy/index.html", "en/404.html")}
+
+    @classmethod
+    def setUpClass(cls):
+        cls.ru, cls.en = build_real_pages("ru"), build_real_pages("en")
+
+    @staticmethod
+    def head_of(html):
+        return html.split("</head>")[0]
+
+    def test_noindex_pages_have_no_hreflang(self):
+        for code, pages_of_language in (("ru", self.ru), ("en", self.en)):
+            for path in self.NOINDEX_PATHS[code]:
+                with self.subTest(path=path):
+                    self.assertNotIn('rel="alternate" hreflang', self.head_of(pages_of_language[path]))
+
+    def test_og_locale_alternate_names_other_language(self):
+        self.assertIn('<meta property="og:locale:alternate" content="en_US">', self.ru["index.html"])
+        self.assertIn('<meta property="og:locale:alternate" content="ru_RU">', self.en["en/index.html"])
+
+    def test_og_locale_alternate_does_not_repeat_own_language(self):
+        self.assertNotIn('og:locale:alternate" content="ru_RU"', self.ru["index.html"])
+        self.assertNotIn('og:locale:alternate" content="en_US"', self.en["en/index.html"])
+
+    def test_english_head_has_no_cyrillic(self):
+        for path, html in self.en.items():
+            with self.subTest(path=path):
+                self.assertIsNone(re.search("[А-Яа-яЁё]", self.head_of(html)))
 
 
 class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
