@@ -8,6 +8,7 @@
   var path = location.pathname;
   for (var i = 0; i < R.length; i++) {
     if (path.indexOf(R[i].prefix) === 0 && path !== R[i].page) {
+      try { sessionStorage.setItem("neva.source", document.referrer); } catch (e) {}
       location.replace(R[i].page);
       return;
     }

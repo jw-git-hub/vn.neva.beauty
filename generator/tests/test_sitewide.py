@@ -70,11 +70,6 @@ class BuildLlmsFileTest(unittest.TestCase):
         self.assertIn("https://vn.neva.beauty/en/laser-hair-removal/", english)
         self.assertIsNone(re.search("[А-Яа-яЁё]", english))
 
-
-if __name__ == "__main__":
-    unittest.main()
-
-
 RU_MANIFEST = """{
   "name": "Neva Beauty — Центр красоты · Дананг",
   "short_name": "Neva Beauty",
@@ -121,3 +116,7 @@ class BuildManifestTest(unittest.TestCase):
         manifest = json.loads(sitewide.build_manifest(SITE_EN, "/preview", THEME_COLOR, "/en"))
         self.assertEqual(manifest["start_url"], "/preview/en/")
         self.assertEqual(manifest["icons"][0]["src"], "/preview/icon-192.png")
+
+
+if __name__ == "__main__":
+    unittest.main()
