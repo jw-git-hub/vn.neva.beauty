@@ -51,8 +51,10 @@ def _opening_hours(hours):
     ]
 
 
-def business_nodes(site):
-    """Общие узлы бизнеса — одинаковы на всех страницах (entity consistency)."""
+def business_nodes(site, languages):
+    """Общие узлы бизнеса — одинаковы на всех страницах (entity consistency).
+    languages — html_lang всех языков сайта: WebSite называет их все, на какой бы
+    странице ни стоял граф."""
     base = site["base_url"]
     brand = site["brand"]
     b = site["business"]
@@ -108,7 +110,7 @@ def business_nodes(site):
         "@id": base + "/" + WEBSITE_ID,
         "url": base + "/",
         "name": brand,
-        "inLanguage": b.get("language_code", "ru"),
+        "inLanguage": list(languages),
         "publisher": org_ref,
     }
     return [organization, business, website]
@@ -251,9 +253,9 @@ def service_node(name, description, provider_ref, area_name,
     return node
 
 
-def render(site, extra_nodes=None):
+def render(site, languages, extra_nodes=None):
     """Готовый безопасный JSON-LD для вставки в <script type=application/ld+json>."""
-    graph = business_nodes(site)
+    graph = business_nodes(site, languages)
     if extra_nodes:
         graph.extend(extra_nodes)
     doc = {"@context": "https://schema.org", "@graph": graph}

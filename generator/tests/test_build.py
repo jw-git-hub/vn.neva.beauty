@@ -1,5 +1,6 @@
 import contextlib
 import copy
+import json
 import re
 import unittest
 import urllib.parse
@@ -312,3 +313,44 @@ class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
         self.assertEqual(html.count('<span class="lang-line__current" lang="ru" aria-current="true">'
                                     'Русский</span>'), 1)  # только подвал
         self.assertEqual(html.count('data-lang="en">English</a>'), 1)
+
+
+class JsonLdInBuiltPagesTest(unittest.TestCase):
+    LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
+    SHARED_TYPES = ("Organization", "BeautySalon", "WebSite")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.ru, cls.en = build_real_pages("ru"), build_real_pages("en")
+
+    @classmethod
+    def graph_of(cls, html):
+        return json.loads(cls.LD_RE.search(html).group(1))["@graph"]
+
+    @classmethod
+    def node_of(cls, html, node_type):
+        return next(node for node in cls.graph_of(html) if node["@type"] == node_type)
+
+    def test_business_nodes_have_same_ids_in_both_languages(self):
+        for node_type in self.SHARED_TYPES:
+            self.assertEqual(self.node_of(self.ru["index.html"], node_type)["@id"],
+                             self.node_of(self.en["en/index.html"], node_type)["@id"])
+
+    def test_website_names_both_languages_on_both_sides(self):
+        for html in (self.ru["index.html"], self.en["en/index.html"]):
+            self.assertEqual(self.node_of(html, "WebSite")["inLanguage"], ["ru", "en"])
+
+    def test_every_page_has_single_in_language_key(self):
+        for pages_of_language in (self.ru, self.en):
+            for path, html in pages_of_language.items():
+                self.assertEqual(html.count('"inLanguage"'), 1, path)
+
+    def test_english_service_has_english_id_and_title_as_name(self):
+        _site, content, _prices = build.load()
+        service = self.node_of(self.en["en/laser-hair-removal/index.html"], "Service")
+        self.assertEqual(service["@id"], "https://vn.neva.beauty/en/laser-hair-removal/#service")
+        self.assertEqual(service["name"], "Laser Hair Removal")
+
+    def test_russian_service_keeps_russian_id(self):
+        service = self.node_of(self.ru["lazernaya-epilyaciya/index.html"], "Service")
+        self.assertEqual(service["@id"], "https://vn.neva.beauty/lazernaya-epilyaciya/#service")

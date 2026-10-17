@@ -19,7 +19,7 @@ class BuildContext:
     locale: object
     routes: object
     env: object
-    base_schema: object
+    languages: list  # html_lang всех языков сайта в порядке таблицы маршрутов
 
     def t(self, key, **params):
         return self.locale.t(key, **params)
@@ -29,6 +29,10 @@ class BuildContext:
 
     def url(self, page_id):
         return self.routes.url(self.locale, page_id)
+
+    def schema(self, nodes=None):
+        """JSON-LD страницы: общий граф бизнеса плюс узлы самой страницы."""
+        return schema.render(self.site, self.languages, nodes)
 
 
 PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price)\}")
@@ -75,8 +79,8 @@ def build_home(ctx):
         item["price"] = pricing.popular_price(ctx.prices, item["slug"], item["name"],
                                               ctx.locale.format_from)
         item["name_text"] = ctx.price_translation.text(item["slug"], "names", item["name"])
-    schema_json = (schema.render(ctx.site, [schema.faq_node(home["faq"])])
-                   if home["faq"] else ctx.base_schema)
+    schema_json = (ctx.schema([schema.faq_node(home["faq"])])
+                   if home["faq"] else ctx.schema())
     page = {"id": HOME, "url": ctx.path(HOME),
             "seo_title": home.get("seo_title", ctx.t("home.seo_title_default")),
             "seo_desc": home.get("seo_desc", ""), "schema_json": schema_json,
@@ -134,7 +138,7 @@ def build_service(ctx, service_id):
         nodes.append(schema.faq_node(svc["faq"]))
     page = {"id": service_id, "url": ctx.path(service_id), "contact_title": svc["title"],
             "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
-            "schema_json": schema.render(ctx.site, nodes),
+            "schema_json": ctx.schema(nodes),
             "hero_image": f"/assets/img/{svc['hero_image']}.webp",  # LCP → preload
             "hero_stem": svc["hero_image"], "hero_slot": "service_hero"}
     return ctx.env.get_template("service.html.j2").render(
@@ -152,7 +156,7 @@ def build_category(ctx, cat):
         nodes.append(schema.faq_node(cat["faq"]))
     page = {"id": cat["page_id"], "url": cat["url"], "contact_title": cat["title"],
             "seo_title": cat["seo_title"],
-            "seo_desc": cat["seo_desc"], "schema_json": schema.render(ctx.site, nodes)}
+            "seo_desc": cat["seo_desc"], "schema_json": ctx.schema(nodes)}
     return ctx.env.get_template("category.html.j2").render(
         site=ctx.site, page=page, cat=cat, services=ctx.content["services"],
         categories=ctx.content["categories"])
@@ -161,7 +165,7 @@ def build_category(ctx, cat):
 def _noindex_page(ctx, page_id, title_key):
     """Служебная страница: закрыта от индексации, разметка — только общий граф бизнеса."""
     return {"id": page_id, "url": ctx.path(page_id), "seo_title": ctx.t(title_key),
-            "seo_desc": "", "schema_json": ctx.base_schema, "noindex": True}
+            "seo_desc": "", "schema_json": ctx.schema(), "noindex": True}
 
 
 def build_privacy(ctx, privacy_body):

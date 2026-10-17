@@ -2,7 +2,7 @@ import json, re, urllib.parse, yaml
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import contacts, images, language_redirect, language_switch, pages, schema, sitewide, taxonomy, translation
+import contacts, images, language_redirect, language_switch, pages, sitewide, taxonomy, translation
 from locales import load_locale, load_privacy, localized_site
 from routes import Routes
 
@@ -91,7 +91,8 @@ def build_locale(site, content, prices, locale, routes, base_path, main_locale):
     taxonomy.fill_related(content)
     site["nav"] = taxonomy.build_nav(content, routes, locale)
     ctx = pages.BuildContext(site, content, prices, language.prices, locale, routes,
-                             make_env(locale, routes, base_path, site), schema.render(site))
+                             make_env(locale, routes, base_path, site),
+                             [item.html_lang for item in routes.locales])
     changed = {}
     for page_id, html in pages.build_all(ctx, load_privacy(locale.code)):
         changed[routes.path(locale, page_id)] = write(OUT / routes.out_file(locale, page_id), html)
