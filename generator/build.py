@@ -99,14 +99,11 @@ def build_locale(site, content, prices, locale, routes, base_path, main_locale):
     return changed, content
 
 def write_sitewide(site, contents, prices, locales, routes, changed, urls, base_path):
-    """Файлы уровня сайта. llms.txt пока строится по основному языку, манифест — по каждому."""
-    main_locale = locales[0]
-    main_site = localized_site(site, main_locale)
+    """Файлы уровня сайта: sitemap, llms.txt (раздел на каждый язык), манифест каждого языка."""
     sitemap_path = OUT/"sitemap.xml"
     known_lastmods = sitewide.previous_lastmods(sitemap_path)  # читаем до перезаписи
     write(sitemap_path, sitewide.build_sitemap(site["base_url"], urls, changed, known_lastmods))
-    write(OUT/"llms.txt", sitewide.build_llms(main_site, contents[main_locale.code], prices,
-                                              main_locale, routes))
+    write(OUT/"llms.txt", sitewide.build_llms_file(site, contents, prices, locales, routes))
     for locale in locales:
         manifest = sitewide.build_manifest(localized_site(site, locale), base_path,
                                            THEME_COLOR, locale.url_prefix)

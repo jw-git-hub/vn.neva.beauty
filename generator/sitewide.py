@@ -8,6 +8,7 @@ from pathlib import Path
 import rcssmin
 
 import pricing
+from locales import localized_site
 from routes import HOME
 
 # Порядок каскада для единого bundle.min.css. Все CSS сайта склеиваются в один
@@ -96,7 +97,7 @@ def _llms_service_lines(content, prices, locale, routes):
 def build_llms(site, content, prices, locale, routes):
     """llms.txt — краткая карта сайта для ИИ-ассистентов (llmstxt.org)."""
     contacts, t = site["contacts"], locale.t
-    lines = [f"# {site['brand']}", "", t("llms.summary"), "", t("llms.about_title")]
+    lines = [t("llms.heading", brand=site["brand"]), "", t("llms.summary"), "", t("llms.about_title")]
     lines += _llms_about_lines(site, t)
     lines += ["", t("llms.categories_title")]
     lines += [f"- [{cat['title']}]({routes.url(locale, cat['page_id'])})"
@@ -108,6 +109,15 @@ def build_llms(site, content, prices, locale, routes):
               f"- Telegram: {contacts['telegram_url']}",
               f"- Instagram: {contacts['instagram_url']}", ""]
     return "\n".join(lines)
+
+
+def build_llms_file(site, contents, prices, locales, routes):
+    """Весь llms.txt: блоки языков в порядке site.locales, основной язык первым.
+    Блок кончается переводом строки, поэтому склейка даёт пустую строку между блоками
+    и русская часть остаётся прежней байт в байт."""
+    return "\n".join(
+        build_llms(localized_site(site, locale), contents[locale.code], prices, locale, routes)
+        for locale in locales)
 
 
 def build_manifest(site, base_path, theme_color, url_prefix=""):

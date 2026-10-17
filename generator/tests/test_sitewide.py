@@ -1,8 +1,12 @@
 import json
+import re
 import unittest
+from unittest import mock
 
+import build
 import sitewide
-from locales import parse_locale
+import taxonomy
+from locales import load_locale, localized_site, parse_locale
 from routes import Routes
 
 BASE_URL = "https://vn.neva.beauty"
@@ -39,6 +43,32 @@ class SitemapLastmodTest(unittest.TestCase):
         known = {BASE_URL + "/": "2026-01-01"}
         xml = sitewide.build_sitemap(BASE_URL, ["/"], {"/": False}, known)
         self.assertIn("<loc>https://vn.neva.beauty/</loc><lastmod>2026-01-01</lastmod>", xml)
+
+
+class BuildLlmsFileTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Настоящие данные сайта: контент обоих языков собирает build_locale без записи файлов."""
+        cls.site, content, cls.prices = build.load()
+        cls.locales = build.load_locales(cls.site)
+        cls.routes = Routes(cls.locales, taxonomy.page_ids(content), cls.site["base_url"],
+                            build.load_x_default_locale(cls.site))
+        with mock.patch("build.write", return_value=False):
+            cls.contents = {locale.code: build.build_locale(
+                cls.site, content, cls.prices, locale, cls.routes, "", cls.locales[0])[1]
+                for locale in cls.locales}
+
+    def test_llms_russian_part_unchanged_and_english_follows(self):
+        main = self.locales[0]
+        russian = sitewide.build_llms(localized_site(self.site, main), self.contents[main.code],
+                                      self.prices, main, self.routes)
+        text = sitewide.build_llms_file(self.site, self.contents, self.prices,
+                                        self.locales, self.routes)
+        self.assertTrue(text.startswith(russian))
+        self.assertTrue(text[len(russian):].startswith("\n# Neva Beauty — English\n"))
+        english = text[len(russian):]
+        self.assertIn("https://vn.neva.beauty/en/laser-hair-removal/", english)
+        self.assertIsNone(re.search("[А-Яа-яЁё]", english))
 
 
 if __name__ == "__main__":
