@@ -63,6 +63,11 @@ jobs:
       - name: Check contact links
         run: python generator/check_contacts.py
 
+      # Английская версия ломается тихо: лишний hreflang на закрытой странице, ссылка
+      # в русский раздел, битый манифест или кириллица в разметке видны только поисковику.
+      - name: Check languages
+        run: python generator/check_i18n.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
