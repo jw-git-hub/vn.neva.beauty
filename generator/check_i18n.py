@@ -10,7 +10,10 @@
   - ссылки, картинки и манифест неосновных языков указывают на существующие файлы,
     а ссылки на страницы — внутрь своего языка;
   - в неосновных языках нет кириллицы вне элементов с чужим lang;
-  - sitemap содержит индексируемые адреса всех языков без повторов.
+  - sitemap содержит canonical каждой собранной страницы без noindex, без повторов и
+    без лишнего; ожидаемый список берётся из самих страниц, а не из функции сборки sitemap;
+  - у каждой страницы языка есть собранный файл, а под префиксом языка нет страниц,
+    которых таблица маршрутов не знает (остались от прежнего адреса).
 Запуск: python generator/check_i18n.py"""
 import copy
 import json
@@ -23,7 +26,6 @@ from bs4 import BeautifulSoup
 
 import build
 import check_contacts
-import sitewide
 import taxonomy
 from routes import INDEX_FILE, Routes
 
@@ -33,13 +35,15 @@ X_DEFAULT = "x-default"
 NOINDEX_TOKEN = "noindex"
 HTML_EXTENSION = ".html"
 # Селекторы строк прайса — те же, что в check_prices.py: позиции панелей и комбо.
-PRICE_ROW_SELECTOR = ".pricelist__panel .pricelist__row, .combo"
+PRICE_ROW_SELECTOR = ".pricelist__panel .pricelist__row, .pricelist__panel .combo"
 JSON_LD_SELECTOR = 'script[type="application/ld+json"]'
 # Всё, что тянется с адреса: ссылки, подключения, картинки, карточка превью.
-ADDRESSED_SELECTOR = "a[href], link[href], img[src], meta[property='og:image']"
+ADDRESSED_SELECTOR = "a[href], link[href], img[src], meta[property='og:image'][content]"
 ADDRESS_ATTRIBUTES = ("href", "src", "content")
+# Кириллица буквой или записью \\uXXXX (так |tojson пишет её в скриптах): блок U+0400–U+045F.
+CYRILLIC_PATTERN = r"(?:[А-Яа-яЁё]|\\u04[0-5][0-9a-fA-F])"
 # Фрагмент вокруг кириллицы: 20 знаков до буквы, сама буква и 39 после — всего до 60.
-FRAGMENT_RE = re.compile(r"[^\n]{0,20}[А-Яа-яЁё][^\n]{0,39}")
+FRAGMENT_RE = re.compile(r"[^\n]{0,20}" + CYRILLIC_PATTERN + r"[^\n]{0,39}")
 FRAGMENT_LENGTH = 60
 FRAGMENT_LIMIT = 3
 FRAGMENT_SEPARATOR = " | "
@@ -48,6 +52,9 @@ SITEMAP_LOC_RE = re.compile(r"<loc>([^<]+)</loc>")
 # Всё, что проверкам страницы нужно знать о сайте.
 Setup = namedtuple("Setup", "routes base_url base_path")
 Signature = namedtuple("Signature", "headings faq_questions price_rows json_ld_types")
+# Итог обхода страниц: ошибки, отпечатки {страница: {язык: Signature}}, число прочитанных
+# страниц и адреса, которые обязаны быть в sitemap.
+PageReport = namedtuple("PageReport", "errors signatures checked indexable_urls")
 SIGNATURE_LABELS = {"headings": "уровни заголовков", "faq_questions": "вопросов FAQ",
                     "price_rows": "строк прайса", "json_ld_types": "типы JSON-LD"}
 
@@ -131,6 +138,8 @@ def signature(soup):
 
 def signature_errors(page_id, signatures, main_code):
     """Отпечаток страницы каждого языка против основного. signatures: {код языка: Signature}."""
+    if main_code not in signatures:
+        return []
     main = signatures[main_code]
     errors = []
     for code, current in signatures.items():
@@ -195,12 +204,18 @@ def link_errors(soup, page_name, locale, main_locale, site_dir, base_url, base_p
     return errors
 
 
+def primary_language(lang):
+    """Основной подтег языка: «en-GB» и «EN» дают «en»."""
+    return (lang or "").split("-")[0].lower()
+
+
 def without_foreign_language(soup):
-    """Копия страницы без элементов, чей lang отличается от языка страницы."""
-    page_lang = soup.html.get("lang") if soup.html else None
+    """Копия страницы без элементов с чужим языком; en-GB на английской странице
+    остаётся — проверяется только основной подтег."""
+    page_language = primary_language(soup.html.get("lang") if soup.html else None)
     copied = copy.copy(soup)
     for element in copied.find_all(lang=True):
-        if not element.decomposed and element.get("lang") != page_lang:
+        if not element.decomposed and primary_language(element.get("lang")) != page_language:
             element.decompose()
     return copied
 
@@ -225,13 +240,13 @@ def sitemap_errors(sitemap_text, expected_urls):
     return errors
 
 
-def indexable_urls(base_url, content, routes):
-    """Адреса sitemap всех языков. Идентификаторы страниц одинаковы в мастере и в языках,
-    поэтому достаточно мастер-контента; разделам он дописывается на копии (is_page)."""
-    master = copy.deepcopy(content)
-    taxonomy.enrich_categories(master, routes, routes.locales[0])
-    return [base_url + path for locale in routes.locales
-            for path in sitewide.sitemap_paths(master, routes, locale)]
+def indexable_urls_of(soup):
+    """canonical страницы, если она открыта для индексации; иначе пусто. Список — чтобы
+    складывать результаты страниц."""
+    canonical = soup.find("link", rel="canonical")
+    if is_noindex(soup) or not canonical or not canonical.get("href"):
+        return []
+    return [canonical["href"]]
 
 
 def page_errors(soup, name, page_id, locale, setup):
@@ -244,15 +259,33 @@ def page_errors(soup, name, page_id, locale, setup):
     return errors
 
 
+def stale_page_errors(site_dir, locales, expected_files):
+    """Страницы под префиксом неосновного языка, которых нет среди ожидаемых файлов:
+    после смены адреса старый файл остался бы в сборке. expected_files: {код языка: файлы}."""
+    errors = []
+    for locale in locales[1:]:
+        for found in sorted((site_dir / locale.url_prefix.lstrip("/")).rglob("*" + HTML_EXTENSION)):
+            if found not in expected_files.get(locale.code, set()):
+                errors.append(f"лишняя страница: {found.relative_to(site_dir.parent)}")
+    return errors
+
+
 def check_pages(site, content, setup):
-    """(ошибки страниц, отпечатки {страница: {язык: Signature}}, число страниц)."""
-    errors, signatures, checked = [], {}, 0
+    """Обход всех ожидаемых страниц: PageReport. Нет файла пары — ошибка, а не сбой."""
+    errors, signatures, urls, expected_files, checked = [], {}, [], {}, 0
     for locale, page_id, path in check_contacts.locale_pages(site, content, setup.routes.locales):
+        expected_files.setdefault(locale.code, set()).add(path)
+        shown = str(path.relative_to(SITE.parent))
+        if not path.is_file():
+            errors.append(f"нет пары: {shown}")
+            continue
         soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
-        errors += page_errors(soup, str(path.relative_to(SITE.parent)), page_id, locale, setup)
+        errors += page_errors(soup, shown, page_id, locale, setup)
         signatures.setdefault(page_id, {})[locale.code] = signature(soup)
+        urls += indexable_urls_of(soup)
         checked += 1
-    return errors, signatures, checked
+    errors += stale_page_errors(SITE, setup.routes.locales, expected_files)
+    return PageReport(errors, signatures, checked, urls)
 
 
 def make_setup(site, content):
@@ -266,13 +299,14 @@ def make_setup(site, content):
 def main():
     site, content, _ = build.load()
     setup = make_setup(site, content)
-    errors, signatures, checked = check_pages(site, content, setup)
+    report = check_pages(site, content, setup)
+    errors = list(report.errors)
     main_code = setup.routes.locales[0].code
-    for page_id, by_locale in signatures.items():
+    for page_id, by_locale in report.signatures.items():
         errors += signature_errors(page_id, by_locale, main_code)
     errors += sitemap_errors((SITE / SITEMAP_FILE).read_text(encoding="utf-8"),
-                             indexable_urls(setup.base_url, content, setup.routes))
-    print(f"страниц проверено: {checked}")
+                             report.indexable_urls)
+    print(f"страниц проверено: {report.checked}")
     if errors:
         print("\n".join(errors))
         sys.exit(1)

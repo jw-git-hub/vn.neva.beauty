@@ -1,6 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from bs4 import BeautifulSoup
 
@@ -11,6 +12,7 @@ from routes import Routes
 BASE_URL = "https://vn.neva.beauty"
 PAGE_ID = "lpg-massazh"
 PAGE_NAME = "en/lpg-massage/index.html"
+RU_FILE = "lpg-massazh/index.html"
 
 
 def make_locale(code, prefix, slugs=None):
@@ -77,8 +79,9 @@ def page(headings="<h1>A</h1><h2>B</h2>", questions=2, rows=1, types=("Service",
     faq = ",".join('{"@type": "Question"}' for _ in range(questions))
     nodes = ",".join(f'{{"@type": "{kind}"}}' for kind in types)
     graph = f'{{"@graph": [{nodes}, {{"@type": "FAQPage", "mainEntity": [{faq}]}}]}}'
-    table = '<div class="pricelist__panel">' + '<div class="pricelist__row"></div>' * rows + "</div>"
-    return parse(f'<body>{headings}{table}<div class="combo"></div>'
+    table = ('<div class="pricelist__panel">' + '<div class="pricelist__row"></div>' * rows
+             + '<div class="combo"></div></div>')
+    return parse(f'<body>{headings}{table}'
                  f'<script type="application/ld+json">{graph}</script></body>')
 
 
@@ -92,6 +95,12 @@ class SignatureTest(unittest.TestCase):
         self.assertEqual(sig.faq_questions, 3)
         self.assertEqual(sig.price_rows, 3)
         self.assertEqual(sig.json_ld_types, ("FAQPage", "Service"))
+
+    def test_combo_outside_price_panel_is_not_counted(self):
+        soup = parse('<body><div class="pricelist__panel">'
+                     '<div class="pricelist__row"></div><div class="combo"></div></div>'
+                     '<div class="combo"></div></body>')
+        self.assertEqual(check_i18n.signature(soup).price_rows, 2)
 
     def test_different_faq_count_is_error(self):
         signatures = {"ru": check_i18n.signature(page(questions=5)),
@@ -110,6 +119,10 @@ class SignatureTest(unittest.TestCase):
         signatures = {"ru": check_i18n.signature(page(types=("Service",))),
                       "en": check_i18n.signature(page(types=("Service", "BreadcrumbList")))}
         self.assertTrue(check_i18n.signature_errors(PAGE_ID, signatures, "ru"))
+
+    def test_page_without_main_language_pair_is_skipped(self):
+        signatures = {"en": check_i18n.signature(page())}
+        self.assertEqual(check_i18n.signature_errors(PAGE_ID, signatures, "ru"), [])
 
     def test_equal_signatures_pass(self):
         signatures = {"ru": check_i18n.signature(page()), "en": check_i18n.signature(page())}
@@ -169,6 +182,9 @@ class LinkErrorsTest(unittest.TestCase):
         body = f'<meta property="og:image" content="{BASE_URL}/assets/img/gone.jpg">'
         self.assertTrue(self.errors(body))
 
+    def test_og_image_without_content_does_not_crash(self):
+        self.assertEqual(self.errors('<meta property="og:image">'), [])
+
     def test_missing_image_is_error(self):
         self.assertTrue(self.errors('<img src="/assets/img/gone.jpg">'))
 
@@ -220,6 +236,20 @@ class CyrillicErrorsTest(unittest.TestCase):
         self.assertTrue(all(len(fragment) <= check_i18n.FRAGMENT_LENGTH
                             for fragment in fragments))
 
+    def test_escaped_cyrillic_in_script_is_error(self):
+        for escaped in ("\\u041c\\u0430\\u0441", "\\u043C\\u0430", "\\u0401", "\\u0451"):
+            with self.subTest(escaped=escaped):
+                self.assertTrue(cyrillic(f'<script>var s = "{escaped}";</script>'))
+
+    def test_escaped_latin_is_not_error(self):
+        self.assertEqual(cyrillic('<script>var s = "\\u0041\\u00e9\\u2014";</script>'), [])
+
+    def test_regional_variant_of_page_language_stays_checked(self):
+        self.assertTrue(cyrillic('<p lang="en-GB">Привет</p>'))
+
+    def test_other_language_with_region_is_skipped(self):
+        self.assertEqual(cyrillic('<p lang="RU-ru">Привет</p>'), [])
+
     def test_source_soup_is_not_modified(self):
         soup = parse('<html lang="en"><body><a lang="ru">Русский</a></body></html>')
         check_i18n.cyrillic_errors(soup, PAGE_NAME)
@@ -249,6 +279,95 @@ class SitemapErrorsTest(unittest.TestCase):
     def test_repeated_url_is_error(self):
         urls = self.EXPECTED + [BASE_URL + "/"]
         self.assertTrue(check_i18n.sitemap_errors(sitemap(*urls), self.EXPECTED))
+
+
+class IndexableUrlsTest(unittest.TestCase):
+    def test_canonical_of_indexable_page(self):
+        soup = parse(f'<head><link rel="canonical" href="{EN_URL}"></head>')
+        self.assertEqual(check_i18n.indexable_urls_of(soup), [EN_URL])
+
+    def test_noindex_page_gives_nothing(self):
+        soup = parse(f'<head><meta name="robots" content="noindex, follow">'
+                     f'<link rel="canonical" href="{EN_URL}"></head>')
+        self.assertEqual(check_i18n.indexable_urls_of(soup), [])
+
+    def test_page_without_canonical_gives_nothing(self):
+        self.assertEqual(check_i18n.indexable_urls_of(parse("<head></head>")), [])
+
+
+class BuiltSiteTest(unittest.TestCase):
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._dir.cleanup)
+        self.site_dir = Path(self._dir.name) / "site"
+        self.expected = {"ru": {self.site_dir / RU_FILE},
+                         "en": {self.site_dir / "en/lpg-massage/index.html"}}
+
+    def write(self, name, html="<html></html>"):
+        path = self.site_dir / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(html, encoding="utf-8")
+
+    def write_pair(self, english_head=None):
+        self.write(RU_FILE, f'<html lang="ru"><head><link rel="canonical" href="{RU_URL}"></head></html>')
+        head = english_head if english_head is not None else f'<link rel="canonical" href="{EN_URL}">'
+        self.write("en/lpg-massage/index.html", f'<html lang="en"><head>{head}</head></html>')
+
+    def run_check(self):
+        pages = [(RU, PAGE_ID, self.site_dir / RU_FILE),
+                 (EN, PAGE_ID, self.site_dir / "en/lpg-massage/index.html")]
+        setup = check_i18n.Setup(ROUTES, BASE_URL, "")
+        with mock.patch.object(check_i18n, "SITE", self.site_dir), \
+                mock.patch.object(check_i18n.check_contacts, "locale_pages",
+                                  return_value=pages):
+            return check_i18n.check_pages({}, {}, setup)
+
+    def test_indexable_urls_come_from_built_pages(self):
+        self.write_pair()
+        report = self.run_check()
+        self.assertEqual(sorted(report.indexable_urls), sorted([RU_URL, EN_URL]))
+
+    def test_noindex_page_is_not_expected_in_sitemap(self):
+        self.write_pair(f'<meta name="robots" content="noindex"><link rel="canonical" href="{EN_URL}">')
+        urls = self.run_check().indexable_urls
+        errors = check_i18n.sitemap_errors(sitemap(RU_URL, EN_URL), urls)
+        self.assertEqual(len(errors), 1)
+        self.assertIn(EN_URL, errors[0])
+
+    def test_indexable_page_missing_from_sitemap_is_error(self):
+        self.write_pair()
+        errors = check_i18n.sitemap_errors(sitemap(RU_URL), self.run_check().indexable_urls)
+        self.assertEqual(len(errors), 1)
+        self.assertIn(EN_URL, errors[0])
+
+    def test_missing_pair_file_is_error_not_traceback(self):
+        self.write(RU_FILE)
+        report = self.run_check()
+        self.assertEqual(report.checked, 1)
+        missing = [error for error in report.errors if error.startswith("нет пары")]
+        self.assertEqual(len(missing), 1)
+        self.assertIn("en/lpg-massage/index.html", missing[0])
+
+    def test_stale_page_under_language_prefix_is_error(self):
+        self.write("en/old-slug/index.html")
+        errors = check_i18n.stale_page_errors(self.site_dir, [RU, EN], self.expected)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("лишняя страница", errors[0])
+        self.assertIn("en/old-slug/index.html", errors[0])
+
+    def test_expected_pages_under_prefix_pass(self):
+        self.write("en/lpg-massage/index.html")
+        self.assertEqual(check_i18n.stale_page_errors(self.site_dir, [RU, EN], self.expected), [])
+
+    def test_main_language_root_is_not_scanned_for_stale_pages(self):
+        self.write("about/index.html")
+        self.assertEqual(check_i18n.stale_page_errors(self.site_dir, [RU, EN], self.expected), [])
+
+    def test_stale_page_is_reported_by_check_pages(self):
+        self.write_pair()
+        self.write("en/old-slug/index.html")
+        errors = self.run_check().errors
+        self.assertTrue(any(error.startswith("лишняя страница") for error in errors))
 
 
 if __name__ == "__main__":
