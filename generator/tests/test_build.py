@@ -267,9 +267,8 @@ class PageHeadInBuiltPagesTest(unittest.TestCase):
 
 
 class SectionCardImagesInBuiltPagesTest(unittest.TestCase):
-    """Первый ряд карточек раздела виден без прокрутки: он не ленится, остальные лениво."""
+    """На первом экране раздела видна первая карточка: она не ленится, остальные лениво."""
     CARD_IMG_RE = re.compile(r'<div class="related-card__media">(<img[^>]*>)</div>')
-    FIRST_ROW_SIZE = 3
     SECTION_PATHS = ("lazernye-procedury/index.html", "en/laser-treatments/index.html")
 
     @classmethod
@@ -279,18 +278,17 @@ class SectionCardImagesInBuiltPagesTest(unittest.TestCase):
     def card_images(self, path):
         return self.CARD_IMG_RE.findall(self.pages[path])
 
-    def test_first_row_cards_are_eager(self):
+    def test_first_card_is_eager(self):
+        for path in self.SECTION_PATHS:
+            with self.subTest(path=path):
+                self.assertIn('loading="eager"', self.card_images(path)[0])
+
+    def test_other_cards_stay_lazy(self):
         for path in self.SECTION_PATHS:
             with self.subTest(path=path):
                 images = self.card_images(path)
-                self.assertGreater(len(images), self.FIRST_ROW_SIZE)
-                for image in images[:self.FIRST_ROW_SIZE]:
-                    self.assertIn('loading="eager"', image)
-
-    def test_cards_below_first_row_stay_lazy(self):
-        for path in self.SECTION_PATHS:
-            with self.subTest(path=path):
-                for image in self.card_images(path)[self.FIRST_ROW_SIZE:]:
+                self.assertGreater(len(images), 1)
+                for image in images[1:]:
                     self.assertIn('loading="lazy"', image)
 
     def test_card_images_have_no_high_priority(self):

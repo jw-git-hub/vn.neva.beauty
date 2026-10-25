@@ -7,11 +7,10 @@
 
    priority=True ставит fetchpriority="high" вместо ленивой загрузки: так
    помечается кадр первого экрана, он же LCP-элемент.
-   eager=True убирает ленивую загрузку у кадра, который виден на первом экране,
-   но не главный: ряд карточек раздела. fetchpriority="high" им не ставим: замер
-   на медленном канале показал, что высокий приоритет карточки отодвигает LCP на
-   ~300 мс на телефоне (картинка обгоняет CSS и скрипт появлений), а просто
-   eager даёт −150…200 мс. #}
+   eager=True убирает ленивую загрузку у кадра первого экрана, который не главный:
+   первой карточки раздела. fetchpriority="high" ей не ставим: замер на медленном
+   канале показал, что высокий приоритет отодвигает LCP на ~300 мс на телефоне
+   (картинка обгоняет CSS и скрипт появлений), а просто eager даёт −150…200 мс. #}
 {%- macro responsive_img(stem, slot, alt, cls="", priority=False, eager=False) -%}
 <img{% if cls %} class="{{ cls }}"{% endif %} src="{{ base_path }}/assets/img/{{ stem }}.webp" srcset="{{ srcset(stem, slot) }}" sizes="{{ img_sizes(slot) }}" alt="{{ alt }}" width="{{ img_width(slot) }}" height="{{ img_height(slot) }}" {% if priority %}fetchpriority="high"{% else %}loading="{{ 'eager' if eager else 'lazy' }}" decoding="async"{% endif %}>
 {%- endmacro -%}
