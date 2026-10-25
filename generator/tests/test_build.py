@@ -301,6 +301,33 @@ class SectionCardImagesInBuiltPagesTest(unittest.TestCase):
                     self.assertNotIn("fetchpriority", image)
 
 
+class RevealFallbackInBuiltPagesTest(unittest.TestCase):
+    """Страница не должна оставаться пустой, если скрипт появлений не доехал."""
+    REVEAL_TAG_RE = re.compile(r'<script type="module" src="[^"]*/reveal\.js"[^>]*>')
+
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = {**build_real_pages("ru"), **build_real_pages("en")}
+        cls.reveal_source = (build.OUT / "assets" / "js" / "reveal.js").read_text(encoding="utf-8")
+
+    def test_reveal_script_tag_shows_content_on_load_error(self):
+        for path, html in self.pages.items():
+            with self.subTest(path=path):
+                self.assertIn('onerror="showWithoutReveal()"', self.REVEAL_TAG_RE.search(html).group(0))
+
+    def test_head_drops_hiding_class_unless_reveal_reported_ready(self):
+        for path, html in self.pages.items():
+            with self.subTest(path=path):
+                head = html.split("</head>")[0]
+                self.assertIn("window.showWithoutReveal", head)
+                self.assertIn("classList.contains('reveal-ready')", head)
+                self.assertIn("root.classList.add('js')", head)
+
+    def test_reveal_script_reports_ready_with_the_class_head_waits_for(self):
+        self.assertIn('const READY_CLASS = "reveal-ready";', self.reveal_source)
+        self.assertIn("classList.add(READY_CLASS)", self.reveal_source)
+
+
 class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

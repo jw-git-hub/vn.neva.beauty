@@ -38,7 +38,19 @@
   
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/manrope-var.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/cormorant-600.woff2" crossorigin>
-  <script>document.documentElement.classList.add('js')</script>
+  
+  <script>
+  (function () {
+    var REVEAL_WAIT_MS = 2500;
+    var root = document.documentElement;
+
+    root.classList.add('js');
+    window.showWithoutReveal = function () { root.classList.remove('js'); };
+    setTimeout(function () {
+      if (!root.classList.contains('reveal-ready')) window.showWithoutReveal();
+    }, REVEAL_WAIT_MS);
+  })();
+  </script>
   
   <script>
   (function () {
@@ -909,7 +921,7 @@
   </div>
 </footer>
   <script type="module" src="/assets/js/nav.js"></script>
-  <script type="module" src="/assets/js/reveal.js"></script>
+  <script type="module" src="/assets/js/reveal.js" onerror="showWithoutReveal()"></script>
   
   
 <!-- Yandex.Metrika counter --><script>

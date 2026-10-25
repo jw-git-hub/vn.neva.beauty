@@ -25,7 +25,23 @@
      и жирный текст первого экрана до тех пор стоял системным шрифтом. #}
   <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/manrope-var.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="{{ base_path }}/assets/fonts/cormorant-600.woff2" crossorigin>
-  <script>document.documentElement.classList.add('js')</script>
+  {# Класс js прячет блоки появлений (reveal.css), а показывает их reveal.js. Если
+     скрипт не доехал (404, обрыв, зависший запрос), страница так и осталась бы пустой.
+     Запасной путь: reveal.js ставит reveal-ready, а если его нет к сроку REVEAL_WAIT_MS
+     или тег сообщил об ошибке — класс js снимается и всё содержимое видно.
+     Без комментариев в самом скрипте: кириллица не должна попадать в шапку английских страниц. #}
+  <script>
+  (function () {
+    var REVEAL_WAIT_MS = 2500;
+    var root = document.documentElement;
+
+    root.classList.add('js');
+    window.showWithoutReveal = function () { root.classList.remove('js'); };
+    setTimeout(function () {
+      if (!root.classList.contains('reveal-ready')) window.showWithoutReveal();
+    }, REVEAL_WAIT_MS);
+  })();
+  </script>
   {# Сорвавшийся запрос картинки (обрыв связи, таймаут узкого канала — так не
      догрузился hero во встроенном браузере Instagram) браузер сам не повторяет:
      <img> остаётся сломанным до перезагрузки страницы. Ловим ошибку в фазе
@@ -118,7 +134,7 @@
   <main id="main">{% block content %}{% endblock %}</main>
   {% include 'partials/footer.html.j2' %}
   <script type="module" src="{{ base_path }}/assets/js/nav.js"></script>
-  <script type="module" src="{{ base_path }}/assets/js/reveal.js"></script>
+  <script type="module" src="{{ base_path }}/assets/js/reveal.js" onerror="showWithoutReveal()"></script>
   {% block extra_js %}{% endblock %}
   {% include 'partials/metrika.html.j2' %}
 </body>

@@ -1,4 +1,7 @@
 // Появления секций и карточек при входе во вьюпорт (fade-up, одноразово).
+// Метка «скрипт запущен»: без неё шапка страницы снимет класс js и покажет содержимое,
+// не дожидаясь зависшего или не загрузившегося скрипта (см. base.html.j2).
+const READY_CLASS = "reveal-ready";
 const BLOCK_SELECTOR = "[data-reveal]";
 const CARD_SELECTOR = "[data-reveal-children] > *";
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -52,3 +55,5 @@ if (reduceMotion) {
   blocks.forEach((el) => blockObserver.observe(el));
   cards.forEach((el) => rowObserver.observe(el));
 }
+
+document.documentElement.classList.add(READY_CLASS);
