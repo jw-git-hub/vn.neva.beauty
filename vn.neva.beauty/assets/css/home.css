@@ -75,3 +75,16 @@
 .popular-card__cat{font-size:var(--fs-200);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .popular-card__name{font-weight:500;min-width:0}
 .popular-card__price{font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Название сжимается до нуля (min-width:0), и длинное слово («PHOTOREJUVENATION» капсом с
+   разрядкой) выступало из своей коробки под цену. Там, где слову не хватает места рядом
+   с ценой, цена уходит под название: коробка названия не уже самого длинного слова.
+   Узкие экраны — все языки; две колонки 560–680 px — только английский (русские подписи
+   там помещаются, и вид русской главной шире 350 px не меняется). */
+@media(max-width:349.98px){
+  .popular-card{flex-wrap:wrap;row-gap:var(--sp-2)}
+  .popular-card__info{flex:1 1 0;min-width:auto}
+}
+@media(min-width:560px) and (max-width:679.98px){
+  :lang(en) .popular-card{flex-wrap:wrap;row-gap:var(--sp-2)}
+  :lang(en) .popular-card__info{flex:1 1 0;min-width:auto}
+}
