@@ -266,6 +266,41 @@ class PageHeadInBuiltPagesTest(unittest.TestCase):
                 self.assertIsNone(re.search("[А-Яа-яЁё]", self.head_of(html)))
 
 
+class SectionCardImagesInBuiltPagesTest(unittest.TestCase):
+    """Первый ряд карточек раздела виден без прокрутки: он не ленится, остальные лениво."""
+    CARD_IMG_RE = re.compile(r'<div class="related-card__media">(<img[^>]*>)</div>')
+    FIRST_ROW_SIZE = 3
+    SECTION_PATHS = ("lazernye-procedury/index.html", "en/laser-treatments/index.html")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = {**build_real_pages("ru"), **build_real_pages("en")}
+
+    def card_images(self, path):
+        return self.CARD_IMG_RE.findall(self.pages[path])
+
+    def test_first_row_cards_are_eager(self):
+        for path in self.SECTION_PATHS:
+            with self.subTest(path=path):
+                images = self.card_images(path)
+                self.assertGreater(len(images), self.FIRST_ROW_SIZE)
+                for image in images[:self.FIRST_ROW_SIZE]:
+                    self.assertIn('loading="eager"', image)
+
+    def test_cards_below_first_row_stay_lazy(self):
+        for path in self.SECTION_PATHS:
+            with self.subTest(path=path):
+                for image in self.card_images(path)[self.FIRST_ROW_SIZE:]:
+                    self.assertIn('loading="lazy"', image)
+
+    def test_card_images_have_no_high_priority(self):
+        """fetchpriority="high" у карточки замедляет LCP телефона на медленном канале."""
+        for path in self.SECTION_PATHS:
+            with self.subTest(path=path):
+                for image in self.card_images(path):
+                    self.assertNotIn("fetchpriority", image)
+
+
 class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
