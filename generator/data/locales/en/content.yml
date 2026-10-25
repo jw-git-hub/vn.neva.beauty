@@ -8,8 +8,8 @@ home:
   - Beauty &
   - Aesthetics Center
   - in Da Nang
-  hero_sub: Aesthetician appointments, device-based treatments, laser hair removal and facials using modern
-    equipment, in the heart of Da Nang.
+  hero_sub: 'Neva Beauty is a beauty center in the heart of Da Nang: aesthetician appointments, device-based
+    treatments, laser hair removal and facials using modern equipment.'
   about_lead: Neva Beauty is a beauty center in Da Nang, Vietnam. At the consultation, the center's aesthetician
     chooses what suits you from device-based treatments, laser hair removal, non-surgical lifting and
     rejuvenation, facials and non-surgical body contouring. Visits are by appointment only, and service is provided
@@ -38,13 +38,13 @@ home:
       treatment on its own page.
   benefits:
   - title: Modern Equipment
-    text: We work with trusted, world-class platforms.
+    text: Neva Beauty works with trusted, world-class platforms.
   - title: Experienced Aesthetician
-    text: A personalized approach and attention to your results.
+    text: Neva Beauty takes a personalized approach and pays attention to your results.
   - title: Safety
-    text: Protocols that are gentle on the skin, even in a hot climate.
+    text: Neva Beauty's protocols are gentle on the skin, even in a hot climate.
   - title: Comfort
-    text: A calm atmosphere and care that's just for you.
+    text: At Neva Beauty, you'll find a calm atmosphere and care that's just for you.
   popular:
   - label: Laser Hair Removal
   - label: LPG Massage
@@ -111,7 +111,8 @@ categories:
       photorejuvenation</a> works with light: it evens out skin tone and removes pigmentation and visible
       blood vessels. The right method for you is chosen at the consultation at Neva Beauty in Da Nang.'
   - q: Are non-surgical face lifting and rejuvenation treatments painful?
-    a: It depends on the treatment. <a href="/smas-lifting/">HIFU</a> and <a href="/fotoomolozhenie-m22/">M22
+    a: How non-surgical face lifting and rejuvenation feels depends on the treatment. <a href="/smas-lifting/">HIFU</a>
+      and <a href="/fotoomolozhenie-m22/">M22
       photorejuvenation</a> are comfortable and do not damage the skin. <a href="/morpheus-8-rf-lifting/">Morpheus8</a>
       is a microneedling treatment, so it is felt more strongly, but the intensity and depth of the treatment
       are tailored individually. None of the non-surgical face lifting and rejuvenation methods at Neva
@@ -142,7 +143,7 @@ categories:
       hair removal</a>, <a href="/udalenie-tatuirovok-lazerom/">laser tattoo removal</a>, <a href="/udalenye-permanentnogo-makiyazha/">permanent
       makeup removal</a> and the <a href="/karbonovyy-lazernyy-piling/">carbon laser peel</a>. All of
       them are non-surgical, and the treatment plan is chosen at the consultation.'
-  - q: What is the difference between laser hair removal, pigment removal and the carbon peel?
+  - q: What is the difference between laser hair removal, pigment removal and the carbon laser peel?
     a: '<a href="/lazernaya-epilyaciya/">Laser hair removal</a> removes unwanted hair by targeting the
       hair root with a laser. <a href="/udalenie-tatuirovok-lazerom/">Laser tattoo removal</a> and <a
       href="/udalenye-permanentnogo-makiyazha/">permanent makeup removal</a> work on pigment: the laser
@@ -152,7 +153,7 @@ categories:
       tattoo, permanent makeup or skincare. At Neva Beauty in Da Nang, the right method is chosen at the
       consultation.'
   - q: Are laser treatments painful?
-    a: It depends on the treatment. Most people experience <a href="/lazernaya-epilyaciya/">laser hair
+    a: How a laser treatment feels depends on which one you have. Most people experience <a href="/lazernaya-epilyaciya/">laser hair
       removal</a> as brief warmth and a slight tingling, and it requires no recovery period. <a href="/udalenie-tatuirovok-lazerom/">Tattoo
       removal</a> and <a href="/udalenye-permanentnogo-makiyazha/">permanent makeup removal</a> are felt
       more strongly, so the intensity is adjusted to your tolerance; after a session you can return to
@@ -191,17 +192,17 @@ services:
       and it is comfortable even in Da Nang's hot climate.
     benefits:
     - title: Comprehensive Non-Surgical Body Contouring
-      text: Effectively combats localized fat deposits, cellulite and sagging skin in the toughest problem
-        areas.
+      text: LPG massage effectively combats localized fat deposits, cellulite and sagging skin in the toughest
+        problem areas.
     - title: Safe and Physiological
-      text: The method is based on natural stimulation of the tissues with no damage to blood vessels,
+      text: LPG massage is based on natural stimulation of the tissues with no damage to blood vessels,
         which guarantees comfort and no downtime.
     - title: Deep Wellness
-      text: The treatment is suitable both for body contouring and for gentle lifting and detoxification
+      text: LPG massage is suitable both for body contouring and for gentle lifting and detoxification
         of the facial skin.
     - title: Visible Results
-      text: After just the first few sessions, skin firmness noticeably improves, and both fluid retention
-        and the feeling of heaviness go away.
+      text: After just the first few LPG massage sessions, skin firmness noticeably improves, and both
+        fluid retention and the feeling of heaviness go away.
     faq:
     - q: Is LPG massage painful?
       a: 'LPG massage at Neva Beauty in Da Nang is comfortable and painless: it is a mechanical vacuum-roller
@@ -243,17 +244,17 @@ services:
       hot climate.
     benefits:
     - title: Solutions for Aesthetic Concerns
-      text: Effectively eliminates cellulite, fluid retention and localized fat deposits, refining the
-        silhouette.
+      text: Endosphere therapy effectively eliminates cellulite, fluid retention and localized fat deposits,
+        refining the silhouette.
     - title: Safety and Comfort
-      text: The treatment is painless, leaves no bruising and does not damage blood vessels, while providing
-        a pleasant, relaxing effect.
+      text: Endosphere therapy is painless, leaves no bruising and does not damage blood vessels, while
+        providing a pleasant, relaxing effect.
     - title: Deep Lymphatic Drainage
-      text: Activates the body's internal processes of detoxification and metabolism, working at a level
-        that manual massage cannot reach.
+      text: Endosphere therapy activates the body's internal processes of detoxification and metabolism,
+        working at a level that manual massage cannot reach.
     - title: A Versatile Method
-      text: Suitable both for body shaping and for gentle rejuvenation and relief of muscle tension in
-        the face.
+      text: Endosphere therapy is suitable both for body shaping and for gentle rejuvenation and relief
+        of muscle tension in the face.
     faq:
     - q: Is Endosphere therapy painful?
       a: 'Endosphere therapy at Neva Beauty in Da Nang is comfortable and painless: it is a mechanical
@@ -294,17 +295,17 @@ services:
       hot climate.'
     benefits:
     - title: Effective Slimming
-      text: The treatment successfully tackles dense fat deposits on the abdomen, thighs and arms that
-        are hard to reduce by dieting.
+      text: Ultrasonic cavitation successfully tackles dense fat deposits on the abdomen, thighs and arms
+        that are hard to reduce by dieting.
     - title: Safety and Comfort
-      text: The session is painless, with no damage to the skin, so you can return to your usual routine
-        right away.
+      text: An ultrasonic cavitation session is painless, with no damage to the skin, so you can return
+        to your usual routine right away.
     - title: Deep Action
-      text: Ultrasound penetrates precisely into the subcutaneous fat, breaking down the structure of
-        fat cell membranes at the cellular level.
+      text: During ultrasonic cavitation, ultrasound penetrates precisely into the subcutaneous fat, breaking
+        down the structure of fat cell membranes at the cellular level.
     - title: A Versatile Method
-      text: The treatment is suitable for any skin type and works effectively for both women and men who
-        want to improve their body contours.
+      text: Ultrasonic cavitation is suitable for any skin type and works effectively for both women and
+        men who want to improve their body contours.
     faq:
     - q: Is ultrasonic cavitation painful?
       a: 'Ultrasonic cavitation at Neva Beauty in Da Nang is a non-surgical, device-based treatment: it
@@ -335,26 +336,26 @@ services:
     seo_title: 'HIFU Treatment in Da Nang: Face & Body, Prices | Neva Beauty'
     seo_desc: 'HIFU treatment in Da Nang at Neva Beauty: a non-surgical lift for the face, neck, decollete
       and body areas. Prices in VND by area. Message us to book.'
-    intro: HIFU (high-intensity focused ultrasound) treatment at Neva Beauty, a beauty center in Da Nang,
-      is a non-surgical face lift, done without surgery. Focused ultrasound acts on the deep muscle and
-      connective-tissue layer (SMAS) and stimulates the production of your own collagen, restoring definition
+    intro: HIFU treatment (high-intensity focused ultrasound) at Neva Beauty, a beauty center in Da Nang,
+      is a non-surgical face lift. Focused ultrasound acts on the deep muscle and connective-tissue layer
+      (SMAS) without surgery and stimulates the production of your own collagen, restoring definition
       to the facial contours and lifting the neck and decollete area. At Neva Beauty, HIFU is a single
       treatment rather than a course. It is done on the face, neck and decollete, and also on body areas
       (abdomen, arms, thighs). Results develop gradually and are long-lasting. There is no recovery period,
       and the treatment is comfortable even in Da Nang's hot climate.
     benefits:
     - title: Comprehensive Rejuvenation
-      text: Works effectively on the face, neck, decollete area and body, eliminating age-related changes
-        at different levels.
+      text: HIFU works effectively on the face, neck, decollete area and body, eliminating age-related
+        changes at different levels.
     - title: Safety with No Downtime
-      text: The treatment does not damage the surface of the skin, which is crucial under strong sun exposure
-        and in Vietnam's hot climate.
+      text: HIFU treatment does not damage the surface of the skin, which is crucial under strong sun
+        exposure and in Vietnam's hot climate.
     - title: Deep Action
-      text: Ultrasound stimulates the production of your own collagen and elastin, triggering natural
-        regeneration processes from within.
+      text: During HIFU treatment, ultrasound stimulates the production of your own collagen and elastin,
+        triggering natural regeneration processes from within.
     - title: A Versatile Method
-      text: Suits any skin type and can both treat the delicate area around the eyes and correct volume in the
-        abdomen or thighs.
+      text: HIFU suits any skin type and can both treat the delicate area around the eyes and correct
+        volume in the abdomen or thighs.
     faq:
     - q: Is HIFU treatment painful?
       a: 'HIFU treatment at Neva Beauty in Da Nang is comfortable: during the session you feel warmth
@@ -397,16 +398,16 @@ services:
       only.
     benefits:
     - title: A Comprehensive Solution
-      text: Effectively eliminates sagging skin, wrinkles, enlarged pores and acne scars through deep
-        collagen stimulation.
+      text: RF microneedling effectively eliminates sagging skin, wrinkles, enlarged pores and acne scars
+        through deep collagen stimulation.
     - title: Safety and Comfort
-      text: Handpieces with insulated needles allow precise control of the treatment depth, keeping damage
-        to the epidermis to a minimum.
+      text: In RF microneedling, handpieces with insulated needles allow precise control of the treatment
+        depth, keeping damage to the epidermis to a minimum.
     - title: A Deep Lifting Effect
-      text: Working at the level of the subcutaneous fat provides long-lasting tissue firming that ordinary
-        facials cannot achieve.
+      text: By working at the level of the subcutaneous fat, RF microneedling provides long-lasting tissue
+        firming that ordinary facials cannot achieve.
     - title: Versatility
-      text: The method is ideal for any skin type and can be used at any time of year, which is crucial
+      text: RF microneedling is ideal for any skin type and can be used at any time of year, which is crucial
         when you live in the tropics.
     faq:
     - q: Is Morpheus8 painful?
@@ -454,10 +455,11 @@ services:
       text: M22 effectively deals with age spots, visible blood vessels and acne, restoring a healthy,
         even complexion to the face.
     - title: Safety and Smart Control
-      text: The built-in cooling system makes the treatment as comfortable as possible, minimizing discomfort.
+      text: The built-in cooling system makes photorejuvenation as comfortable as possible, minimizing
+        discomfort.
     - title: Deep Skin Stimulation
-      text: Light pulses activate the production of your own collagen and elastin, increasing skin density
-        with a long-lasting lifting effect.
+      text: In photorejuvenation, light pulses activate the production of your own collagen and elastin,
+        increasing skin density with a long-lasting lifting effect.
     - title: A Versatile Solution
       text: The wide range of M22 filters allows the settings to be tailored individually for any skin
         type and for delicate areas.
@@ -505,14 +507,14 @@ services:
     benefits_title: What Do Professional Facials Do for Your Skin?
     benefits:
     - title: Solutions for Different Concerns
-      text: Individually tailored programs effectively fight acne, a dull complexion, enlarged pores and
-        signs of photoaging.
+      text: Individually tailored facial programs effectively fight acne, a dull complexion, enlarged pores
+        and signs of photoaging.
     - title: Safety and Comfort
-      text: All treatments use gentle, non-damaging techniques, which guarantees there is no lengthy recovery
-        period.
+      text: All facial treatments use gentle, non-damaging techniques, which guarantees there is no lengthy
+        recovery period.
     - title: Deep Action
-      text: Professional-grade products let active ingredients penetrate the deep layers of the epidermis,
-        triggering natural renewal processes.
+      text: In facial treatments, professional-grade products let active ingredients penetrate the deep
+        layers of the epidermis, triggering natural renewal processes.
     - title: Versatility
       text: Facial treatments suit any skin type and age, providing visible results after the very first
         visit.
@@ -559,13 +561,13 @@ services:
       and it is gentle on the skin even under Da Nang's tropical sun.
     benefits:
     - title: Solutions for Different Concerns
-      text: Tackles not only hair but also hyperpigmentation and inflammation.
+      text: Laser hair removal tackles not only hair but also hyperpigmentation and inflammation.
     - title: Safety and Comfort
-      text: Protects the epidermis, with no damage to the skin even in the heat.
+      text: Laser hair removal protects the epidermis, with no damage to the skin even in the heat.
     - title: Deep Action
-      text: Targeting the hair root gives long-lasting smoothness.
+      text: By targeting the hair root, laser hair removal gives long-lasting smoothness.
     - title: Versatility
-      text: Suitable for any area of the body.
+      text: Laser hair removal is suitable for any area of the body.
     faq:
     - q: Is laser hair removal painful?
       a: 'Most people find laser hair removal at Neva Beauty in Da Nang comfortable and experience it as
@@ -606,17 +608,17 @@ services:
       is tailored individually. By appointment only.
     benefits:
     - title: Solutions for Any Aesthetic Concern
-      text: Effectively handles pigments of different colors and depths, restoring an even color to the
-        skin.
+      text: Laser tattoo removal effectively handles pigments of different colors and depths, restoring
+        an even color to the skin.
     - title: Safety and Comfort
-      text: The laser precisely targets the ink particles without damaging the surrounding tissue and
-        keeps discomfort to a minimum.
+      text: In tattoo removal, the laser precisely targets the ink particles without damaging the surrounding
+        tissue and keeps discomfort to a minimum.
     - title: Deep Action
-      text: The technology breaks the pigment down into tiny particles that the body eliminates naturally,
+      text: Laser tattoo removal breaks the pigment down into tiny particles that the body eliminates naturally,
         without harm to your health.
     - title: A Versatile Method
-      text: The treatment suits any skin type and can be performed on the most sensitive areas of the
-        body.
+      text: Laser tattoo removal suits any skin type and can be performed on the most sensitive areas of
+        the body.
     faq:
     - q: Is laser tattoo removal painful?
       a: 'Laser tattoo removal at Neva Beauty in Da Nang is bearable, but it is felt more strongly than
@@ -659,17 +661,17 @@ services:
       only.
     benefits:
     - title: Eliminates Any Flaws
-      text: The laser handles the most stubborn and unflattering pigment shades that have developed over
-        time.
+      text: In permanent makeup removal, the laser handles the most stubborn and unflattering pigment shades
+        that have developed over time.
     - title: Safety and Comfort
-      text: Modern technology acts solely on the pigment, without injuring the surrounding tissue or the
-        hair follicles.
+      text: Modern laser technology for permanent makeup removal acts solely on the pigment, without injuring
+        the surrounding tissue or the hair follicles.
     - title: Deep Clearing
-      text: The beam penetrates the deep layers of the dermis, ensuring complete removal of the pigment
-        particles through the lymphatic system.
+      text: During permanent makeup removal, the laser beam penetrates the deep layers of the dermis, ensuring
+        complete elimination of the pigment particles through the lymphatic system.
     - title: A Versatile Method
-      text: The treatment suits all skin types and facial areas, regardless of how long ago the cosmetic
-        tattoo was applied.
+      text: Permanent makeup removal suits all skin types and facial areas, regardless of how long ago
+        the cosmetic tattoo was applied.
     faq:
     - q: Is laser permanent makeup removal painful?
       a: 'Laser permanent makeup removal at Neva Beauty in Da Nang is bearable, but it is felt more strongly
@@ -714,7 +716,7 @@ services:
     benefits_eyebrow: Method
     benefits_title: How Does a Carbon Laser Peel Work?
     benefits:
-    - title: What Is a Carbon Peel Used For?
+    - title: What Is a Carbon Laser Peel Used For?
       text: The carbon laser peel is used for enlarged pores, oily skin and uneven skin tone.
     - title: How Do the Carbon and the Laser Work?
       text: The carbon lotion penetrates the pores, and a laser pulse vaporizes it together with impurities
@@ -744,13 +746,13 @@ services:
           and the body eliminates them naturally.'
     faq:
     - q: What is a carbon laser peel used for?
-      a: A carbon lotion penetrates the pores, and a laser pulse vaporizes it together with impurities
-        and excess sebum. This is how the method works, which is why it is used for enlarged pores, oily
-        skin and uneven skin tone. The same method is often called the Hollywood peel. The aesthetician
+      a: 'A carbon laser peel is used for enlarged pores, oily skin and uneven skin tone because of how
+        the method works: a carbon lotion penetrates the pores, and a laser pulse vaporizes it together
+        with impurities and excess sebum. The same method is often called the Hollywood peel. The aesthetician
         at Neva Beauty in Da Nang decides at the consultation whether it suits you and which settings to
         use, since the peel has contraindications. Related device-based skin treatments at Neva
         Beauty are <a href="/fotoomolozhenie-m22/">M22 photorejuvenation</a> and <a href="/esteticheskaya-kosmetologiya-i-uhod/">facial
-        treatments</a>.
+        treatments</a>.'
     - q: How is a carbon laser peel done?
       a: 'First, the aesthetician at Neva Beauty in Da Nang assesses your skin and checks for contraindications.
         Then a carbon lotion is applied to the skin, where it penetrates the pores, and the laser is passed
@@ -762,25 +764,25 @@ services:
         the treatment itself: applying the carbon lotion and passing the laser over it. The consultation
         and skin assessment before the first session are not included in that time. The peel is done
         not as a one-off but as a course, at two-week intervals.'
-    - q: How many carbon peel treatments do I need?
+    - q: How many carbon laser peel treatments do I need?
       a: 'A course of carbon laser peels is 3–5 treatments at two-week intervals. The exact number is
         chosen at the consultation: it depends on the condition of your skin and your goal. There is no
         number fixed in advance — the aesthetician at Neva Beauty in Da Nang draws up the plan after a
         skin assessment and also tells you when to come for your next session.'
     - q: How is a carbon laser peel different from other laser treatments?
-      a: 'It differs in its purpose. The carbon laser peel works on the condition of the skin: enlarged
-        pores, oily skin and uneven skin tone. <a href="/lazernaya-epilyaciya/">Laser hair removal</a>
+      a: 'A carbon laser peel at Neva Beauty in Da Nang differs from the other laser treatments in its
+        purpose. It works on the condition of the skin: enlarged pores, oily skin and uneven skin tone. <a href="/lazernaya-epilyaciya/">Laser hair removal</a>
         removes hair by targeting the hair root, while <a href="/udalenie-tatuirovok-lazerom/">tattoo removal</a> and
         <a href="/udalenye-permanentnogo-makiyazha/">permanent makeup removal</a> use the laser to break
         up pigment, and the body eliminates its particles naturally.'
-    - q: Does a carbon peel have contraindications?
+    - q: Does a carbon laser peel have contraindications?
       a: 'Yes. A carbon laser peel is not done if you have a recent tan or strong sun exposure, or if
         you have diabetes, HIV/AIDS or skin diseases. This is not the full list of reasons to postpone the treatment: the
         final decision is made by the aesthetician at Neva Beauty in Da Nang at the consultation, after
         a skin assessment and a conversation about your health.'
     - q: Is a carbon laser peel painful?
-      a: 'It depends on how sensitive your skin is: a carbon laser peel usually feels like warmth and
-        a slight tingling with each pulse. At Neva Beauty in Da Nang, the intensity is adjusted to your
+      a: 'The sensations during a carbon laser peel depend on how sensitive your skin is: the peel usually
+        feels like warmth and a slight tingling with each pulse. At Neva Beauty in Da Nang, the intensity is adjusted to your
         tolerance. At the consultation before the first treatment, the aesthetician will assess how your
         own skin will react.'
     - q: How much does a carbon laser peel cost in Da Nang?
@@ -788,7 +790,7 @@ services:
         list has just one entry for it. Prices are listed in Vietnamese dong (đ). Related laser services,
         <a href="/udalenie-tatuirovok-lazerom/">tattoo removal</a> and <a href="/lazernaya-epilyaciya/">laser
         hair removal</a>, are priced separately.
-    - q: How do I book a carbon peel?
+    - q: How do I book a carbon laser peel?
       a: You can book a carbon laser peel at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
