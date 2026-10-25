@@ -40,6 +40,7 @@ class Locale:
     site: dict = field(default_factory=dict)
     browser_languages: tuple = ()
     og_image: str = DEFAULT_OG_IMAGE  # карточка превью ссылок этого языка
+    llms_pages_title: str = ""  # заголовок раздела главной и политики в llms.txt; пусто — раздела нет
 
     def t(self, key, **params):
         """Строка интерфейса по ключу. Неизвестный ключ — ошибка сборки:
@@ -72,6 +73,7 @@ def parse_locale(data, source):
         slugs=data.get("slugs") or {}, site=data.get("site") or {},
         browser_languages=tuple(data.get("browser_languages") or ()),
         og_image=data.get("og_image", DEFAULT_OG_IMAGE),
+        llms_pages_title=data.get("llms_pages_title", ""),
     )
 
 

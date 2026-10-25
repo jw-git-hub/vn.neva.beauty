@@ -7,7 +7,7 @@ import build
 import sitewide
 import taxonomy
 from locales import load_locale, localized_site, parse_locale
-from routes import Routes
+from routes import HOME, PRIVACY, Routes
 
 BASE_URL = "https://vn.neva.beauty"
 RU = parse_locale({"code": "ru", "html_lang": "ru", "og_locale": "ru_RU", "url_prefix": "",
@@ -69,6 +69,28 @@ class BuildLlmsFileTest(unittest.TestCase):
         english = text[len(russian):]
         self.assertIn("https://vn.neva.beauty/en/laser-hair-removal/", english)
         self.assertIsNone(re.search("[А-Яа-яЁё]", english))
+
+    def english_block(self):
+        main = self.locales[0]
+        text = sitewide.build_llms_file(self.site, self.contents, self.prices,
+                                        self.locales, self.routes)
+        russian = sitewide.build_llms(localized_site(self.site, main), self.contents[main.code],
+                                      self.prices, main, self.routes)
+        return main, russian, text[len(russian):]
+
+    def test_english_block_links_home_and_privacy_policy(self):
+        english_locale = self.locales[1]
+        _main, _russian, english = self.english_block()
+        self.assertIn("## Pages\n"
+                      f"- [Home]({self.routes.url(english_locale, HOME)})\n"
+                      f"- [Privacy Policy]({self.routes.url(english_locale, PRIVACY)})\n", english)
+        self.assertIn("https://vn.neva.beauty/en/privacy/", english)
+
+    def test_russian_block_has_no_pages_section(self):
+        main, russian, _english = self.english_block()
+        self.assertEqual(main.llms_pages_title, "")
+        self.assertNotIn(self.routes.url(main, PRIVACY), russian)
+        self.assertNotIn(f"]({self.routes.url(main, HOME)})", russian)
 
 RU_MANIFEST = """{
   "name": "Neva Beauty — Центр красоты · Дананг",

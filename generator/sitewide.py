@@ -9,7 +9,7 @@ import rcssmin
 
 import pricing
 from locales import localized_site
-from routes import HOME
+from routes import HOME, PRIVACY
 
 # Порядок каскада для единого bundle.min.css. Все CSS сайта склеиваются в один
 # минифицированный файл → один render-blocking запрос вместо шести, общий кэш на
@@ -94,6 +94,16 @@ def _llms_service_lines(content, prices, locale, routes):
     return lines
 
 
+def _llms_pages_lines(locale, routes):
+    """Главная и политика конфиденциальности — раздел только у языков, где задан
+    его заголовок: русский блок остаётся прежним байт в байт."""
+    if not locale.llms_pages_title:
+        return []
+    return ["", locale.llms_pages_title,
+            f"- [{locale.t('nav.home')}]({routes.url(locale, HOME)})",
+            f"- [{locale.t('footer.privacy')}]({routes.url(locale, PRIVACY)})"]
+
+
 def build_llms(site, content, prices, locale, routes):
     """llms.txt — краткая карта сайта для ИИ-ассистентов (llmstxt.org)."""
     contacts, t = site["contacts"], locale.t
@@ -104,6 +114,7 @@ def build_llms(site, content, prices, locale, routes):
               for cat in content["categories"]]
     lines += ["", t("llms.services_title")]
     lines += _llms_service_lines(content, prices, locale, routes)
+    lines += _llms_pages_lines(locale, routes)
     lines += ["", t("llms.contacts_title"),
               f"- WhatsApp: {contacts['whatsapp_url']}",
               f"- Telegram: {contacts['telegram_url']}",
