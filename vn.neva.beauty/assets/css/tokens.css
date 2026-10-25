@@ -18,6 +18,8 @@
   --shadow-sm:0 2px 10px rgba(74,59,56,.06);
   --shadow-md:0 12px 40px rgba(74,59,56,.10);
   --container:1200px;
+  /* Шапка липкая, 76 px: цель якоря и элемент в фокусе останавливаются ниже неё (base.css). */
+  --anchor-stop:calc(76px + var(--sp-4));
   --z-header:100; --z-drawer:200; --z-overlay:190;
   --t-fast:160ms; --t-mid:240ms; --ease:cubic-bezier(.2,.65,.3,.9);
   /* Появление блока при прокрутке (reveal.css). Было 700 мс: вместе с каскадом
