@@ -328,6 +328,39 @@ class RevealFallbackInBuiltPagesTest(unittest.TestCase):
         self.assertIn("classList.add(READY_CLASS)", self.reveal_source)
 
 
+class StructuredDataImagesInBuiltPagesTest(unittest.TestCase):
+    """Картинки разметки (image, logo) — обещание поисковику: файл должен лежать в сборке.
+    Страницы строятся в памяти из текущих исходников, а не читаются с диска: деплой гоняет
+    тесты до build.py, и проверка закоммиченной сборки не поймала бы битый путь в site.yml."""
+    IMAGE_KEYS = ("image", "logo")
+    LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = {**build_real_pages("ru"), **build_real_pages("en")}
+        cls.base = build.load()[0]["base_url"] + "/"
+
+    @classmethod
+    def image_urls_of(cls, node):
+        """Все адреса картинок в дереве JSON-LD, на любой глубине."""
+        if isinstance(node, dict):
+            own = [node[key] for key in cls.IMAGE_KEYS if isinstance(node.get(key), str)]
+            return own + [url for value in node.values() for url in cls.image_urls_of(value)]
+        if isinstance(node, list):
+            return [url for item in node for url in cls.image_urls_of(item)]
+        return []
+
+    def test_every_image_of_every_page_exists_in_build(self):
+        checked = 0
+        for path, html in self.pages.items():
+            for block in self.LD_RE.findall(html):
+                for url in self.image_urls_of(json.loads(block)):
+                    checked += 1
+                    self.assertTrue((build.OUT / url.removeprefix(self.base)).is_file(),
+                                    f"{path}: нет файла {url}")
+        self.assertGreater(checked, 0)
+
+
 class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
