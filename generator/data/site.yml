@@ -59,7 +59,7 @@ business:
   price_range: "$$"                   # качественный ориентир (Google priceRange)
   currency: "VND"
   language: ["Russian", "English"]    # языки обслуживания → availableLanguage в ContactPoint
-  image: "/assets/img/hero.jpg"
+  image: "/assets/img/hero.webp"
   logo: "/assets/img/logo-neva-beauty.png"  # круглая печать с лотосом, 512×512 (растр:
                                             # его ждут карточки организации у Google и Яндекса)
   same_as:

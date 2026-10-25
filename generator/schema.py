@@ -75,7 +75,7 @@ def business_nodes(site, languages):
         "@id": base + "/" + BUSINESS_ID,
         "name": brand,
         "url": base + "/",
-        "image": base + b.get("image", "/assets/img/hero.jpg"),
+        "image": base + b.get("image", "/assets/img/hero.webp"),
         "telephone": b["telephone"],
         "address": _postal_address(b["address"]),
         "areaServed": {"@type": "City", "name": b["address"]["locality"]},
