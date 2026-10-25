@@ -8,8 +8,8 @@ home:
   - Beauty &
   - Aesthetics Center
   - in Da Nang
-  hero_sub: 'Neva Beauty is a beauty center in the heart of Da Nang: aesthetician appointments, device-based
-    treatments, laser hair removal and facials using modern equipment.'
+  hero_sub: In the heart of Da Nang, Neva Beauty offers aesthetician appointments, device-based treatments,
+    laser hair removal and facials using modern equipment.
   about_lead: Neva Beauty is a beauty center in Da Nang, Vietnam. At the consultation, the center's aesthetician
     chooses what suits you from device-based treatments, laser hair removal, non-surgical lifting and
     rejuvenation, facials and non-surgical body contouring. Visits are by appointment only, and service is provided
@@ -40,7 +40,7 @@ home:
   - title: Modern Equipment
     text: Neva Beauty works with trusted, world-class platforms.
   - title: Experienced Aesthetician
-    text: Neva Beauty takes a personalized approach and pays attention to your results.
+    text: Neva Beauty takes a personalized approach and cares about your results.
   - title: Safety
     text: Neva Beauty's protocols are gentle on the skin, even in a hot climate.
   - title: Comfort
@@ -111,8 +111,8 @@ categories:
       photorejuvenation</a> works with light: it evens out skin tone and removes pigmentation and visible
       blood vessels. The right method for you is chosen at the consultation at Neva Beauty in Da Nang.'
   - q: Are non-surgical face lifting and rejuvenation treatments painful?
-    a: How non-surgical face lifting and rejuvenation feels depends on the treatment. <a href="/smas-lifting/">HIFU</a>
-      and <a href="/fotoomolozhenie-m22/">M22
+    a: How a non-surgical face lifting or rejuvenation treatment feels depends on which one you have. <a
+      href="/smas-lifting/">HIFU</a> and <a href="/fotoomolozhenie-m22/">M22
       photorejuvenation</a> are comfortable and do not damage the skin. <a href="/morpheus-8-rf-lifting/">Morpheus8</a>
       is a microneedling treatment, so it is felt more strongly, but the intensity and depth of the treatment
       are tailored individually. None of the non-surgical face lifting and rejuvenation methods at Neva
@@ -301,7 +301,7 @@ services:
       text: An ultrasonic cavitation session is painless, with no damage to the skin, so you can return
         to your usual routine right away.
     - title: Deep Action
-      text: During ultrasonic cavitation, ultrasound penetrates precisely into the subcutaneous fat, breaking
+      text: In ultrasonic cavitation, ultrasound penetrates precisely into the subcutaneous fat, breaking
         down the structure of fat cell membranes at the cellular level.
     - title: A Versatile Method
       text: Ultrasonic cavitation is suitable for any skin type and works effectively for both women and
@@ -351,7 +351,7 @@ services:
       text: HIFU treatment does not damage the surface of the skin, which is crucial under strong sun
         exposure and in Vietnam's hot climate.
     - title: Deep Action
-      text: During HIFU treatment, ultrasound stimulates the production of your own collagen and elastin,
+      text: In HIFU treatment, ultrasound stimulates the production of your own collagen and elastin,
         triggering natural regeneration processes from within.
     - title: A Versatile Method
       text: HIFU suits any skin type and can both treat the delicate area around the eyes and correct
@@ -459,7 +459,7 @@ services:
         discomfort.
     - title: Deep Skin Stimulation
       text: In photorejuvenation, light pulses activate the production of your own collagen and elastin,
-        increasing skin density with a long-lasting lifting effect.
+        increasing skin density and giving a long-lasting lifting effect.
     - title: A Versatile Solution
       text: The wide range of M22 filters allows the settings to be tailored individually for any skin
         type and for delicate areas.
@@ -507,11 +507,11 @@ services:
     benefits_title: What Do Professional Facials Do for Your Skin?
     benefits:
     - title: Solutions for Different Concerns
-      text: Individually tailored facial programs effectively fight acne, a dull complexion, enlarged pores
+      text: Individually tailored skincare programs effectively fight acne, a dull complexion, enlarged pores
         and signs of photoaging.
     - title: Safety and Comfort
-      text: All facial treatments use gentle, non-damaging techniques, which guarantees there is no lengthy
-        recovery period.
+      text: All facial treatments at Neva Beauty use gentle, non-damaging techniques, which guarantees there
+        is no lengthy recovery period.
     - title: Deep Action
       text: In facial treatments, professional-grade products let active ingredients penetrate the deep
         layers of the epidermis, triggering natural renewal processes.
@@ -667,7 +667,7 @@ services:
       text: Modern laser technology for permanent makeup removal acts solely on the pigment, without injuring
         the surrounding tissue or the hair follicles.
     - title: Deep Clearing
-      text: During permanent makeup removal, the laser beam penetrates the deep layers of the dermis, ensuring
+      text: In permanent makeup removal, the laser beam penetrates the deep layers of the dermis, ensuring
         complete elimination of the pigment particles through the lymphatic system.
     - title: A Versatile Method
       text: Permanent makeup removal suits all skin types and facial areas, regardless of how long ago
@@ -716,7 +716,7 @@ services:
     benefits_eyebrow: Method
     benefits_title: How Does a Carbon Laser Peel Work?
     benefits:
-    - title: What Is a Carbon Laser Peel Used For?
+    - title: What Does a Carbon Laser Peel Help With?
       text: The carbon laser peel is used for enlarged pores, oily skin and uneven skin tone.
     - title: How Do the Carbon and the Laser Work?
       text: The carbon lotion penetrates the pores, and a laser pulse vaporizes it together with impurities
