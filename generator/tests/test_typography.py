@@ -1,8 +1,7 @@
 import unittest
 
 import typography
-
-NBSP = " "
+from typography_rules import NO_BREAK_SPACE as NBSP
 
 
 def body(text):
@@ -58,6 +57,14 @@ class RussianRulesTest(unittest.TestCase):
     def test_number_stays_with_unit(self):
         self.assertEqual(bound("30 минут, 8 сеансов, 5 см", "ru"),
                          f"30{NBSP}минут, 8{NBSP}сеансов, 5{NBSP}см")
+
+    def test_unit_forms_are_bound(self):
+        self.assertEqual(bound("5 минут, 3 часа, 2 месяца, 4 дня, 6 недель, 2 года", "ru"),
+                         f"5{NBSP}минут, 3{NBSP}часа, 2{NBSP}месяца, 4{NBSP}дня, 6{NBSP}недель, 2{NBSP}года")
+
+    def test_words_that_only_start_like_a_unit_are_not_bound(self):
+        text = "5 минимальный, 2 место, 3 часто, 4 дно, 7 месячных, 1 разный"
+        self.assertEqual(bound(text, "ru"), text)
 
     def test_number_followed_by_ordinary_word_is_free(self):
         self.assertEqual(bound("M22 фотоомоложение, 3 зоны", "ru"), "M22 фотоомоложение, 3 зоны")

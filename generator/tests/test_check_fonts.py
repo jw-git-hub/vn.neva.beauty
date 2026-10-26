@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 import check_fonts
+from typography_rules import NO_BREAK_SPACE
 
 
 class VisibleCharsTest(unittest.TestCase):
@@ -13,13 +14,13 @@ class VisibleCharsTest(unittest.TestCase):
             return check_fonts.visible_chars(page)
 
     def test_no_break_space_must_be_in_fonts(self):
-        self.assertIn(" ", self.chars_of("<p>в самом</p>"))
+        self.assertIn(NO_BREAK_SPACE, self.chars_of(f"<p>в{NO_BREAK_SPACE}самом</p>"))
 
     def test_ordinary_whitespace_and_script_are_ignored(self):
         self.assertEqual(self.chars_of("<p>a b\n</p><script>ж</script>"), {"a", "b"})
 
     def test_site_fonts_cover_no_break_space(self):
-        self.assertIn(" ", check_fonts.font_charset())
+        self.assertIn(NO_BREAK_SPACE, check_fonts.font_charset())
 
 
 if __name__ == "__main__":
