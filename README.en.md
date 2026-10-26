@@ -304,7 +304,7 @@ flowchart LR
   on, grouped (copy, interface, site, price list, policy). For an approved translation
   there is a lock: `lock_translation.py` records fingerprints of the Russian strings, after
   which editing a Russian text without updating its translation fails the build (the lock
-  for `en` is not set yet).
+  for `en` is set: `generator/data/locales/en/content.lock.json`; after editing a Russian text, update its translation and re-lock with `python generator/lock_translation.py en`, in one commit).
 
 - **🔀 Language switch and automatic selection.** Links to the same page in another
   language are built from a single route table (`routes.py`); labels come from the target
