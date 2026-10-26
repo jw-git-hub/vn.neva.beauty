@@ -2,7 +2,7 @@ import json, re, urllib.parse, yaml
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import contacts, images, language_redirect, language_switch, pages, sitewide, taxonomy, translation, typography
+import contacts, images, indexnow, language_redirect, language_switch, pages, sitewide, taxonomy, translation, typography
 from locales import load_locale, load_privacy, localized_site
 from routes import NOT_FOUND, Routes
 
@@ -103,11 +103,14 @@ def build_locale(site, content, prices, locale, routes, base_path, main_locale):
     return changed, content
 
 def write_sitewide(site, contents, prices, locales, routes, changed, urls, base_path):
-    """Файлы уровня сайта: sitemap, llms.txt (раздел на каждый язык), манифест каждого языка."""
+    """Файлы уровня сайта: sitemap, llms.txt (раздел на каждый язык), файл-ключ IndexNow, манифест каждого языка."""
     sitemap_path = OUT/"sitemap.xml"
     known_lastmods = sitewide.previous_lastmods(sitemap_path)  # читаем до перезаписи
     write(sitemap_path, sitewide.build_sitemap(site["base_url"], urls, changed, known_lastmods))
     write(OUT/"llms.txt", sitewide.build_llms_file(site, contents, prices, locales, routes))
+    write(OUT/indexnow.key_file_name(site["indexnow"]), indexnow.key_file_content(site["indexnow"]))
+    for stale_key_file in indexnow.stale_key_files(OUT, site["indexnow"]):
+        stale_key_file.unlink()
     for locale in locales:
         manifest = sitewide.build_manifest(localized_site(site, locale), base_path,
                                            THEME_COLOR, locale.url_prefix)

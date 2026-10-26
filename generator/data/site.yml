@@ -27,6 +27,13 @@ base_url: "https://vn.neva.beauty"
 # Префикс пути для ссылок на ассеты/внутренние страницы (не SEO-URL, те всегда base_url).
 # Пусто = сайт в корне домена (боевой). "/vn.neva.beauty" = превью на GitHub Pages по подпути.
 base_path: ""
+# IndexNow: при выкладке сайт сообщает Bing и Яндексу список адресов из sitemap.xml
+# (generator/indexnow.py, шаг в .github/workflows/deploy.yml). Ключ — публичный: сборка кладёт
+# его в корень сайта файлом <ключ>.txt, и поисковик по нему убеждается, что сайт наш.
+# Ключ — случайные 32 знака 0-9a-f; сменить можно в любой момент, заменив значение здесь.
+indexnow:
+  key: "11de45a3bab5e897dbcc5f5349929ed3"
+  endpoint: "https://api.indexnow.org/indexnow"
 # Языки сайта в порядке сборки. Первый — основной: он живёт в корне домена.
 # Описание каждого — в data/locales/<код>.yml.
 locales: [ru, en]

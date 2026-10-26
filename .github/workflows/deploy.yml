@@ -83,3 +83,19 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # IndexNow: Bing и Яндекс получают список адресов из sitemap.xml сразу после выкладки.
+      # Ключ и адрес сервиса лежат в generator/data/site.yml, файл-ключ в корне сайта кладёт
+      # сборка. Отказ сервиса не должен ронять деплой: сайт уже выложен, поэтому скрипт при
+      # любой беде пишет предупреждение в журнал и выходит с нулём, а шаг ещё и не блокирующий.
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Notify IndexNow
+        continue-on-error: true
+        run: |
+          pip install PyYAML==6.0.2
+          python generator/indexnow.py
