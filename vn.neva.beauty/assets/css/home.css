@@ -16,7 +16,8 @@
 .hero__blob{position:absolute;width:min(98%,540px);aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle at 50% 42%, #EBC9BC 0%, rgba(206,155,145,.45) 40%, transparent 70%);
   filter:blur(52px);opacity:.82;z-index:0}
-.hero__photo{position:relative;z-index:1;width:min(78%,300px);aspect-ratio:4/5;height:auto;object-fit:cover;
+.hero__photo{position:relative;z-index:1;width:min(calc(var(--hero-photo-share) * 100%),var(--hero-photo-width-max));
+  aspect-ratio:var(--hero-photo-aspect);height:auto;object-fit:cover;
   border-radius:200px 200px 24px 24px;
   box-shadow:0 22px 55px rgba(74,59,56,.18), 0 0 0 1px rgba(255,255,255,.4) inset;
   transition:transform var(--t-mid) var(--ease),box-shadow var(--t-mid) var(--ease)}
@@ -24,21 +25,38 @@
 .hero__media:hover .hero__photo{transform:translateY(-5px) scale(1.012);
   box-shadow:0 30px 66px rgba(74,59,56,.22), 0 0 0 1px rgba(255,255,255,.4) inset}
 
-/* Телефон: кнопка записи первого блока видна целиком без прокрутки. Блок занимает
-   окно под шапкой (на 100vh запас для браузеров без svh), а фото — ровно столько места,
-   сколько осталось после текста: не выше прежнего (78 % колонки, до 375 px) и не ниже 96 px.
+/* Телефон: кнопка записи первого блока видна целиком без прокрутки, в том числе в Safari
+   с панелями (iPhone SE — видимые 375×548). Блок занимает окно под шапкой (на 100vh запас
+   для браузеров без svh), а фото — ровно столько места, сколько осталось после текста:
+   не выше прежнего (доля колонки и потолок из tokens.css) и не ниже --hero-photo-min.
    Фото лежит в ячейке абсолютно и не даёт ей высоты, поэтому всё свободное место — её.
-   Если текст сам не помещается (экран ниже 560 px или уже 250), блок просто вырастает
-   и ничего не обрезается. С 600 px и в альбомной ориентации вид прежний. */
-@media(max-width:599.98px) and (min-height:560px){
+   На низких окнах (меньше 700 px) отступы, заголовок и подзаголовок плавно мельчают вместе
+   с высотой окна (svh), а у надписи над заголовком уже разрядка и нет чёрточки: так остаётся
+   место для фото. С 700 px и выше вид тот, что был. Если текст всё равно не помещается
+   (окно ниже 500 px или уже 250), блок просто вырастает и ничего не обрезается.
+   С 600 px и в альбомной ориентации вид прежний. */
+@media(max-width:599.98px) and (min-height:500px){
   .hero__inner{grid-template-rows:minmax(var(--hero-photo-min),1fr) auto;gap:var(--sp-3);
     padding-block:var(--sp-4) var(--sp-6);
     min-height:calc(100vh - var(--header-height));min-height:calc(100svh - var(--header-height))}
   .hero__media{align-self:stretch;min-height:0}
-  .hero__photo{position:absolute;inset:0;margin:auto;width:auto;max-width:78%;
-    height:min(100%,calc((100vw - 2 * var(--sp-6)) * .975),375px)}
+  .hero__photo{position:absolute;inset:0;margin:auto;width:auto;
+    max-width:calc(var(--hero-photo-share) * 100%);
+    height:min(100%,calc((100vw - 2 * var(--sp-6)) * var(--hero-photo-share) * var(--hero-photo-ratio)),
+      calc(var(--hero-photo-width-max) * var(--hero-photo-ratio)))}
   .hero__title{margin-block:var(--sp-2)}
   .hero__sub{font-size:var(--fs-400);margin-bottom:var(--sp-5)}
+}
+@media(max-width:599.98px) and (min-height:500px) and (max-height:699.98px){
+  .hero__inner{gap:clamp(var(--sp-1),1.8svh,var(--sp-3));
+    padding-block:clamp(var(--sp-2),2.4svh,var(--sp-4)) clamp(var(--sp-2),3.6svh,var(--sp-6))}
+  .hero__title{font-size:min(clamp(2.75rem,7vw,var(--fs-900)),
+    calc((100vw - 2 * var(--sp-6)) / var(--word-fit-hero)),6.2svh);
+    margin-block:clamp(var(--sp-1),1.2svh,var(--sp-2))}
+  .hero__sub{font-size:clamp(var(--fs-300),2.75svh,var(--fs-400));
+    margin-bottom:clamp(var(--sp-3),2.6svh,var(--sp-5))}
+  .hero .eyebrow{letter-spacing:.1em}
+  .hero .eyebrow::before{display:none}
 }
 
 /* ===== CONTACT STRIP ===== */

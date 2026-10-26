@@ -902,3 +902,23 @@ class DermatologyConsultationInBuiltPagesTest(unittest.TestCase):
         for path, html in self.pages["en"].items():
             with self.subTest(path=path):
                 self.assertNotIn("dermatolog", html.lower())
+
+
+class HeaderAndHeroTokensTest(unittest.TestCase):
+    """Высота шапки и размеры фото героя записаны один раз, в tokens.css, а стили берут их оттуда."""
+    CSS_DIR = build.OUT / "assets" / "css"
+    MAGIC = {"components.css": ("76px", "77px"), "home.css": ("375px", ".975", "78%")}
+
+    def test_styles_do_not_repeat_header_height_or_hero_photo_numbers(self):
+        for name, numbers in self.MAGIC.items():
+            text = (self.CSS_DIR / name).read_text(encoding="utf-8")
+            for number in numbers:
+                with self.subTest(file=name, number=number):
+                    self.assertNotIn(number, text)
+
+    def test_tokens_define_header_and_hero_photo(self):
+        tokens = (self.CSS_DIR / "tokens.css").read_text(encoding="utf-8")
+        for token in ("--header-min", "--header-height", "--hero-photo-share",
+                      "--hero-photo-width-max", "--hero-photo-ratio", "--hero-photo-min"):
+            with self.subTest(token=token):
+                self.assertRegex(tokens, rf"{token}:")
