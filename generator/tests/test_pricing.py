@@ -190,9 +190,7 @@ class CheapestPositionNamedInFaqTest(unittest.TestCase):
         "korrekciya-figury": {("lpg-massazh", SINGLE_SECTION, "LPG Массаж - Тело", ONE_SESSION),
                               ("ultrazvukovaya-kavitaciya", SINGLE_SECTION, "УЗ-кавитация",
                                ONE_SESSION)},
-        "lifting-i-omolozhenie": {("morpheus-8-rf-lifting", SINGLE_SECTION, "Лицо", ""),
-                                  ("fotoomolozhenie-m22", SINGLE_SECTION, "Лицо", ""),
-                                  ("fotoomolozhenie-m22", SINGLE_SECTION, "Лицо", "Лечение акне")},
+        "lifting-i-omolozhenie": {("morpheus-8-rf-lifting", SINGLE_SECTION, "Глаза", "")},
         "lazernye-procedury": {("lazernaya-epilyaciya", WOMEN, "Лоб", ""),
                                ("lazernaya-epilyaciya", WOMEN, "Верхняя губа", "")},
     }
