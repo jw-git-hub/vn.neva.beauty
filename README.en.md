@@ -123,6 +123,14 @@ every publish, automation checks every figure on the site against it — and if 
 one has drifted, the site simply does not ship. A wrong price on a salon's website
 means either lost money or an awkward conversation at the front desk.
 
+**Two languages, one site.** The Russian version lives at the domain root, the English
+one under `/en/`: the same pages and prices, but with their own URLs and markup (both versions are in
+one `sitemap.xml`). A language switch sits in the header and in the menu. A visitor arriving from
+outside lands on the version that matches their browser language: Russian, Ukrainian,
+Belarusian and Kazakh go to the Russian version, everyone else to the English one. A
+manual choice is remembered and the automatic selection does not override it. For
+search engines, paired pages are tied together with `hreflang`.
+
 **Two salons, linked.** The brand has a second location on Koh Samui
 ([th.neva.beauty](https://th.neva.beauty)). Both sites are built the same way and
 point to each other: someone who landed in the wrong country from search moves to
@@ -137,7 +145,7 @@ the right site instead of closing the tab.
 | **Hosting** | 0 — static pages are served for free |
 | **Builder subscription** | none |
 | **Price updates** | edit one line; the site rebuilds and verifies itself |
-| **New service** | two lines in one file — the service itself and its place in a section; page, menu, breadcrumbs and markup appear on their own |
+| **New service** | two lines in one file — the service itself and its place in a section; page, menu, breadcrumbs and markup appear on their own. The English version will not build without a translation of the new service — the build names what is missing |
 | **Shelf life** | no database, plugins or engine that need updating; only the builder that applies your edits ages over time |
 
 ---
@@ -152,6 +160,12 @@ the right site instead of closing the tab.
 | **Lifting & rejuvenation** | SMAS lifting · Morpheus 8 (RF) · M22 photorejuvenation |
 | **Laser procedures** | laser hair removal · tattoo removal · permanent makeup removal · carbon laser peel |
 | **Skincare & cosmetology** | aesthetic cosmetology and facial care |
+
+**Each language has 15 pages**: the home page, three category pages and 11 services. The
+fourth category, "Skincare & cosmetology", consists of a single service and has no page
+of its own: in the menu it leads straight to that service. On top of that, each language
+has a privacy policy and a 404 page. English URLs live under `/en/` and are written in
+English: `/en/laser-hair-removal/` instead of `/lazernaya-epilyaciya/`.
 
 ---
 
@@ -179,13 +193,14 @@ price accuracy is guarded by an automated test.
 | **Language / build** | Python 3.12, custom `build.py` generator |
 | **Templates** | Jinja2 (inheritance, macros, partials) |
 | **Data** | YAML (`site.yml`, `content.yml`) + JSON (`prices.json`) |
+| **Languages** | Russian is the master data, English is an overlay in `generator/data/locales/en/`; a language is described by a `generator/data/locales/<code>.yml` file |
 | **SEO / AI data** | JSON-LD (schema.org) `@graph`, `sitemap.xml`, `llms.txt` |
 | **Styles** | Plain CSS, cascade layers, `rcssmin` minification into a single bundle |
 | **Fonts** | Self-hosted Cormorant + Manrope (variable woff2, cyrillic/latin subsets) |
 | **Graphics** | SVG icons, `WebP` with `JPG` fallback, decorative canvas background |
-| **Tests** | `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity |
+| **Tests** | unit tests (`unittest`, `generator/tests/`), `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity, `check_contacts.py` — contact links, `check_i18n.py` — site languages |
 | **Analytics** | Yandex.Metrica |
-| **CI/CD** | GitHub Actions → GitHub Pages, custom domain via `CNAME` |
+| **CI/CD** | GitHub Actions → GitHub Pages, custom domain via `CNAME`; IndexNow notification after deploy |
 
 ### 🏗 Architecture
 
@@ -199,6 +214,7 @@ flowchart LR
         A["site.yml<br/>business · contacts"]
         B["content.yml<br/>copy · FAQ · taxonomy"]
         C["prices.json<br/>price reference"]
+        L["locales/en/<br/>translation · glossary"]
     end
     subgraph GEN["generator/"]
         D["build.py<br/>orchestrator"]
@@ -208,13 +224,15 @@ flowchart LR
     A --> D
     B --> D
     C --> D
+    L --> D
     D --> E
     D --> F
     E --> G["Static HTML<br/>vn.neva.beauty/"]
     F --> G
-    G --> H{{"check_prices · check_headings<br/>check_fonts · check_images"}}
+    G --> H{{"check_prices · check_headings · check_fonts<br/>check_images · check_contacts · check_i18n"}}
     H -->|OK| I["GitHub Actions"]
     I --> J["🌐 GitHub Pages<br/>vn.neva.beauty"]
+    J --> K["IndexNow<br/>Bing · Yandex"]
 ```
 
 ### ✨ Key engineering decisions
@@ -262,6 +280,77 @@ flowchart LR
   Performance 94–98, CLS 0. Best Practices sits at 78: third-party Yandex.Metrica
   cookies, the deliberate price of having analytics.
 
+- **🌍 Translation is an overlay on the Russian master.** The Russian data
+  (`content.yml`, `prices.json`, `site.yml`) is the only source of structure. The English
+  `generator/data/locales/en/content.yml` repeats the master's paths and holds only the
+  translatable fields — headings, copy, questions and answers. Identifiers, images,
+  section composition and price-list keys come from the master, so the structure of the
+  languages cannot drift apart: an extra or missing key is a build error, and all problems
+  are reported together as one list. The price list is translated by the `prices.yml`
+  dictionary (Russian string → translation): it holds no numbers, the build substitutes
+  prices from `prices.json`, so a new price never touches the translation. The privacy
+  policy is a separate `privacy.html`; interface strings and URL slugs live in
+  `locales/en.yml`. The build core does not know languages by name: a new language is a
+  new `locales/<code>.yml` file.
+
+- **📖 Glossary and a pair-of-strings autotest.** `glossary.yml` holds the approved terms
+  ("Laser Hair Removal", not "laser epilation"). Required terms carry a `required` word
+  that must appear in the English string whenever the Russian one contains the term. Every
+  "Russian — English string" pair is checked mechanically (`translation_pairs.py`):
+  numbers, `{…}` placeholders, links, tags and required terms. Deviations are allowed only
+  in `pair_exceptions.yml`, each with a reason, and each lifts one check on one string; an
+  exception that no longer lifts anything is itself a problem. What is still untranslated
+  is shown by `python generator/translation_status.py en` — the same list the build fails
+  on, grouped (copy, interface, site, price list, policy). For an approved translation
+  there is a lock: `lock_translation.py` records fingerprints of the Russian strings, after
+  which editing a Russian text without updating its translation fails the build (the lock
+  for `en` is not set yet).
+
+- **🔀 Language switch and automatic selection.** Links to the same page in another
+  language are built from a single route table (`routes.py`); labels come from the target
+  language ("EN — English version") so a visitor recognizes their language without knowing
+  the other. The automatic selection is a short script at the start of `<head>`: it acts
+  on arrivals from outside, skips search and AI crawlers, link-preview fetchers and
+  navigation within the site, reads a manual choice from `localStorage` (key `neva.lang`,
+  written by `nav.js`), and otherwise matches the browser languages against the
+  `browser_languages` groups in the language files; anyone matching no group gets English
+  (`fallback_locale`). It is turned off with one line, `auto_language: false`, in
+  `site.yml`. The root 404 sends unknown addresses under `/en/` to the English 404.
+
+- **🌐 Language checks on deploy.** `check_i18n.py` reads the built pages and catches what
+  opens and looks right: `canonical` and `hreflang` (all languages plus `x-default`, the
+  English version) are compared with the route table, and `hreflang` on a page closed to
+  indexing is an error; page structure (headings, FAQ questions, price-list rows, JSON-LD
+  types) is identical in both languages; links, images and the manifest of the English
+  pages point to existing files, and page links stay within the English version; there is
+  no Cyrillic in English markup outside elements with a foreign `lang`; `sitemap.xml`
+  contains the `canonical` of every built page with no duplicates and nothing extra; and
+  there are no pages under `/en/` that the route table does not know. `check_prices.py` and
+  `check_contacts.py` check prices and contact links in both languages.
+
+- **📣 IndexNow after deploy.** The build places a key file `<key>.txt` in the site root
+  (it contains the key itself); the 32-character key and the service address live in
+  `generator/data/site.yml`, under `indexnow`. After the site is published, a separate
+  workflow job, `indexnow`, takes the addresses of both languages from `sitemap.xml` and
+  reports them to Bing and Yandex in a single request (`generator/indexnow.py`). The
+  sitemap is read from the checkout rather than the production domain: Pages does not
+  serve fresh files at once. It is a separate job with `continue-on-error: true` and
+  `contents: read` permissions: by then the site is already live, and any failure becomes a
+  warning in the log rather than a red run. The key can be rotated by replacing the value
+  in `site.yml` — the build deletes the old key file.
+
+- **✍️ Typography at render time.** `typography.py` applies per-language rules
+  (`typography_rules.py`) to the finished HTML and inserts non-breaking spaces: short
+  prepositions and conjunctions are not left at the end of a line, a number stays with its
+  unit (`sessions`, `minutes`, `đ`, `%`), thousands groups do not break, a dash does not
+  start a line. The rules differ for Russian and English. Only visible text inside
+  `<body>` is touched; `<head>`, JSON-LD, scripts and attributes stay as they were, and the
+  YAML texts stay clean, so translation pairs are compared without invisible characters.
+
+- **🖼 English image names.** Service images are named after the English page URLs:
+  `laser-hair-removal.webp`, `card-lpg-massage-480.webp`, `hifu-treatment-560.webp`. The
+  Russian version uses the very same files — there are not two sets of images.
+
 - **🌿 Preview and production from one build.** The `base_path` parameter prefixes
   asset links for the GitHub Pages project-path preview and stays empty on the live
   domain — SEO URLs are always absolute regardless. `CNAME` is placed into the
@@ -278,22 +367,36 @@ flowchart LR
 ├─ generator/                 # Static site generator (Python)
 │  ├─ build.py                #   build orchestrator
 │  ├─ schema.py               #   JSON-LD (schema.org) assembly
+│  ├─ locales.py · routes.py  #   site languages and the page × language route table
+│  ├─ overlay.py              #   translation overlay on the Russian master
+│  ├─ translation*.py         #   translation data, pair-of-strings autotest, lock
+│  ├─ translation_status.py   #   what is still untranslated
+│  ├─ typography.py           #   non-breaking spaces at render time
+│  ├─ indexnow.py             #   key file and IndexNow notification
 │  ├─ check_prices.py         #   price parity test
 │  ├─ check_headings.py       #   heading hierarchy check
 │  ├─ check_fonts.py          #   font subset coverage
 │  ├─ check_images.py         #   image and srcset integrity
+│  ├─ check_contacts.py       #   contact links
+│  ├─ check_i18n.py           #   languages: hreflang, page pairs, links, Cyrillic
 │  ├─ make_brand_assets.py    #   one-off favicon and preview generation from the logo
 │  ├─ data/
-│  │  ├─ site.yml             #   business, contacts, config
+│  │  ├─ site.yml             #   business, contacts, config, languages, IndexNow
 │  │  ├─ content.yml          #   copy, FAQ, taxonomy
-│  │  └─ prices.json          #   price reference (source of truth)
-│  └─ templates/              #   Jinja2 templates and partials
+│  │  ├─ prices.json          #   price reference (source of truth)
+│  │  └─ locales/             #   ru.yml · en.yml (interface, slugs) and en/ (overlay
+│  │                          #   content.yml, prices.yml, glossary.yml,
+│  │                          #   pair_exceptions.yml, privacy.html)
+│  ├─ templates/              #   Jinja2 templates and partials
+│  └─ tests/                  #   build unit tests
 │
 ├─ vn.neva.beauty/            # Generated site (served by GitHub Pages)
-│  ├─ index.html · <services>/ · <categories>/
+│  ├─ index.html · <services>/ · <categories>/      # Russian version
+│  ├─ en/                     #   English version: the same pages, policy, 404
 │  ├─ assets/  css · js · fonts · icons · img
 │  ├─ favicon.svg · favicon.ico · apple-touch-icon.png · icon-192/512.png
 │  ├─ sitemap.xml · llms.txt · site.webmanifest · CNAME · 404.html
+│  ├─ <key>.txt               #   IndexNow key file
 │
 ├─ .github/workflows/deploy.yml   # CI/CD: build and deploy
 └─ requirements.txt
@@ -309,13 +412,21 @@ pip install -r requirements.txt
 # 2. Build the site into vn.neva.beauty/
 python generator/build.py
 
-# 3. Pre-publish checks
+# 3. Unit tests and pre-publish checks
+python -m unittest discover -s generator/tests -t generator
 cd generator && python check_prices.py && python check_headings.py \
-  && python check_fonts.py && python check_images.py
+  && python check_fonts.py && python check_images.py \
+  && python check_contacts.py && python check_i18n.py
 
 # 4. Local preview
 cd ../vn.neva.beauty && python -m http.server 8000
-# → http://localhost:8000
+# → http://localhost:8000 (Russian version), http://localhost:8000/en/ (English version)
+```
+
+Translation status — what is still untranslated and where string pairs disagree:
+
+```bash
+python generator/translation_status.py en
 ```
 
 Favicons, app icons and the link preview card are generated from the logo ahead of
@@ -329,10 +440,14 @@ python generator/make_brand_assets.py
 
 ### ☁️ Deployment
 
-A push to `main` triggers GitHub Actions: the workflow installs dependencies, runs
-`build.py`, runs the automated tests (prices, headings, fonts, images), uploads the
-`vn.neva.beauty/` folder as an artifact and deploys it to GitHub Pages.
+A push to `main` triggers GitHub Actions: the workflow installs dependencies, runs the
+unit tests and `build.py`, runs the checks (prices, headings, fonts, images, contact
+links, languages), uploads the `vn.neva.beauty/` folder as an artifact and deploys it to
+GitHub Pages. If any check fails, nothing reaches production.
 The production domain `vn.neva.beauty` is wired up via `CNAME`.
+
+After the deploy, a separate `indexnow` job gives Bing and Yandex the list of addresses
+from `sitemap.xml`. A failure of that job does not turn the run red.
 
 </details>
 
