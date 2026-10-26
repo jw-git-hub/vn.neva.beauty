@@ -387,6 +387,41 @@ class TypographyInBuiltPagesTest(unittest.TestCase):
         self.assertIn(f"1{self.NO_BREAK_SPACE}000{self.NO_BREAK_SPACE}000{self.NO_BREAK_SPACE}đ", text)
 
 
+class ImageNamesTest(unittest.TestCase):
+    """Файлы картинок услуг названы по английскому адресу страницы, а не русским транслитом."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.content = build.load()[1]
+        cls.english_slugs = load_locale("en").slugs
+        cls.pages = {**build_real_pages("ru"), **build_real_pages("en")}
+
+    def test_hero_image_is_named_like_english_page_of_service(self):
+        for service_id, service in self.content["services"].items():
+            with self.subTest(service=service_id):
+                self.assertEqual(service["hero_image"], self.english_slugs[service_id])
+
+    def test_source_and_built_files_exist_under_new_names(self):
+        sources = build.ROOT / "sources" / "img"
+        for service in self.content["services"].values():
+            stem = service["hero_image"]
+            with self.subTest(stem=stem):
+                self.assertTrue((sources / f"{stem}.jpg").is_file())
+                for built in (f"{stem}.webp", f"card-{stem}.webp"):
+                    self.assertTrue((build.OUT / "assets" / "img" / built).is_file(), built)
+
+    def test_pages_link_only_to_existing_images_with_new_names(self):
+        images_dir = build.OUT / "assets" / "img"
+        left_under_old_name = [page_id for page_id in self.english_slugs
+                               if (images_dir / f"{page_id}.webp").exists()
+                               or (images_dir / f"card-{page_id}.webp").exists()]
+        self.assertEqual(left_under_old_name, [])
+        for path, html in self.pages.items():
+            for name in re.findall(r"/assets/img/([\w.-]+\.webp)", html):
+                with self.subTest(page=path, image=name):
+                    self.assertTrue((build.OUT / "assets" / "img" / name).is_file())
+
+
 class FirstBlockRevealInBuiltPagesTest(unittest.TestCase):
     """Первый блок разделов виден сразу; анимация появления ниже и на других страницах прежняя."""
     SECTION_PATHS = ("korrekciya-figury/index.html", "lifting-i-omolozhenie/index.html",
