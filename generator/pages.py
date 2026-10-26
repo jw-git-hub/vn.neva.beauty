@@ -94,6 +94,13 @@ def render_faq(ctx, faq, price=None, page_title=None):
     return [{"q": item["q"], "a": finish(item["a"])} for item in faq]
 
 
+def _category_cards(ctx):
+    """Карточки направлений главной: разделы с подписью «от …». Цена — та же, что в ответе
+    «Сколько стоит» раздела (_category_price_hint), так что цифры не расходятся."""
+    return [{**cat, "price_hint": _category_price_hint(ctx, cat)}
+            for cat in ctx.content["categories"]]
+
+
 def build_home(ctx):
     home = ctx.content["home"]
     home["faq"] = render_faq(ctx, home.get("faq", []))
@@ -109,7 +116,7 @@ def build_home(ctx):
             "hero_image": "/assets/img/hero.webp",  # LCP-элемент → preload в base.html.j2
             "hero_stem": "hero", "hero_slot": "home_hero"}
     return ctx.env.get_template("home.html.j2").render(
-        site=ctx.site, page=page, home=home, categories=ctx.content["categories"])
+        site=ctx.site, page=page, home=home, categories=_category_cards(ctx))
 
 
 def _service_crumbs(ctx, service_id, svc, cat):

@@ -36,7 +36,7 @@
     {% for c in categories %}
     <a class="cat-card card" href="{{ c.href }}">
       <div class="cat-card__media">{{ responsive_img(c.image, 'category_cover', c.title) }}</div>
-      <div class="cat-card__body"><h3>{{ c.title }}</h3><span class="cat-card__more">{{ t('cta.more') }} {{ icon('arrow-right') }}</span></div>
+      <div class="cat-card__body"><h3>{{ c.title }}</h3>{% if c.price_hint %}<span class="cat-card__price">{{ c.price_hint }}</span>{% endif %}<span class="cat-card__more">{{ t('cta.more') }} {{ icon('arrow-right') }}</span></div>
     </a>
     {% endfor %}
   </div>

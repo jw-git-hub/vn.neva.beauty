@@ -792,3 +792,58 @@ class ServicePriceLineInBuiltPagesTest(unittest.TestCase):
                     key = "service.price_line_from" if is_range else "service.price_line_exact"
                     self.assertEqual(line, self.locales[code].t(key, price=amount))
 
+
+class CategoryCardPricesInBuiltPagesTest(unittest.TestCase):
+    """Подпись «от …» на карточках направлений главной обоих языков: цифра — та же, что в ответе
+    «Сколько стоит» страницы направления (у ухода за лицом своей страницы нет — страницы услуги)."""
+    CAPTION_RE = re.compile(r'<span class="cat-card__price">(.*?)</span>', re.S)
+    ANSWER_RE = ServicePriceLineInBuiltPagesTest.ANSWER_RE
+    AMOUNT_RE = ServicePriceLineInBuiltPagesTest.AMOUNT_RE
+
+    @classmethod
+    def setUpClass(cls):
+        _site, cls.content, cls.prices = build.load()
+        cls.pages = {"ru": build_real_pages("ru"), "en": build_real_pages("en")}
+        cls.locales = {code: load_locale(code) for code in cls.pages}
+
+    @staticmethod
+    def plain(html):
+        return re.sub(r"<[^>]+>", "", html).replace(" ", " ")
+
+    def answer_page_and_faq(self, code, cat):
+        """Страница с ответом «Сколько стоит» этого направления и FAQ, из которого он взят."""
+        prefix = "en/" if code == "en" else ""
+        if len(cat["services"]) > 1:
+            return f"{prefix}{self.locales[code].slug(cat['slug'])}/index.html", cat["faq"]
+        service_id = cat["services"][0]
+        return (f"{prefix}{self.locales[code].slug(service_id)}/index.html",
+                self.content["services"][service_id]["faq"])
+
+    def price_answer(self, code, cat):
+        path, faq = self.answer_page_and_faq(code, cat)
+        index = next(i for i, item in enumerate(faq) if "{price}" in item["a"])
+        return self.plain(self.ANSWER_RE.findall(self.pages[code][path])[index])
+
+    def test_every_category_card_has_a_caption(self):
+        for code, built in self.pages.items():
+            home = built["en/index.html" if code == "en" else "index.html"]
+            with self.subTest(language=code):
+                self.assertEqual(len(self.CAPTION_RE.findall(home)), len(self.content["categories"]))
+
+    def test_caption_amount_equals_amount_in_price_answer(self):
+        for code, built in self.pages.items():
+            home = built["en/index.html" if code == "en" else "index.html"]
+            captions = [self.plain(text) for text in self.CAPTION_RE.findall(home)]
+            for cat, caption in zip(self.content["categories"], captions):
+                with self.subTest(language=code, category=cat["slug"]):
+                    self.assertEqual(self.AMOUNT_RE.search(caption).group(),
+                                     self.AMOUNT_RE.search(self.price_answer(code, cat)).group())
+
+    def test_caption_words_come_from_language_strings(self):
+        for code, built in self.pages.items():
+            home = built["en/index.html" if code == "en" else "index.html"]
+            captions = [self.plain(text) for text in self.CAPTION_RE.findall(home)]
+            for cat, caption in zip(self.content["categories"], captions):
+                with self.subTest(language=code, category=cat["slug"]):
+                    amount = self.AMOUNT_RE.search(caption).group()
+                    self.assertEqual(caption, self.locales[code].format_from(amount))
