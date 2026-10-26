@@ -140,5 +140,27 @@ class BuildManifestTest(unittest.TestCase):
         self.assertEqual(manifest["icons"][0]["src"], "/preview/icon-192.png")
 
 
+class HeaderBackgroundFallbackTest(unittest.TestCase):
+    """Браузер без color-mix (Safari до 16.2) должен получить запасной фон шапки."""
+    HEADER_RULE_RE = re.compile(r"\.site-header\{[^}]*\}")
+    GLASS_RULE = "@supports (background:color-mix(in srgb,red,blue)){.site-header{background:color-mix("
+
+    @classmethod
+    def setUpClass(cls):
+        sitewide.build_css_bundle(build.OUT)
+        cls.bundle = (build.OUT / "assets" / "css" / "bundle.min.css").read_text(encoding="utf-8")
+
+    def test_plain_header_rule_has_opaque_fallback_without_color_mix(self):
+        rule = self.HEADER_RULE_RE.search(self.bundle).group(0)
+        self.assertIn("background:var(--bg)", rule)
+        self.assertNotIn("color-mix", rule)
+
+    def test_glass_background_is_applied_only_where_color_mix_is_supported(self):
+        self.assertIn(self.GLASS_RULE, self.bundle)
+
+    def test_fallback_comes_before_glass_rule(self):
+        self.assertLess(self.bundle.index(".site-header{"), self.bundle.index(self.GLASS_RULE))
+
+
 if __name__ == "__main__":
     unittest.main()

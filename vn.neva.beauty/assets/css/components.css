@@ -14,10 +14,18 @@
 
 /* ---- header ---- */
 .site-header{position:sticky;top:0;z-index:var(--z-header);
-  background:color-mix(in srgb,var(--bg) 70%,transparent);
+  background:var(--bg);
   backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
   border-bottom:1px solid transparent;
   transition:box-shadow var(--t-mid) var(--ease),background var(--t-mid) var(--ease),border-color var(--t-mid) var(--ease)}
+/* Стекло — только там, где браузер знает color-mix (Safari с 16.2). Запасной цвет
+   стоит строкой выше, а не рядом в одном правиле: значение с var() внутри
+   color-mix проходит разбор в любом браузере и только потом обнуляется, так что
+   старый браузер не вернулся бы к запасной строке и оставил шапку без фона.
+   Полоса ::before берёт тот же фон через inherit. */
+@supports (background:color-mix(in srgb,red,blue)){
+  .site-header{background:color-mix(in srgb,var(--bg) 70%,transparent)}
+}
 /* Прокрученная шапка — непрозрачная и без размытия. Липкий элемент с
    backdrop-filter заставляет браузер пересобирать подложку под ним на каждом
    кадре скролла, а видно её там всё равно не было: фон закрывал 88%. Наверху
