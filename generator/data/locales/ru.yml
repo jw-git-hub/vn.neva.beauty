@@ -66,6 +66,8 @@ ui:
     price_eyebrow: "Стоимость"
     price_title: "Цены"
     price_lead: "Указаны во вьетнамских донгах (đ)."
+    price_line_from: "Цена — от {price}. Приём по записи."
+    price_line_exact: "Цена — {price}. Приём по записи."
     price_tabs_label: "Разделы прайс-листа"
     price_section_default: "Цены"
     col_service: "Услуга"

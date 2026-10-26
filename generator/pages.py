@@ -147,6 +147,18 @@ def _prepare_service_texts(ctx, svc, hint):
         svc["faq"] = render_faq(ctx, svc["faq"], hint, svc["title"])
 
 
+def service_price_line(ctx, sections):
+    """Строка под заголовком услуги: низшая цена из прайса и слова о записи. Цифру даёт
+    pricing.price_summary — тот же выбор, что у «от …» в ответе «Сколько стоит». Одна цена
+    на всю услугу — строка без «от». Нет цен — None, и строки на странице нет."""
+    summary = pricing.price_summary(sections)
+    if summary is None:
+        return None
+    price, is_range = summary
+    return ctx.t("service.price_line_from" if is_range else "service.price_line_exact",
+                 price=price)
+
+
 def build_service(ctx, service_id):
     svc = ctx.content["services"][service_id]
     cat = taxonomy.category_of(ctx.content, service_id)
@@ -165,7 +177,8 @@ def build_service(ctx, service_id):
             "hero_stem": svc["hero_image"], "hero_slot": "service_hero"}
     return ctx.env.get_template("service.html.j2").render(
         site=ctx.site, page=page, svc=svc, slug=service_id, category=cat,
-        sections=view, services=ctx.content["services"])
+        sections=view, services=ctx.content["services"],
+        price_line=service_price_line(ctx, sections))
 
 
 def _category_price_hint(ctx, cat):

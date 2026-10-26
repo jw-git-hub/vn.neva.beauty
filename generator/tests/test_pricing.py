@@ -58,6 +58,23 @@ class AggregateTest(unittest.TestCase):
         self.assertIsNone(pricing.price_aggregate([], "VND"))
 
 
+class SummaryTest(unittest.TestCase):
+    def test_several_prices_give_minimum_marked_as_range(self):
+        self.assertEqual(pricing.price_summary(SECTIONS), ("150 000 đ", True))
+
+    def test_single_price_is_not_a_range(self):
+        self.assertEqual(pricing.price_summary(SINGLE), ("1 100 000 đ", False))
+
+    def test_addons_and_empty_prices_are_not_counted(self):
+        sections = [{"items": [{"name": "A", "price": "500 000 đ"},
+                               {"name": "Добавка", "price": "+350 000 đ"},
+                               {"name": "Без цены", "price": ""}]}]
+        self.assertEqual(pricing.price_summary(sections), ("500 000 đ", False))
+
+    def test_no_prices_is_none(self):
+        self.assertIsNone(pricing.price_summary([]))
+
+
 class HintTest(unittest.TestCase):
     def test_several_prices_give_from_minimum(self):
         self.assertEqual(pricing.price_hint(SECTIONS, from_ru), "от 150 000 đ")

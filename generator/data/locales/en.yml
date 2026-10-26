@@ -91,6 +91,8 @@ ui:
     price_eyebrow: "Pricing"
     price_title: "Prices — {title}"
     price_lead: "Prices are listed in Vietnamese dong (đ)."
+    price_line_from: "From {price}. By appointment only."
+    price_line_exact: "Price: {price}. By appointment only."
     price_tabs_label: "Price list sections"
     price_section_default: "Prices"
     col_service: "Service"

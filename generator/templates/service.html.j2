@@ -17,6 +17,7 @@
         <p class="eyebrow">{{ svc.category }}</p>
         <h1>{{ svc.title }}</h1>
         <p class="svc-hero__intro">{{ svc.intro }}</p>
+        {% if price_line %}<p class="svc-hero__price">{{ price_line }}</p>{% endif %}
         <a class="btn btn--primary" {{ contact('whatsapp', 'hero', page) }}>{{ t('cta.book') }}</a>
       </div>
       <div class="svc-hero__media">

@@ -9,6 +9,9 @@
 .svc-hero__text{max-width:580px}
 .svc-hero__text h1{font-size:min(clamp(2.25rem,5.5vw,var(--fs-800)),calc((100vw - 2 * var(--sp-6)) / var(--word-fit-service)));margin:var(--sp-3) 0 var(--sp-4)}
 .svc-hero__intro{font-size:var(--fs-500);color:var(--ink);margin-bottom:var(--sp-6)}
+/* Строка цены сразу под вводным абзацем: поднимаем её на половину отступа абзаца,
+   чтобы читалась как его продолжение, а до кнопки остался прежний отступ. */
+.svc-hero__price{margin:calc(var(--sp-3) - var(--sp-6)) 0 var(--sp-6);font-weight:600;color:var(--rose-deep)}
 .svc-hero__media{position:relative;display:flex;justify-content:center;order:-1}
 @media(min-width:768px){.svc-hero__media{order:0;align-self:start;margin-top:var(--sp-8)}}
 .svc-hero__blob{position:absolute;width:min(98%,480px);aspect-ratio:1;border-radius:50%;

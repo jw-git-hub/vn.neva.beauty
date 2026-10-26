@@ -46,18 +46,27 @@ def price_aggregate(sections, currency):
             "count": len(values), "currency": currency}
 
 
-def price_hint(sections, format_from):
-    """Цена услуги одной строкой — для мест вне прайса: сравнительной таблицы,
-    подводки к ценам, llms.txt. Одна цена на всю услугу — показываем её, несколько
-    разных — «от <минимальной>», как на карточках «Популярное». Доплаты не в счёт:
-    надбавку нельзя заплатить вместо услуги. Нет цен — None."""
+def price_summary(sections):
+    """Низшая цена услуги и признак «цен несколько»: (цена строкой, True), одна цена
+    на всю услугу — (цена, False), нет цен — None. Доплаты не в счёт: надбавку нельзя
+    заплатить вместо услуги. Единственное место, где выбирается минимум: подпись «от …»
+    в ответе FAQ, строка под заголовком услуги и карточки направлений берут цифру отсюда."""
     values = [item["price"].strip() for sec in sections for item in sec["items"]
               if not is_addon(item) and price_value(item["price"]) is not None]
     if not values:
         return None
-    if len(set(values)) == 1:
-        return values[0]
-    return format_from(min(values, key=price_value))
+    return min(values, key=price_value), len(set(values)) > 1
+
+
+def price_hint(sections, format_from):
+    """Цена услуги одной строкой — для мест вне прайса: сравнительной таблицы,
+    подводки к ценам, llms.txt. Одна цена на всю услугу — показываем её, несколько
+    разных — «от <минимальной>», как на карточках «Популярное». Нет цен — None."""
+    summary = price_summary(sections)
+    if summary is None:
+        return None
+    price, is_range = summary
+    return format_from(price) if is_range else price
 
 
 def named_positions(sections, names):

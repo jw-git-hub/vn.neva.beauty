@@ -13,6 +13,7 @@ from markupsafe import Markup
 import build
 import contacts
 import pages
+import pricing
 import taxonomy
 from locales import load_locale
 from routes import Routes
@@ -720,3 +721,74 @@ class HeadingsKeepWholeWordsTest(unittest.TestCase):
         self.assertEqual(used, {"--word-fit-section", "--word-fit-service", "--word-fit-hero"})
         for token in used:
             self.assertRegex(self.css["tokens.css"], rf"{token}:\d+(\.\d+)?;")
+
+
+class ServicePriceLineTest(unittest.TestCase):
+    CONTEXT = SimpleNamespace(t=lambda key, price: f"{key}|{price}")
+    SECTIONS = [{"items": [{"name": "A", "price": "700 000 đ"}, {"name": "B", "price": "900 000 đ"},
+                           {"name": "Добавка", "price": "+350 000 đ"}]}]
+
+    def test_several_prices_give_line_with_minimum_and_from_form(self):
+        self.assertEqual(pages.service_price_line(self.CONTEXT, self.SECTIONS),
+                         "service.price_line_from|700 000 đ")
+
+    def test_single_price_gives_exact_form_without_from(self):
+        sections = [{"items": [{"name": "A", "price": "1 100 000 đ"}]}]
+        self.assertEqual(pages.service_price_line(self.CONTEXT, sections),
+                         "service.price_line_exact|1 100 000 đ")
+
+    def test_no_prices_give_no_line(self):
+        self.assertIsNone(pages.service_price_line(self.CONTEXT, []))
+
+
+class ServicePriceLineInBuiltPagesTest(unittest.TestCase):
+    """Строка под заголовком услуги на обоих языках: цифра — та же, что в ответе FAQ
+    «Сколько стоит», а слова — из строк языка."""
+    LINE_RE = re.compile(r'<p class="svc-hero__price">(.*?)</p>', re.S)
+    ANSWER_RE = re.compile(r'<p class="faq__a">(.*?)</p>', re.S)
+    AMOUNT_RE = re.compile(r"\d[\d ]*\d đ")
+
+    @classmethod
+    def setUpClass(cls):
+        _site, cls.content, cls.prices = build.load()
+        cls.pages = {"ru": build_real_pages("ru"), "en": build_real_pages("en")}
+        cls.locales = {code: load_locale(code) for code in cls.pages}
+
+    @staticmethod
+    def plain(html):
+        return re.sub(r"<[^>]+>", "", html).replace(" ", " ")
+
+    def page_path(self, code, service_id):
+        prefix = "en/" if code == "en" else ""
+        return f"{prefix}{self.locales[code].slug(service_id)}/index.html"
+
+    def price_answer_index(self, service_id):
+        faq = self.content["services"][service_id]["faq"]
+        return next(index for index, item in enumerate(faq) if "{price}" in item["a"])
+
+    def test_every_service_page_has_one_line_in_both_languages(self):
+        for code, built in self.pages.items():
+            for service_id in self.content["services"]:
+                with self.subTest(language=code, service=service_id):
+                    html = built[self.page_path(code, service_id)]
+                    self.assertEqual(len(self.LINE_RE.findall(html)), 1)
+
+    def test_line_amount_equals_amount_in_price_answer_of_faq(self):
+        for code, built in self.pages.items():
+            for service_id in self.content["services"]:
+                with self.subTest(language=code, service=service_id):
+                    html = built[self.page_path(code, service_id)]
+                    line = self.plain(self.LINE_RE.search(html).group(1))
+                    answer = self.plain(self.ANSWER_RE.findall(html)[self.price_answer_index(service_id)])
+                    self.assertEqual(self.AMOUNT_RE.search(line).group(), self.AMOUNT_RE.search(answer).group())
+
+    def test_line_words_come_from_language_strings(self):
+        for code, built in self.pages.items():
+            for service_id in self.content["services"]:
+                with self.subTest(language=code, service=service_id):
+                    html = built[self.page_path(code, service_id)]
+                    line = self.plain(self.LINE_RE.search(html).group(1))
+                    amount, is_range = pricing.price_summary(self.prices[service_id])
+                    key = "service.price_line_from" if is_range else "service.price_line_exact"
+                    self.assertEqual(line, self.locales[code].t(key, price=amount))
+
