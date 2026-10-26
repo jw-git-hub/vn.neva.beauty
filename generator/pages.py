@@ -35,16 +35,26 @@ class BuildContext:
         return schema.render(self.site, self.languages, nodes)
 
 
-PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price)\}")
+PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price|consultation_price)\}")
 
 
-def content_tokens(price=None):
+def consultation_price(site):
+    """Цена консультации из site.yml. Запись та же, что у строк прайса, и проверяется
+    тем же разбором: опечатка в цене роняет сборку, а не уходит на все страницы."""
+    price = site["consultation"]["price"]
+    if pricing.price_value(price) is None:
+        raise ValueError("site.yml: не задана цена консультации consultation.price")
+    return price
+
+
+def content_tokens(price=None, consultation=None):
     """Плейсхолдеры текстов content.yml, кроме мессенджеров: цена услуги или направления
-    из prices.json (pricing.price_hint).
+    из prices.json (pricing.price_hint) и цена консультации из site.yml.
     Мессенджеры пишутся только как href="{whatsapp}" и раскрываются в
     contacts.fill_contact_links — с текстом страницы и метками. Плейсхолдер мессенджера
     в другом месте остаётся нераскрытым, и fill_tokens роняет сборку."""
-    return {"{price}": price} if price else {}
+    tokens = {"{price}": price, "{consultation_price}": consultation}
+    return {token: value for token, value in tokens.items() if value}
 
 
 def fill_tokens(text, tokens):
@@ -64,7 +74,7 @@ def render_faq(ctx, faq, price=None, page_title=None):
     в адреса языка страницы."""
     site_contacts = ctx.site["contacts"]
     message = contacts.contact_message(ctx.locale, page_title)
-    tokens = content_tokens(price)
+    tokens = content_tokens(price, consultation_price(ctx.site))
 
     def finish(answer):
         answer = contacts.fill_contact_links(answer, site_contacts, message)

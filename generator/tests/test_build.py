@@ -168,6 +168,19 @@ class MessengerPlaceholderTest(unittest.TestCase):
             pages.fill_tokens("пишите {whatsapp}", pages.content_tokens())
 
 
+class ConsultationPriceTest(unittest.TestCase):
+    def test_price_is_filled_from_site(self):
+        tokens = pages.content_tokens(consultation=pages.consultation_price(
+            {"consultation": {"price": "500 000 đ"}}))
+        self.assertEqual(pages.fill_tokens("стоит {consultation_price}", tokens),
+                         "стоит 500 000 đ")
+
+    def test_malformed_or_empty_price_is_error(self):
+        for price in ("500000", " "):
+            with self.subTest(price=price), self.assertRaises(ValueError):
+                pages.consultation_price({"consultation": {"price": price}})
+
+
 class TranslatedEnglishPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

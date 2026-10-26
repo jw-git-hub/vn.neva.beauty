@@ -12,11 +12,12 @@ home:
     на русском и английском языках.
   # В ответах HTML-ссылки: внутренние на услуги/направления (относительные слаги, стабильны) +
   # плейсхолдеры мессенджеров {whatsapp}/{telegram}/{instagram} — build.py подставит URL из site.yml.
+  # {consultation_price} в ответах о записи на всех страницах — цена консультации из site.yml.
   faq:
     - q: "Где находится Neva Beauty?"
       a: 'Neva Beauty — центр красоты в Дананге (Вьетнам). Точный адрес и как добраться подскажем при записи в <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a> или <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>.'
     - q: "Как записаться в Neva Beauty?"
-      a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a> — приём ведётся по предварительной записи.'
+      a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a> — приём ведётся по предварительной записи. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
     - q: "На каких языках обслуживают?"
       a: "Обслуживание в центре красоты Neva Beauty (Дананг) ведётся на русском и английском языках."
     - q: "Какие процедуры делают в Neva Beauty?"
@@ -65,7 +66,7 @@ categories:
       - q: "Сколько стоит коррекция фигуры в Дананге?"
         a: 'Коррекция фигуры в Neva Beauty (Дананг) стоит {price} (эндосфера-терапия: лицо, 1 сеанс). Стоимость зависит от процедуры и обрабатываемой зоны. Актуальные цены во вьетнамских донгах (đ) указаны на страницах <a href="/lpg-massazh/">LPG-массажа</a>, <a href="/endosfera-terapiya/">эндосфера-терапии</a> и <a href="/ultrazvukovaya-kavitaciya/">ультразвуковой кавитации</a>.'
       - q: "Как записаться на коррекцию фигуры?"
-        a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   - slug: lifting-i-omolozhenie
     title: "Лифтинг и омоложение"
@@ -92,7 +93,7 @@ categories:
       - q: "Сколько стоит лифтинг и омоложение в Дананге?"
         a: 'Лифтинг и омоложение в Neva Beauty (Дананг) стоят {price} (Morpheus 8: кисти). Стоимость зависит от процедуры и обрабатываемой зоны. Актуальные цены во вьетнамских донгах (đ) указаны на страницах <a href="/smas-lifting/">SMAS-лифтинга</a>, <a href="/morpheus-8-rf-lifting/">Morpheus 8</a> и <a href="/fotoomolozhenie-m22/">фотоомоложения M22</a>.'
       - q: "Как записаться на лифтинг и омоложение?"
-        a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   - slug: lazernye-procedury
     title: "Лазерные процедуры"
@@ -120,7 +121,7 @@ categories:
       - q: "Сколько стоят лазерные процедуры в Дананге?"
         a: 'Лазерные процедуры в Neva Beauty (Дананг) стоят {price} (лазерная эпиляция: лоб или верхняя губа, цены для женщин). Стоимость зависит от процедуры и зоны. Актуальные цены во вьетнамских донгах (đ) указаны на страницах <a href="/lazernaya-epilyaciya/">лазерной эпиляции</a>, <a href="/udalenie-tatuirovok-lazerom/">удаления татуировок</a>, <a href="/udalenye-permanentnogo-makiyazha/">удаления перманентного макияжа</a> и <a href="/karbonovyy-lazernyy-piling/">карбонового лазерного пилинга</a>.'
       - q: "Как записаться на лазерную процедуру?"
-        a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   - slug: esteticheskaya-kosmetologiya-i-uhod
     title: "Уход за лицом"
@@ -161,7 +162,7 @@ services:
       - q: "Сколько стоит лазерная эпиляция в Дананге?"
         a: 'Лазерная эпиляция в Neva Beauty (Дананг) стоит {price} (лоб или верхняя губа, цены для женщин). Стоимость зависит от зоны — от небольших участков до обработки всего тела. Актуальные цены во вьетнамских донгах (đ) для женщин и мужчин указаны в разделе «Цены» на этой странице. Смежные лазерные услуги — <a href="/udalenie-tatuirovok-lazerom/">удаление татуировок</a> и <a href="/udalenye-permanentnogo-makiyazha/">удаление перманентного макияжа</a> — тарифицируются отдельно.'
       - q: "Как записаться на лазерную эпиляцию?"
-        a: 'Записаться на лазерную эпиляцию в центре красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на лазерную эпиляцию в центре красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   lpg-massazh:
     title: "LPG-массаж"
@@ -192,7 +193,7 @@ services:
       - q: "Сколько стоит LPG-массаж в Дананге?"
         a: 'LPG-массаж в Neva Beauty (Дананг) стоит {price} (лицо, 1 сеанс). Стоимость зависит от зоны (тело или лицо) и числа сеансов — разовый сеанс, курс на 5 или 10 сеансов. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице; специальный костюм для LPG приобретается отдельно.'
       - q: "Как записаться на LPG-массаж?"
-        a: 'Записаться на LPG-массаж в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на LPG-массаж в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   endosfera-terapiya:
     title: "Эндосфера-терапия"
@@ -224,7 +225,7 @@ services:
       - q: "Сколько стоит эндосфера-терапия в Дананге?"
         a: 'Эндосфера-терапия в Neva Beauty (Дананг) стоит {price} (лицо, 1 сеанс). Стоимость зависит от зоны (тело или лицо) и числа сеансов — разовый сеанс, курс на 5 или 10 сеансов. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице.'
       - q: "Как записаться на эндосфера-терапию?"
-        a: 'Записаться на эндосфера-терапию в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на эндосфера-терапию в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   ultrazvukovaya-kavitaciya:
     title: "Ультразвуковая кавитация"
@@ -256,7 +257,7 @@ services:
       - q: "Сколько стоит ультразвуковая кавитация в Дананге?"
         a: 'Ультразвуковая кавитация в Neva Beauty (Дананг) стоит {price} (1 сеанс). Стоимость зависит от формата — разовый сеанс или курс из 10 сеансов. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице.'
       - q: "Как записаться на ультразвуковую кавитацию?"
-        a: 'Записаться на ультразвуковую кавитацию в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на ультразвуковую кавитацию в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   smas-lifting:
     title: "Ультразвуковой SMAS-лифтинг"
@@ -290,7 +291,7 @@ services:
       - q: "Сколько стоит SMAS-лифтинг в Дананге?"
         a: 'Ультразвуковой SMAS-лифтинг в Neva Beauty (Дананг) стоит {price} (глаза). Стоимость зависит от зоны и выбранного комбо: комбо объединяют несколько зон (например, лицо, подчелюстную зону, шею и декольте), а отдельные зоны тарифицируются по отдельности. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице.'
       - q: "Как записаться на SMAS-лифтинг?"
-        a: 'Записаться на ультразвуковой SMAS-лифтинг в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на ультразвуковой SMAS-лифтинг в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   udalenie-tatuirovok-lazerom:
     title: "Лазерное удаление татуировок"
@@ -322,7 +323,7 @@ services:
       - q: "Сколько стоит удаление татуировки в Дананге?"
         a: 'Лазерное удаление татуировки в Neva Beauty (Дананг) стоит {price} (размер 3 × 5 см). Стоимость зависит от размера обрабатываемого участка — от небольших татуировок до крупных. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице. Смежные лазерные услуги — <a href="/lazernaya-epilyaciya/">лазерная эпиляция</a> и <a href="/udalenye-permanentnogo-makiyazha/">удаление перманентного макияжа</a> — тарифицируются отдельно.'
       - q: "Как записаться на удаление татуировки?"
-        a: 'Записаться на лазерное удаление татуировок в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на лазерное удаление татуировок в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   udalenye-permanentnogo-makiyazha:
     title: "Удаление перманентного макияжа"
@@ -355,7 +356,7 @@ services:
       - q: "Сколько стоит удаление перманентного макияжа в Дананге?"
         a: 'Удаление перманентного макияжа в Neva Beauty (Дананг) стоит {price} (брови). Стоимость зависит от объёма работы. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице. Смежные лазерные услуги — <a href="/udalenie-tatuirovok-lazerom/">удаление татуировок</a> и <a href="/lazernaya-epilyaciya/">лазерная эпиляция</a> — тарифицируются отдельно.'
       - q: "Как записаться на удаление перманентного макияжа?"
-        a: 'Записаться на удаление перманентного макияжа в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на удаление перманентного макияжа в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   karbonovyy-lazernyy-piling:
     title: "Карбоновый лазерный пилинг"
@@ -424,7 +425,7 @@ services:
       - q: "Сколько стоит карбоновый лазерный пилинг в Дананге?"
         a: 'Карбоновый лазерный пилинг в Neva Beauty (Дананг) стоит {price} за процедуру — в прайсе центра это одна позиция. Цены указаны во вьетнамских донгах (đ). Смежные лазерные услуги — <a href="/udalenie-tatuirovok-lazerom/">удаление татуировок</a> и <a href="/lazernaya-epilyaciya/">лазерная эпиляция</a> — тарифицируются отдельно.'
       - q: "Как записаться на карбоновый пилинг?"
-        a: 'Записаться на карбоновый лазерный пилинг в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на карбоновый лазерный пилинг в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   morpheus-8-rf-lifting:
     title: "Игольчатый RF-лифтинг Morpheus 8"
@@ -457,7 +458,7 @@ services:
       - q: "Сколько стоит Morpheus 8 в Дананге?"
         a: 'Игольчатый RF-лифтинг Morpheus 8 в Neva Beauty (Дананг) стоит {price} (кисти). Стоимость зависит от зоны и выбранного комбо: комбо объединяют несколько зон (например, лицо, шею и глаза), а отдельные зоны и удаление рубцов тарифицируются по отдельности. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице.'
       - q: "Как записаться на Morpheus 8?"
-        a: 'Записаться на игольчатый RF-лифтинг Morpheus 8 в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на игольчатый RF-лифтинг Morpheus 8 в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   fotoomolozhenie-m22:
     title: "Фотоомоложение M22"
@@ -490,7 +491,7 @@ services:
       - q: "Сколько стоит фотоомоложение M22 в Дананге?"
         a: "Фотоомоложение M22 в Neva Beauty (Дананг) стоит {price} (кисти рук). Стоимость зависит от обрабатываемой зоны и их сочетания: отдельно тарифицируются лицо, шея, декольте и кисти рук, а также комбинации зон и отдельная программа лечения акне. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице."
       - q: "Как записаться на фотоомоложение M22?"
-        a: 'Записаться на фотоомоложение M22 в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на фотоомоложение M22 в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'
 
   esteticheskaya-kosmetologiya-i-uhod:
     title: "Эстетический уход за лицом"
@@ -524,4 +525,4 @@ services:
       - q: "Сколько стоит эстетический уход в Дананге?"
         a: 'Эстетический уход за лицом в Neva Beauty (Дананг) стоит {price} (маска HydroPeptid). Стоимость зависит от процедуры: отдельно тарифицируются чистки, пилинги, HydraFacial, карбокситерапия и уходовые маски, а усиления (RF- или ультразвуковая терапия, сыворотка, альгинатная маска) добавляются к базовому уходу. Актуальные цены во вьетнамских донгах (đ) указаны в разделе «Цены» на этой странице. Смежные аппаратные методы омоложения — <a href="/fotoomolozhenie-m22/">фотоомоложение M22</a> и <a href="/morpheus-8-rf-lifting/">игольчатый RF-лифтинг Morpheus 8</a> — тарифицируются отдельно.'
       - q: "Как записаться на уход в Neva Beauty?"
-        a: 'Записаться на эстетический уход в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках.'
+        a: 'Записаться на эстетический уход в центр красоты Neva Beauty (Дананг) можно через <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Консультация косметолога стоит {consultation_price}; если вы делаете процедуру, консультация входит в её стоимость.'

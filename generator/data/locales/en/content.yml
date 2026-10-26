@@ -22,7 +22,7 @@ home:
   - q: How do I book at Neva Beauty?
     a: You can book at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
       rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> or
-      <a href="{instagram}" target="_blank" rel="noopener">Instagram</a> — visits are by appointment only.
+      <a href="{instagram}" target="_blank" rel="noopener">Instagram</a> — visits are by appointment only. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   - q: What languages do you speak?
     a: At Neva Beauty, a beauty center in Da Nang, service is provided in Russian and English.
   - q: What treatments does Neva Beauty offer?
@@ -87,7 +87,7 @@ categories:
     a: You can book at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
       rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> or
       <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment only,
-      and service is provided in Russian and English.
+      and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
 - title: Non-Surgical Face Lift & Rejuvenation
   nav_label: Rejuvenation
   booking_title: Book a Non-Surgical Face Lift or Rejuvenation Treatment
@@ -127,7 +127,7 @@ categories:
     a: You can book at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
       rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> or
       <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment only,
-      and service is provided in Russian and English.
+      and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
 - title: Laser Treatments
   nav_label: Laser
   booking_title: Book a Laser Treatment in Da Nang
@@ -172,7 +172,7 @@ categories:
     a: You can book at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
       rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> or
       <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment only,
-      and service is provided in Russian and English.
+      and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
 - title: Facials
   nav_label: Facials
   seo_title: 'Facials in Da Nang: HydraFacial, Peels, Prices | Neva Beauty'
@@ -231,7 +231,7 @@ services:
       a: You can book an LPG massage at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   endosfera-terapiya:
     title: Endosphere Therapy
     category: Device-Based Treatments
@@ -283,7 +283,7 @@ services:
       a: You can book Endosphere therapy at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   ultrazvukovaya-kavitaciya:
     title: Ultrasonic Cavitation
     category: Device-Based Treatments
@@ -331,7 +331,7 @@ services:
       a: You can book ultrasonic cavitation at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   smas-lifting:
     title: HIFU Treatment
     category: Device-Based Treatments
@@ -385,7 +385,7 @@ services:
       a: You can book HIFU treatment at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   morpheus-8-rf-lifting:
     title: Morpheus8 RF Microneedling
     category: Device-Based Treatments
@@ -439,7 +439,7 @@ services:
       a: You can book Morpheus8 RF microneedling at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   fotoomolozhenie-m22:
     title: M22 Photorejuvenation
     category: Device-Based Treatments
@@ -493,7 +493,7 @@ services:
       a: You can book M22 photorejuvenation at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   esteticheskaya-kosmetologiya-i-uhod:
     title: Facial Treatments
     category: Facials
@@ -552,7 +552,7 @@ services:
       a: You can book a facial at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
         rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   lazernaya-epilyaciya:
     title: Laser Hair Removal
     category: Hair Removal
@@ -597,7 +597,7 @@ services:
       a: You can book laser hair removal at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   udalenie-tatuirovok-lazerom:
     title: Laser Tattoo Removal
     category: Device-Based Treatments
@@ -647,7 +647,7 @@ services:
       a: You can book laser tattoo removal at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   udalenye-permanentnogo-makiyazha:
     title: Permanent Makeup Removal
     category: Device-Based Treatments
@@ -701,7 +701,7 @@ services:
       a: You can book permanent makeup removal at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   karbonovyy-lazernyy-piling:
     title: Carbon Laser Peel
     category: Laser Treatments
@@ -798,4 +798,4 @@ services:
       a: You can book a carbon laser peel at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
         target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>
         or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>. Visits are by appointment
-        only, and service is provided in Russian and English.
+        only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
