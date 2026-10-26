@@ -465,41 +465,41 @@ class FirstBlockRevealInBuiltPagesTest(unittest.TestCase):
 
 
 class FirstCardRevealInBuiltPagesTest(unittest.TestCase):
-    """Первая карточка раздела (на телефоне она на первом экране и даёт LCP) без анимации."""
-    CARD_TAG_RE = re.compile(r'<a class="related-card card"([^>]*)>')
-    SKIP_ATTRIBUTE = "data-reveal-skip"
+    """Первая карточка раздела (на телефоне она на первом экране и даёт LCP) видна сразу.
+    Она получает тот же класс видимости, что reveal.js ставит остальным, поэтому наведение
+    и переходы у всех карточек одинаковы."""
+    CARD_CLASS_RE = re.compile(r'<a class="([^"]*\brelated-card\b[^"]*)"')
+    VISIBLE_CLASS = "is-visible"
     SECTION_PATHS = FirstBlockRevealInBuiltPagesTest.SECTION_PATHS
     SERVICE_PATHS = FirstBlockRevealInBuiltPagesTest.SERVICE_PATHS
 
     @classmethod
     def setUpClass(cls):
         cls.pages = {**build_real_pages("ru"), **build_real_pages("en")}
-        assets = build.OUT / "assets"
-        cls.reveal_js = (assets / "js" / "reveal.js").read_text(encoding="utf-8")
-        cls.reveal_css = (assets / "css" / "reveal.css").read_text(encoding="utf-8")
 
-    def card_attributes(self, path):
-        return self.CARD_TAG_RE.findall(self.pages[path])
+    def card_classes(self, path):
+        return [value.split() for value in self.CARD_CLASS_RE.findall(self.pages[path])]
 
-    def test_only_first_card_of_section_is_skipped(self):
+    def test_only_first_card_of_section_is_visible_from_the_start(self):
         for path in self.SECTION_PATHS:
             with self.subTest(path=path):
-                cards = self.card_attributes(path)
+                cards = self.card_classes(path)
                 self.assertGreater(len(cards), 1)
-                self.assertIn(self.SKIP_ATTRIBUTE, cards[0])
-                for attributes in cards[1:]:
-                    self.assertNotIn(self.SKIP_ATTRIBUTE, attributes)
+                self.assertIn(self.VISIBLE_CLASS, cards[0])
+                for classes in cards[1:]:
+                    self.assertNotIn(self.VISIBLE_CLASS, classes)
 
     def test_see_also_cards_of_services_keep_animation(self):
         for path in self.SERVICE_PATHS:
             with self.subTest(path=path):
-                for attributes in self.card_attributes(path):
-                    self.assertNotIn(self.SKIP_ATTRIBUTE, attributes)
+                for classes in self.card_classes(path):
+                    self.assertNotIn(self.VISIBLE_CLASS, classes)
 
-    def test_script_and_styles_leave_skipped_card_alone(self):
-        selector = ":not([data-reveal-skip])"
-        self.assertIn(f'"[data-reveal-children] > {selector}"', self.reveal_js)
-        self.assertEqual(self.reveal_css.count(f"[data-reveal-children] > {selector}"), 2)
+    def test_reveal_script_and_styles_treat_every_card_alike(self):
+        assets = build.OUT / "assets"
+        self.assertNotIn("data-reveal-skip", (assets / "js" / "reveal.js").read_text(encoding="utf-8"))
+        self.assertNotIn("data-reveal-skip", (assets / "css" / "reveal.css").read_text(encoding="utf-8"))
+        self.assertIn(f'.{self.VISIBLE_CLASS}', (assets / "css" / "reveal.css").read_text(encoding="utf-8"))
 
 
 class RevealFallbackInBuiltPagesTest(unittest.TestCase):

@@ -15,9 +15,12 @@
      колонку) и обычно даёт LCP: ленивая загрузка откладывала бы её. Остальные ленивые:
      замер (≥10 заходов на медленном канале) показал, что eager у всего первого ряда
      даёт отдельные заходы с LCP ~1,5 с, а у одной первой карточки их нет. #}
+  {#- Первая карточка сразу с классом видимости из reveal.js: она на первом экране телефона и
+     даёт LCP, ждать скрипт ей незачем. Наведение и переходы у неё те же, что у соседних, —
+     правила reveal действуют на все карточки одинаково. #}
   <div class="related-grid" data-reveal-children>
     {% for slug in cat.services %}{% set r = services.get(slug) %}{% if r %}
-    <a class="related-card card" href="{{ href(slug) }}"{% if loop.first %} data-reveal-skip{% endif %}>
+    <a class="related-card card{% if loop.first %} is-visible{% endif %}" href="{{ href(slug) }}">
       <div class="related-card__media">{{ responsive_img(card_image(r.hero_image), 'related_card', t('category.card_alt', title=r.title, category=cat.title), eager=loop.first) }}</div>
       {# h2, а не h3: на странице-категории услуги и есть разделы страницы — под h1
          без промежуточного h2 уровень бы «прыгал». В «Смотрите также» на странице
