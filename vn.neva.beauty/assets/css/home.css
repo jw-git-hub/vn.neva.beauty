@@ -24,6 +24,23 @@
 .hero__media:hover .hero__photo{transform:translateY(-5px) scale(1.012);
   box-shadow:0 30px 66px rgba(74,59,56,.22), 0 0 0 1px rgba(255,255,255,.4) inset}
 
+/* Телефон: кнопка записи первого блока видна целиком без прокрутки. Блок занимает
+   окно под шапкой (на 100vh запас для браузеров без svh), а фото — ровно столько места,
+   сколько осталось после текста: не выше прежнего (78 % колонки, до 375 px) и не ниже 96 px.
+   Фото лежит в ячейке абсолютно и не даёт ей высоты, поэтому всё свободное место — её.
+   Если текст сам не помещается (экран ниже 560 px или уже 250), блок просто вырастает
+   и ничего не обрезается. С 600 px и в альбомной ориентации вид прежний. */
+@media(max-width:599.98px) and (min-height:560px){
+  .hero__inner{grid-template-rows:minmax(var(--hero-photo-min),1fr) auto;gap:var(--sp-3);
+    padding-block:var(--sp-4) var(--sp-6);
+    min-height:calc(100vh - var(--header-height));min-height:calc(100svh - var(--header-height))}
+  .hero__media{align-self:stretch;min-height:0}
+  .hero__photo{position:absolute;inset:0;margin:auto;width:auto;max-width:78%;
+    height:min(100%,calc((100vw - 2 * var(--sp-6)) * .975),375px)}
+  .hero__title{margin-block:var(--sp-2)}
+  .hero__sub{font-size:var(--fs-400);margin-bottom:var(--sp-5)}
+}
+
 /* ===== CONTACT STRIP ===== */
 .contact-strip{position:relative;z-index:3;margin-top:var(--sp-8);
   background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);

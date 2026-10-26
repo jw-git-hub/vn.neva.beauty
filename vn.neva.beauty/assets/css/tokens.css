@@ -24,6 +24,8 @@
   --shadow-sm:0 2px 10px rgba(74,59,56,.06);
   --shadow-md:0 12px 40px rgba(74,59,56,.10);
   --container:1200px;
+  --header-height:77px; /* шапка: min-height 76 px + граница 1 px */
+  --hero-photo-min:96px; /* фото первого экрана главной на телефоне не ниже */
   /* Шапка липкая, 76 px: цель якоря и элемент в фокусе останавливаются ниже неё (base.css). */
   --anchor-stop:calc(76px + var(--sp-4));
   --z-header:100; --z-drawer:200; --z-overlay:190;
