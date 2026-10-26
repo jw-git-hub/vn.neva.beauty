@@ -39,7 +39,8 @@ PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price)\}")
 
 
 def content_tokens(price=None):
-    """Плейсхолдеры текстов content.yml, кроме мессенджеров: цена услуги из prices.json.
+    """Плейсхолдеры текстов content.yml, кроме мессенджеров: цена услуги или направления
+    из prices.json (pricing.price_hint).
     Мессенджеры пишутся только как href="{whatsapp}" и раскрываются в
     contacts.fill_contact_links — с текстом страницы и метками. Плейсхолдер мессенджера
     в другом месте остаётся нераскрытым, и fill_tokens роняет сборку."""
@@ -146,13 +147,19 @@ def build_service(ctx, service_id):
         sections=view, services=ctx.content["services"])
 
 
+def _category_price_hint(ctx, cat):
+    """Цена направления одной строкой: «от» самой низкой цены среди его услуг."""
+    sections = [sec for service_id in cat["services"] for sec in ctx.prices.get(service_id, [])]
+    return pricing.price_hint(sections, ctx.locale.format_from)
+
+
 def build_category(ctx, cat):
     crumbs = [{"name": ctx.t("nav.home"), "url": ctx.url(HOME)},
               {"name": cat["title"], "url": ctx.url(cat["page_id"])}]
     service_urls = [ctx.url(service_id) for service_id in cat["services"]]
     nodes = [schema.breadcrumb_node(crumbs), schema.item_list_node(cat["title"], service_urls)]
     if cat.get("faq"):
-        cat["faq"] = render_faq(ctx, cat["faq"], page_title=cat["title"])
+        cat["faq"] = render_faq(ctx, cat["faq"], _category_price_hint(ctx, cat), cat["title"])
         nodes.append(schema.faq_node(cat["faq"]))
     page = {"id": cat["page_id"], "url": cat["url"], "contact_title": cat["title"],
             "seo_title": cat["seo_title"],

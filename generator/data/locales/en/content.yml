@@ -79,9 +79,10 @@ categories:
     a: 'No. Non-surgical, device-based body contouring at Neva Beauty in Da Nang is comfortable and painless, with no
       damage to the skin and no downtime: you can return to your usual activities right after the session.'
   - q: How much does non-surgical body contouring cost in Da Nang?
-    a: The price depends on the treatment and the treatment area. Current prices in Vietnamese dong (đ)
+    a: 'Non-surgical body contouring at Neva Beauty in Da Nang costs {price} (Endosphere therapy: face,
+      1 session). The price depends on the treatment and the treatment area. Current prices in Vietnamese dong (đ)
       are listed on the <a href="/lpg-massazh/">LPG massage</a>, <a href="/endosfera-terapiya/">Endosphere
-      therapy</a> and <a href="/ultrazvukovaya-kavitaciya/">ultrasonic cavitation</a> pages.
+      therapy</a> and <a href="/ultrazvukovaya-kavitaciya/">ultrasonic cavitation</a> pages.'
   - q: How do I book a non-surgical body contouring treatment?
     a: You can book at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
       rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> or
@@ -118,9 +119,10 @@ categories:
       are tailored individually. None of the non-surgical face lifting and rejuvenation methods at Neva
       Beauty in Da Nang requires a lengthy recovery.
   - q: How much do non-surgical face lift and rejuvenation treatments cost in Da Nang?
-    a: The price depends on the treatment and the treatment area. Current prices in Vietnamese dong (đ)
+    a: 'Non-surgical face lift and rejuvenation treatments at Neva Beauty in Da Nang cost {price} (Morpheus8:
+      hands). The price depends on the treatment and the treatment area. Current prices in Vietnamese dong (đ)
       are listed on the <a href="/smas-lifting/">HIFU treatment</a>, <a href="/morpheus-8-rf-lifting/">Morpheus8</a>
-      and <a href="/fotoomolozhenie-m22/">M22 photorejuvenation</a> pages.
+      and <a href="/fotoomolozhenie-m22/">M22 photorejuvenation</a> pages.'
   - q: How do I book a non-surgical face lifting or rejuvenation treatment?
     a: You can book at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
       rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> or
@@ -161,10 +163,11 @@ categories:
       feels like warmth and a slight tingling with each pulse, and the aesthetician at Neva Beauty in
       Da Nang chooses the settings at the consultation.
   - q: How much do laser treatments cost in Da Nang?
-    a: The price depends on the treatment and the area. Current prices in Vietnamese dong (đ) are listed
+    a: 'Laser treatments at Neva Beauty in Da Nang cost {price} (laser hair removal: forehead or upper lip,
+      women''s prices). The price depends on the treatment and the area. Current prices in Vietnamese dong (đ) are listed
       on the <a href="/lazernaya-epilyaciya/">laser hair removal</a>, <a href="/udalenie-tatuirovok-lazerom/">tattoo
       removal</a>, <a href="/udalenye-permanentnogo-makiyazha/">permanent makeup removal</a> and <a href="/karbonovyy-lazernyy-piling/">carbon
-      laser peel</a> pages.
+      laser peel</a> pages.'
   - q: How do I book a laser treatment?
     a: You can book at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}" target="_blank"
       rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> or
@@ -221,8 +224,8 @@ services:
         for non-surgical body contouring are <a href="/endosfera-terapiya/">Endosphere therapy</a> and <a href="/ultrazvukovaya-kavitaciya/">ultrasonic
         cavitation</a>.
     - q: How much does LPG massage cost in Da Nang?
-      a: 'The price of LPG massage at Neva Beauty in Da Nang depends on the area (body or face) and the
-        number of sessions: a single session or a course of 5 or 10 sessions. Current prices in Vietnamese
+      a: 'LPG massage at Neva Beauty in Da Nang costs {price} (face, 1 session). The price depends on the
+        area (body or face) and the number of sessions: a single session or a course of 5 or 10 sessions. Current prices in Vietnamese
         dong (đ) are in the price list on this page; the special LPG bodysuit is sold separately.'
     - q: How do I book an LPG massage?
       a: You can book an LPG massage at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
@@ -273,8 +276,8 @@ services:
         treatments for non-surgical body contouring are <a href="/lpg-massazh/">LPG massage</a> and <a href="/ultrazvukovaya-kavitaciya/">ultrasonic
         cavitation</a>.
     - q: How much does Endosphere therapy cost in Da Nang?
-      a: 'The price of Endosphere therapy at Neva Beauty in Da Nang depends on the area (body or face)
-        and the number of sessions: a single session or a course of 5 or 10 sessions. Current prices in
+      a: 'Endosphere therapy at Neva Beauty in Da Nang costs {price} (face, 1 session). The price depends
+        on the area (body or face) and the number of sessions: a single session or a course of 5 or 10 sessions. Current prices in
         Vietnamese dong (đ) are in the price list on this page.'
     - q: How do I book Endosphere therapy?
       a: You can book Endosphere therapy at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
@@ -321,8 +324,8 @@ services:
         methods, <a href="/lpg-massazh/">LPG massage</a> and <a href="/endosfera-terapiya/">Endosphere
         therapy</a>, work on lymphatic drainage, cellulite and skin firmness.
     - q: How much does ultrasonic cavitation cost in Da Nang?
-      a: 'The price of ultrasonic cavitation at Neva Beauty in Da Nang depends on the format: a single
-        session or a course of 10 sessions. Current prices in Vietnamese dong (đ) are in the price list
+      a: 'Ultrasonic cavitation at Neva Beauty in Da Nang costs {price} (1 session). The price depends
+        on the format: a single session or a course of 10 sessions. Current prices in Vietnamese dong (đ) are in the price list
         on this page.'
     - q: How do I book ultrasonic cavitation?
       a: You can book ultrasonic cavitation at Neva Beauty, a beauty center in Da Nang, via <a href="{whatsapp}"
@@ -374,8 +377,8 @@ services:
         rejuvenation at Neva Beauty are <a href="/morpheus-8-rf-lifting/">Morpheus8 RF (radiofrequency) microneedling</a> and
         <a href="/fotoomolozhenie-m22/">M22 photorejuvenation</a>.'
     - q: How much does HIFU treatment cost in Da Nang?
-      a: 'The price of HIFU treatment at Neva Beauty in Da Nang depends on the area and the combo you
-        choose: combos bring several areas together (for example, the face, under-jaw area, neck and
+      a: 'HIFU treatment at Neva Beauty in Da Nang costs {price} (eye area). The price depends on the
+        area and the combo you choose: combos bring several areas together (for example, the face, under-jaw area, neck and
         decollete), while single areas are priced separately. Current prices in Vietnamese dong (đ) are
         in the price list on this page.'
     - q: How do I book HIFU treatment?
@@ -428,8 +431,8 @@ services:
         at Neva Beauty are <a href="/smas-lifting/">HIFU (high-intensity focused ultrasound)</a> and <a
         href="/fotoomolozhenie-m22/">M22 photorejuvenation</a>.
     - q: How much does Morpheus8 cost in Da Nang?
-      a: 'The price of Morpheus8 RF microneedling at Neva Beauty in Da Nang depends on the area and the
-        combo you choose: combos bring several areas together (for example, the face, neck and eye area),
+      a: 'Morpheus8 RF microneedling at Neva Beauty in Da Nang costs {price} (hands). The price depends
+        on the area and the combo you choose: combos bring several areas together (for example, the face, neck and eye area),
         while single areas and scar removal are priced separately. Current prices in Vietnamese dong (đ)
         are in the price list on this page.'
     - q: How do I book Morpheus8?
@@ -482,8 +485,8 @@ services:
         and rejuvenation at Neva Beauty are <a href="/smas-lifting/">HIFU (high-intensity focused ultrasound)</a>
         and <a href="/morpheus-8-rf-lifting/">Morpheus8 RF (radiofrequency) microneedling</a>.
     - q: How much does M22 photorejuvenation cost in Da Nang?
-      a: 'The price of M22 photorejuvenation at Neva Beauty in Da Nang depends on the treatment area and
-        how areas are combined: the face, neck, decollete and hands are priced separately, as are combinations
+      a: 'M22 photorejuvenation at Neva Beauty in Da Nang costs {price} (hands). The price depends on
+        the treatment area and how areas are combined: the face, neck, decollete and hands are priced separately, as are combinations
         of areas and a separate acne treatment program. Current prices in Vietnamese dong (đ) are in the
         price list on this page.'
     - q: How do I book M22 photorejuvenation?
@@ -538,7 +541,8 @@ services:
         and regular care helps keep the skin firm. The exact plan is drawn up by the aesthetician after
         a skin assessment.
     - q: How much does a facial cost in Da Nang?
-      a: 'The price of a facial at Neva Beauty in Da Nang depends on the treatment: cleansing facials,
+      a: 'A facial at Neva Beauty in Da Nang costs {price} (HydroPeptid mask). The price depends on the
+        treatment: cleansing facials,
         chemical peels, HydraFacial, non-invasive carboxytherapy and facial masks are priced separately,
         while add-ons (RF or ultrasound therapy, serum, alginate mask) are charged on top of the base facial. Current
         prices in Vietnamese dong (đ) are in the price list on this page. Related device-based rejuvenation
@@ -585,8 +589,8 @@ services:
         bikini line and Brazilian. Combos of popular areas are also available — all prices are in the
         price list above.'
     - q: How much does laser hair removal cost in Da Nang?
-      a: The price of laser hair removal at Neva Beauty in Da Nang depends on the area, from small areas
-        up to the full body. Current prices in Vietnamese dong (đ) for women and men are in the price
+      a: Laser hair removal at Neva Beauty in Da Nang costs {price} (forehead or upper lip, women's prices).
+        The price depends on the area, from small areas up to the full body. Current prices in Vietnamese dong (đ) for women and men are in the price
         list on this page. Related laser services, <a href="/udalenie-tatuirovok-lazerom/">tattoo removal</a>
         and <a href="/udalenye-permanentnogo-makiyazha/">permanent makeup removal</a>, are priced separately.
     - q: How do I book laser hair removal?
@@ -636,8 +640,8 @@ services:
         sensitive areas and leaves no scars. The laser removes <a href="/udalenye-permanentnogo-makiyazha/">permanent
         makeup</a> in a similar way.
     - q: How much does tattoo removal cost in Da Nang?
-      a: The price of tattoo removal at Neva Beauty in Da Nang depends on the size of the treated area,
-        from small tattoos to large ones. Current prices in Vietnamese dong (đ) are in the price list
+      a: Laser tattoo removal at Neva Beauty in Da Nang costs {price} (size 3 × 5 cm). The price depends
+        on the size of the treated area, from small tattoos to large ones. Current prices in Vietnamese dong (đ) are in the price list
         on this page. Related laser services, <a href="/lazernaya-epilyaciya/">laser hair removal</a>
         and <a href="/udalenye-permanentnogo-makiyazha/">permanent makeup removal</a>, are priced separately.
     - q: How do I book tattoo removal?
@@ -689,7 +693,8 @@ services:
         method suits any skin type and leaves no scars. The laser removes <a href="/udalenie-tatuirovok-lazerom/">tattoos</a>
         in a similar way.
     - q: How much does permanent makeup removal cost in Da Nang?
-      a: The price of permanent makeup removal at Neva Beauty in Da Nang depends on the amount of work.
+      a: Permanent makeup removal at Neva Beauty in Da Nang costs {price} (eyebrows). The price depends
+        on the amount of work.
         Current prices in Vietnamese dong (đ) are in the price list on this page. Related laser services,
         <a href="/udalenie-tatuirovok-lazerom/">tattoo removal</a> and <a href="/lazernaya-epilyaciya/">laser
         hair removal</a>, are priced separately.
