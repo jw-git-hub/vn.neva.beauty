@@ -7,7 +7,10 @@
     <span class="breadcrumbs__sep" aria-hidden="true">/</span>
     <span aria-current="page">{{ cat.title }}</span>
   </nav>
-  <div class="section-head" data-reveal><p class="eyebrow">{{ t('category.eyebrow') }}</p><h1>{{ cat.title }}</h1><p>{{ cat.intro }}</p></div>
+  {#- Первый блок страницы без data-reveal: он на первом экране и даёт LCP, а скрытый до
+     запуска reveal.js (модуль, запрашивается после конца HTML) он появлялся на ~0,6 с позже
+     первой отрисовки. Ниже по странице анимация прежняя. #}
+  <div class="section-head"><p class="eyebrow">{{ t('category.eyebrow') }}</p><h1>{{ cat.title }}</h1><p>{{ cat.intro }}</p></div>
   {#- Первая карточка — единственная, что точно на первом экране (на телефоне сетка в одну
      колонку) и обычно даёт LCP: ленивая загрузка откладывала бы её. Остальные ленивые:
      замер (≥10 заходов на медленном канале) показал, что eager у всего первого ряда

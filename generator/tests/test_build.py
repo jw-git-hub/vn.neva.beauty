@@ -344,6 +344,48 @@ class SectionCardImagesInBuiltPagesTest(unittest.TestCase):
                     self.assertNotIn("fetchpriority", image)
 
 
+class FirstBlockRevealInBuiltPagesTest(unittest.TestCase):
+    """Первый блок разделов виден сразу; анимация появления ниже и на других страницах прежняя."""
+    SECTION_PATHS = ("korrekciya-figury/index.html", "lifting-i-omolozhenie/index.html",
+                     "lazernye-procedury/index.html", "en/body-contouring/index.html",
+                     "en/non-surgical-face-lift/index.html", "en/laser-treatments/index.html")
+    SERVICE_PATHS = ("lpg-massazh/index.html", "en/lpg-massage/index.html")
+    HOME_PATHS = ("index.html", "en/index.html")
+    SECTION_HEAD_RE = re.compile(r'<div class="section-head"([^>]*)>')
+
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = {**build_real_pages("ru"), **build_real_pages("en")}
+
+    def section_head_attributes(self, path):
+        return self.SECTION_HEAD_RE.findall(self.pages[path])
+
+    def test_first_block_of_section_has_no_reveal_animation(self):
+        for path in self.SECTION_PATHS:
+            with self.subTest(path=path):
+                self.assertNotIn("data-reveal", self.section_head_attributes(path)[0])
+
+    def test_first_block_of_section_is_the_one_with_the_heading(self):
+        for path in self.SECTION_PATHS:
+            with self.subTest(path=path):
+                first_head = self.pages[path].split('<div class="section-head"', 1)[1]
+                self.assertIn("<h1>", first_head.split("</div>", 1)[0])
+
+    def test_blocks_below_the_first_keep_reveal_animation(self):
+        for path in self.SECTION_PATHS:
+            with self.subTest(path=path):
+                below = self.section_head_attributes(path)[1:]
+                self.assertTrue(below)
+                for attributes in below:
+                    self.assertIn("data-reveal", attributes)
+
+    def test_section_heads_of_other_pages_keep_reveal_animation(self):
+        for path in self.SERVICE_PATHS + self.HOME_PATHS:
+            with self.subTest(path=path):
+                for attributes in self.section_head_attributes(path):
+                    self.assertIn("data-reveal", attributes)
+
+
 class RevealFallbackInBuiltPagesTest(unittest.TestCase):
     """Страница не должна оставаться пустой, если скрипт появлений не доехал."""
     REVEAL_TAG_RE = re.compile(r'<script type="module" src="[^"]*/reveal\.js"[^>]*>')
