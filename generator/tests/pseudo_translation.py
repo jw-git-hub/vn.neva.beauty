@@ -8,7 +8,7 @@ import overlay
 import pair_terms
 import price_translation as pt
 import translation_pairs
-from locales import load_privacy, site_strings
+from locales import SITE_BUSINESS_FIELDS, load_privacy, site_strings
 
 PREFIX = "EN "
 TERMS_LOCALE = "en"
@@ -76,7 +76,9 @@ def pseudo_prices(prices):
 def pseudo_site(site):
     """Переопределения site для языка: «EN » перед каждой строкой site_strings."""
     strings = site_strings(site)
-    result = {path: PREFIX + text for path, text in strings.items() if "[" not in path}
+    result = {path: PREFIX + text for path, text in strings.items()
+              if "[" not in path and "." not in path}
+    result["business"] = {field: PREFIX + site["business"][field] for field in SITE_BUSINESS_FIELDS}
     result["locations"] = [{field: PREFIX + place[field] for field in ("city", "country")}
                            for place in site["locations"]]
     return result

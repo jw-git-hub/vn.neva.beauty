@@ -150,6 +150,7 @@ def load_privacy(code, directory=LOCALES_DIR):
 # business.address.country — код страны, его не переводят.
 SITE_TEXT_FIELDS = ("tagline", "location", "hours")
 SITE_LOCATION_FIELDS = ("city", "country")
+SITE_BUSINESS_FIELDS = ("description",)
 
 
 def _location_strings(places):
@@ -158,10 +159,16 @@ def _location_strings(places):
             for field in SITE_LOCATION_FIELDS if field in place}
 
 
+def _business_strings(business):
+    return {f"business.{field}": business[field]
+            for field in SITE_BUSINESS_FIELDS if field in (business or {})}
+
+
 def site_strings(site):
     """Строки site.yml, которые язык переводит: {путь: текст}."""
     strings = {field: site[field] for field in SITE_TEXT_FIELDS if field in site}
     strings.update(_location_strings(site.get("locations")))
+    strings.update(_business_strings(site.get("business")))
     return strings
 
 

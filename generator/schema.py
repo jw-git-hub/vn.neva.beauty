@@ -76,11 +76,14 @@ def business_nodes(site, languages):
         "name": brand,
         "url": base + "/",
         "image": base + b.get("image", "/assets/img/hero.webp"),
+        "logo": organization["logo"],
         "telephone": b["telephone"],
         "address": _postal_address(b["address"]),
         "areaServed": {"@type": "City", "name": b["address"]["locality"]},
         "parentOrganization": org_ref,
     }
+    if b.get("description"):
+        business["description"] = b["description"]
     if b.get("price_range"):
         business["priceRange"] = b["price_range"]
     if b.get("currency"):

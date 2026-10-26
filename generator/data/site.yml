@@ -72,9 +72,11 @@ business:
   same_as:
     - "https://www.instagram.com/vn.neva.beauty/"
     - "https://t.me/doctor_cosmetolog_pro_channel"   # публичный Telegram-канал
+  # Описание салона для разметки (посетителю не видно): пересказ блока «Коротко о Neva Beauty»
+  # без новых фактов. Английское — в locales/en.yml, site.business.description.
+  description: "Neva Beauty — центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. Приём по записи, обслуживание на русском и английском языках."
   address:
     locality: "Da Nang"
-    region: "Da Nang"
     country: "VN"
     # streetAddress не публикуем — заказчик: только город; адрес выдаётся при записи
   # geo не публикуем (адрес по записи)

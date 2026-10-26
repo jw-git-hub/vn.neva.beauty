@@ -484,6 +484,42 @@ class StructuredDataImagesInBuiltPagesTest(unittest.TestCase):
         self.assertGreater(checked, 0)
 
 
+class SalonMarkupInBuiltPagesTest(unittest.TestCase):
+    """Узел салона в разметке каждой страницы: логотип, описание на языке страницы, город без дубля."""
+    LD_RE = StructuredDataImagesInBuiltPagesTest.LD_RE
+    CYRILLIC = re.compile("[А-Яа-яЁё]")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = {"ru": build_real_pages("ru"), "en": build_real_pages("en")}
+
+    def salon_nodes(self, language):
+        for path, html in self.pages[language].items():
+            for block in self.LD_RE.findall(html):
+                for node in json.loads(block).get("@graph", []):
+                    if node.get("@type") == "BeautySalon":
+                        yield path, node
+
+    def test_every_page_has_salon_with_logo_and_city_only(self):
+        for language in self.pages:
+            nodes = list(self.salon_nodes(language))
+            self.assertEqual(len(nodes), len(self.pages[language]))
+            for path, node in nodes:
+                with self.subTest(path=path):
+                    self.assertIn("logo", node)
+                    self.assertNotIn("addressRegion", node["address"])
+                    self.assertEqual(node["address"]["addressLocality"], "Da Nang")
+
+    def test_description_follows_language_of_page(self):
+        for path, node in self.salon_nodes("ru"):
+            with self.subTest(path=path):
+                self.assertRegex(node["description"], self.CYRILLIC)
+        for path, node in self.salon_nodes("en"):
+            with self.subTest(path=path):
+                self.assertNotRegex(node["description"], self.CYRILLIC)
+                self.assertTrue(node["description"].startswith("Neva Beauty is a beauty center"))
+
+
 class LanguageSwitchInBuiltPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

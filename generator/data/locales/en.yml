@@ -130,6 +130,8 @@ site:
   tagline: "Beauty Center · Da Nang"
   location: "Da Nang, Vietnam"
   hours: "By appointment only"
+  business:
+    description: "Neva Beauty is a beauty center in Da Nang, Vietnam, offering device-based treatments, laser hair removal, non-surgical lifting and rejuvenation, facials and non-surgical body contouring. Visits are by appointment only, and service is provided in Russian and English."
   locations:
     # Так салон на Самуи называет себя латиницей на своём сайте (th.neva.beauty).
     - city: "Koh Samui"

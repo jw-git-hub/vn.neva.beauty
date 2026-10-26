@@ -205,6 +205,7 @@ class SiteStringsTest(unittest.TestCase):
     def test_paths_skip_country_code(self):
         import build
         strings = site_strings(build.load()[0])
-        self.assertEqual(sorted(strings), ["hours", "location", "locations[0].city",
-                                           "locations[0].country", "locations[1].city",
-                                           "locations[1].country", "tagline"])
+        self.assertEqual(sorted(strings), ["business.description", "hours", "location",
+                                           "locations[0].city", "locations[0].country",
+                                           "locations[1].city", "locations[1].country",
+                                           "tagline"])

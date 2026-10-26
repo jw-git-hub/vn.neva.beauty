@@ -65,7 +65,8 @@ class TranslationTest(unittest.TestCase):
     def test_site_strings_need_translation(self):
         self.english = replace(self.english, site={})
         problems = self.problems()
-        for field in ("tagline", "location", "hours", "locations[0].city", "locations[1].country"):
+        for field in ("tagline", "location", "hours", "business.description",
+                      "locations[0].city", "locations[1].country"):
             self.assertIn(f"site {field}: нет перевода", problems)
 
     def test_pair_findings_are_part_of_translation_problems(self):
