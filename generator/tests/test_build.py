@@ -737,7 +737,8 @@ class HeadingsKeepWholeWordsTest(unittest.TestCase):
 
     def test_every_fit_token_in_use_is_defined(self):
         used = {token for text in self.css.values() for token in self.FIT_TOKEN_RE.findall(text)}
-        self.assertEqual(used, {"--word-fit-section", "--word-fit-service", "--word-fit-hero"})
+        self.assertEqual(used, {"--word-fit-section", "--word-fit-service", "--word-fit-hero",
+                         "--word-fit-faq"})
         for token in used:
             self.assertRegex(self.css["tokens.css"], rf"{token}:\d+(\.\d+)?;")
 
