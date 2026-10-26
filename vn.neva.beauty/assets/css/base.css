@@ -16,7 +16,10 @@ html{scroll-behavior:smooth;overflow-x:clip}
 body{font-family:var(--font-body);font-size:var(--fs-400);line-height:var(--lh-body);
   color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:var(--font-head);line-height:var(--lh-tight);font-weight:600;
-  overflow-wrap:break-word}
+  overflow-wrap:break-word;text-wrap:balance}
+/* Абзац не заканчивается одним коротким словом на последней строке. Неразрывные
+   пробелы в самом тексте ставит сборка (typography.py). */
+p{text-wrap:pretty}
 /* Названия услуг содержат длинные слова («Профессиональный»), которые на узком
    экране не влезают в строку и распирают страницу. Переносим по слогам. */
 @media (max-width:768px){

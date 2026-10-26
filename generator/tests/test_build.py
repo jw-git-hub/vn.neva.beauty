@@ -228,7 +228,8 @@ class TranslatedEnglishPagesTest(unittest.TestCase):
         self.assertIn('<div class="combo__name">EN КОМБО 1', html)
 
     def test_popular_card_shows_translated_name(self):
-        self.assertIn('<span class="popular-card__name">EN LPG Массаж - Тело</span>',
+        # Дефис с пробелами работает как тире: перед ним неразрывный пробел (typography.py).
+        self.assertIn('<span class="popular-card__name">EN LPG Массаж\u00a0- Тело</span>',
                       self.pages["en/index.html"])
 
     def test_page_text_is_translated(self):
@@ -250,7 +251,8 @@ class EnglishHeadingTemplateTest(unittest.TestCase):
             "service.benefits_title": "Why it works — {title}"})
         html = pages["en/lpg-massazh/index.html"]
         for heading in ("Prices", "See also"):
-            self.assertIn(f"<h2>{heading} — EN LPG-массаж</h2>", html)
+            # Тире не начинает строку: перед ним неразрывный пробел (typography.py).
+            self.assertIn(f"<h2>{heading}\u00a0— EN LPG-массаж</h2>", html)
         self.assertNotIn("{title}", html)
 
 
@@ -342,6 +344,47 @@ class SectionCardImagesInBuiltPagesTest(unittest.TestCase):
             with self.subTest(path=path):
                 for image in self.card_images(path):
                     self.assertNotIn("fetchpriority", image)
+
+
+class TypographyInBuiltPagesTest(unittest.TestCase):
+    """Неразрывные пробелы стоят только в видимом тексте: не в <head>, не в разметке, не в атрибутах."""
+    NO_BREAK_SPACE = "\u00a0"
+    TAG_RE = re.compile(r"<[^>]*>")
+    SCRIPT_RE = re.compile(r"<script\b.*?</script>", re.S)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = {**build_real_pages("ru"), **build_real_pages("en")}
+
+    def test_visible_text_of_every_page_has_no_break_spaces(self):
+        for path, html in self.pages.items():
+            with self.subTest(path=path):
+                self.assertIn(self.NO_BREAK_SPACE, html.split("<body", 1)[1])
+
+    def test_head_has_none(self):
+        for path, html in self.pages.items():
+            with self.subTest(path=path):
+                self.assertNotIn(self.NO_BREAK_SPACE, html.split("<body", 1)[0])
+
+    def test_scripts_and_json_ld_have_none(self):
+        for path, html in self.pages.items():
+            with self.subTest(path=path):
+                for script in self.SCRIPT_RE.findall(html):
+                    self.assertNotIn(self.NO_BREAK_SPACE, script)
+
+    def test_tags_and_attributes_have_none(self):
+        for path, html in self.pages.items():
+            with self.subTest(path=path):
+                for tag in self.TAG_RE.findall(self.SCRIPT_RE.sub("", html)):
+                    self.assertNotIn(self.NO_BREAK_SPACE, tag)
+
+    def test_each_language_gets_its_own_rules(self):
+        self.assertIn(f"в{self.NO_BREAK_SPACE}самом сердце", self.pages["index.html"])
+        self.assertIn(f"in{self.NO_BREAK_SPACE}the", self.pages["en/index.html"])
+
+    def test_prices_are_not_broken_inside(self):
+        text = self.pages["endosfera-terapiya/index.html"]
+        self.assertIn(f"1{self.NO_BREAK_SPACE}000{self.NO_BREAK_SPACE}000{self.NO_BREAK_SPACE}đ", text)
 
 
 class FirstBlockRevealInBuiltPagesTest(unittest.TestCase):

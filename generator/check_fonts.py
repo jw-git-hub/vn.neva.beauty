@@ -25,6 +25,10 @@ FONTS = SITE / "assets" / "fonts"
 # Пока таких нет: донг (đ) добавлен в подрезку, а не отдан системе.
 FONT_FALLBACK_CHARS: set[str] = set()
 
+# Неразрывный пробел ставит сборка (typography.py): для Python он «не печатаемый» и
+# «пробельный», но шрифт обязан его иметь, иначе ширину пробела даст системный шрифт.
+NO_BREAK_SPACE = "\u00a0"
+
 # Служебные каталоги внутри папки деплоя: не страницы сайта и в git не входят.
 SKIP_DIRS = {".superpowers"}
 
@@ -48,7 +52,8 @@ def visible_chars(path):
     soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
     texts = (node for node in soup.find_all(string=True)
              if node.parent.name not in ("script", "style"))
-    return {c for text in texts for c in text if c.isprintable() and not c.isspace()}
+    return {c for text in texts for c in text
+            if c == NO_BREAK_SPACE or (c.isprintable() and not c.isspace())}
 
 
 def main():

@@ -162,5 +162,21 @@ class HeaderBackgroundFallbackTest(unittest.TestCase):
         self.assertLess(self.bundle.index(".site-header{"), self.bundle.index(self.GLASS_RULE))
 
 
+class TextWrapTest(unittest.TestCase):
+    """Ровный перенос: заголовки balance, абзацы pretty."""
+
+    @classmethod
+    def setUpClass(cls):
+        sitewide.build_css_bundle(build.OUT)
+        cls.bundle = (build.OUT / "assets" / "css" / "bundle.min.css").read_text(encoding="utf-8")
+
+    def test_headings_are_balanced(self):
+        rule = re.search(r"h1,h2,h3,h4\{font-family[^}]*\}", self.bundle).group(0)
+        self.assertIn("text-wrap:balance", rule)
+
+    def test_paragraphs_are_pretty(self):
+        self.assertIn("p{text-wrap:pretty}", self.bundle)
+
+
 if __name__ == "__main__":
     unittest.main()
