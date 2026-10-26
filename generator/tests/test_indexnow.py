@@ -203,6 +203,9 @@ class DeployWorkflowTest(unittest.TestCase):
         self.assertEqual(job["needs"], "deploy")
         self.assertTrue(job["continue-on-error"])
 
+    def test_notification_job_needs_only_read_access_for_checkout(self):
+        self.assertEqual(self.jobs["indexnow"]["permissions"], {"contents": "read"})
+
     def test_deploy_job_has_no_indexnow_steps(self):
         names = [step.get("name") or step.get("uses") for step in self.jobs["deploy"]["steps"]]
         self.assertEqual(names, ["Deploy to GitHub Pages"])

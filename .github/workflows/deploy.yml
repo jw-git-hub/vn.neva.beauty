@@ -94,6 +94,8 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     continue-on-error: true
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
