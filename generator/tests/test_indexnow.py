@@ -11,6 +11,7 @@ import yaml
 import build
 import indexnow
 
+NETWORK_FORBIDDEN = "тест IndexNow пытался выйти в сеть"
 KEY = "0123456789abcdef0123456789abcdef"
 SITE = {"base_url": "https://example.test",
         "indexnow": {"key": KEY, "endpoint": "https://indexnow.example/indexnow"}}
@@ -20,6 +21,31 @@ SITEMAP = """<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://example.test/en/</loc><lastmod>2026-10-26</lastmod></url>
 </urlset>
 """
+
+
+def refuse_network(*_args, **_kwargs):
+    raise AssertionError(NETWORK_FORBIDDEN)
+
+
+def setUpModule():
+    """Любой настоящий запрос из тестов этого файла падает: подмена одного mock не откроет сеть."""
+    global _network_guard
+    _network_guard = mock.patch("indexnow.urllib.request.urlopen", side_effect=refuse_network)
+    _network_guard.start()
+
+
+def tearDownModule():
+    _network_guard.stop()
+
+
+class NetworkGuardTest(unittest.TestCase):
+    def test_real_request_is_refused_in_tests(self):
+        with self.assertRaisesRegex(AssertionError, NETWORK_FORBIDDEN):
+            indexnow.post_json(SITE["indexnow"]["endpoint"], {})
+
+    def test_real_sitemap_read_is_refused_in_tests(self):
+        with self.assertRaisesRegex(AssertionError, NETWORK_FORBIDDEN):
+            indexnow.read_sitemap(SITE, [])
 
 
 class KeyTest(unittest.TestCase):
@@ -48,18 +74,34 @@ class StaleKeyFilesTest(unittest.TestCase):
 
 
 class KeyFileInBuildTest(unittest.TestCase):
-    def test_site_build_writes_key_file_with_the_key(self):
+    def write_sitewide_into(self, directory):
         site = build.load()[0]
         written = {}
-        with mock.patch("build.write", side_effect=lambda path, text: written.update({path: text})), \
+        with mock.patch("build.OUT", directory), \
+                mock.patch("build.write", side_effect=lambda path, text: written.update({path: text})), \
                 mock.patch("build.sitewide.previous_lastmods", return_value={}), \
                 mock.patch("build.sitewide.build_sitemap", return_value=""), \
                 mock.patch("build.sitewide.build_llms_file", return_value=""), \
                 mock.patch("build.sitewide.build_manifest", return_value=""), \
                 mock.patch("build.localized_site", side_effect=lambda site, locale: site):
             build.write_sitewide(site, {}, {}, [mock.Mock(url_prefix="")], None, {}, [], "")
-        key = site["indexnow"]["key"]
-        self.assertEqual(written[build.OUT / f"{key}.txt"], key)
+        return site["indexnow"]["key"], written
+
+    def test_site_build_writes_key_file_with_the_key(self):
+        with tempfile.TemporaryDirectory() as directory:
+            key, written = self.write_sitewide_into(Path(directory))
+            self.assertEqual(written[Path(directory) / f"{key}.txt"], key)
+
+    def test_site_build_removes_key_files_of_old_keys_only_in_its_own_folder(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            old_key_file = root / ("f" * 32 + ".txt")
+            robots = root / "robots.txt"
+            for path in (old_key_file, robots):
+                path.write_text("x", encoding="utf-8")
+            self.write_sitewide_into(root)
+            self.assertFalse(old_key_file.exists())
+            self.assertTrue(robots.exists())
 
 
 class SitemapUrlsTest(unittest.TestCase):
@@ -154,14 +196,22 @@ class DeployWorkflowTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         workflow = build.ROOT.parent / ".github" / "workflows" / "deploy.yml"
-        cls.steps = yaml.safe_load(workflow.read_text(encoding="utf-8"))["jobs"]["deploy"]["steps"]
+        cls.jobs = yaml.safe_load(workflow.read_text(encoding="utf-8"))["jobs"]
 
-    def test_notification_comes_after_deploy_and_cannot_fail_it(self):
-        names = [step.get("name") or step.get("uses") for step in self.steps]
-        self.assertLess(names.index("Deploy to GitHub Pages"), names.index("Notify IndexNow"))
-        step = self.steps[names.index("Notify IndexNow")]
-        self.assertTrue(step["continue-on-error"])
-        self.assertIn("python generator/indexnow.py", step["run"])
+    def test_notification_is_a_separate_job_after_deploy_that_cannot_fail_the_run(self):
+        job = self.jobs["indexnow"]
+        self.assertEqual(job["needs"], "deploy")
+        self.assertTrue(job["continue-on-error"])
+
+    def test_deploy_job_has_no_indexnow_steps(self):
+        names = [step.get("name") or step.get("uses") for step in self.jobs["deploy"]["steps"]]
+        self.assertEqual(names, ["Deploy to GitHub Pages"])
+
+    def test_notification_reads_sitemap_from_checkout(self):
+        steps = self.jobs["indexnow"]["steps"]
+        self.assertEqual(steps[0]["uses"], "actions/checkout@v4")
+        command = steps[-1]["run"]
+        self.assertIn("python generator/indexnow.py --sitemap-file vn.neva.beauty/sitemap.xml", command)
 
 
 if __name__ == "__main__":
