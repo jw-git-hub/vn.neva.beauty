@@ -131,12 +131,15 @@ def _numbers(pair, terms):
 
 
 def _placeholders(pair, terms):
+    """По находке на каждый расходящийся плейсхолдер: исключение снимает один из них,
+    а потеря любого другого в той же строке по-прежнему видна."""
     russian, english = PLACEHOLDER_RE.findall(pair.ru), PLACEHOLDER_RE.findall(pair.en)
-    if Counter(russian) == Counter(english):
-        return []
+    differing = sorted(set(Counter(russian) - Counter(english)) | set(Counter(english) - Counter(russian)))
     message = (f"плейсхолдеры: в русском {_show(sorted(russian))}, "
                f"в переводе {_show(sorted(english))}")
-    return [Finding(pair.path, CHECK_PLACEHOLDERS, message)]
+    return [Finding(pair.path, CHECK_PLACEHOLDERS,
+                    message + (f" — {name}" if len(differing) > 1 else ""), name)
+            for name in differing]
 
 
 def _document(html_text):

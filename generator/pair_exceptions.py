@@ -1,6 +1,6 @@
 """Одобренные отступления автотеста пар строк: data/locales/<код>/pair_exceptions.yml.
 
-Исключение снимает одну проверку одной строки (у терминов — один термин). Оно обязано
+Исключение снимает одну проверку одной строки (у терминов — один термин, у плейсхолдеров — один плейсхолдер). Оно обязано
 иметь причину, называть известную проверку и настоящую строку, и обязано что-то снимать:
 устаревшее исключение (строку исправили) — тоже проблема, иначе файл зарастёт мусором.
 """
@@ -12,20 +12,25 @@ from locales import LOCALES_DIR
 
 EXCEPTIONS_FILE = "pair_exceptions.yml"
 TERMS_CHECK = "terms"
+PLACEHOLDERS_CHECK = "placeholders"
+# Проверки, у которых исключение называет, что именно оно снимает: поле записи и подсказка к нему.
+DETAIL_FIELDS = {TERMS_CHECK: ("term", "слово required из глоссария"),
+                 PLACEHOLDERS_CHECK: ("placeholder", "плейсхолдер вида {имя}")}
 GROUP_PREFIX = "pair_exceptions"
 
 
 @dataclass(frozen=True)
 class Finding:
-    """Находка проверки пары: строка, проверка, текст; у терминов — слово required."""
+    """Находка проверки пары: строка, проверка, текст; у терминов — слово required,
+    у плейсхолдеров — сам плейсхолдер (detail)."""
     path: str
     check: str
     message: str
-    term: str = None
+    detail: str = None
 
     @property
     def key(self):
-        return (self.path, self.check, self.term)
+        return (self.path, self.check, self.detail)
 
 
 def load_exceptions(code, directory=LOCALES_DIR):
@@ -48,14 +53,16 @@ def _entry_problems(entry, known_checks):
         problems.append("нет причины (reason)")
     if entry.get("check") not in known_checks:
         problems.append(f"неизвестная проверка, ожидалась одна из {list(known_checks)}")
-    elif entry["check"] == TERMS_CHECK and not entry.get("term"):
-        problems.append("для проверки terms нужно поле term — слово required из глоссария")
+    elif entry["check"] in DETAIL_FIELDS and not entry.get(DETAIL_FIELDS[entry["check"]][0]):
+        field, hint = DETAIL_FIELDS[entry["check"]]
+        problems.append(f"для проверки {entry['check']} нужно поле {field} — {hint}")
     return problems
 
 
 def _key_of(entry):
     check = entry["check"]
-    return (entry.get("path"), check, entry.get("term") if check == TERMS_CHECK else None)
+    field = DETAIL_FIELDS.get(check, (None,))[0]
+    return (entry.get("path"), check, entry.get(field) if field else None)
 
 
 def _valid_entries(exceptions, known_checks):

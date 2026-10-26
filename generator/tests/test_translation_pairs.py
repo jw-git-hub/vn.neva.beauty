@@ -67,6 +67,14 @@ class PlaceholdersTest(unittest.TestCase):
         self.assertEqual(problems_of(pair), [])
 
 
+class SeveralPlaceholdersTest(unittest.TestCase):
+    def test_each_differing_placeholder_is_its_own_finding(self):
+        pair = tp.Pair("x", "{a} {b} {c}", "{c}", tp.CHECKS_OF_SITE)
+        problems = problems_of(pair)
+        self.assertEqual(len(problems), 2)
+        self.assertTrue(problems[0].endswith("— {a}") and problems[1].endswith("— {b}"))
+
+
 class LinksTest(unittest.TestCase):
     RU = 'Запись в <a href="{whatsapp}">WhatsApp</a>, <a href="/lpg-massazh/">LPG</a>.'
 
@@ -223,6 +231,35 @@ class ExceptionsTest(unittest.TestCase):
         problems = problems_of(pair, [exception("home.faq[0].a", "terms")])
         self.assertTrue(any("нужно поле term" in problem for problem in problems))
         self.assertTrue(any(problem.endswith("в переводе нет «consultation»") for problem in problems))
+
+    def test_exception_for_placeholder_removes_only_that_placeholder(self):
+        pair = page("home.faq[1].a", "{consultation_price}, дерматолога — {dermatology_price}",
+                    "A consultation")
+        problems = problems_of(pair, [exception("home.faq[1].a", "placeholders",
+                                                placeholder="{dermatology_price}")])
+        self.assertEqual(len(problems), 1)
+        self.assertIn("{consultation_price}", problems[0])
+
+    def test_lost_whatsapp_placeholder_is_still_caught_next_to_exception(self):
+        ru = 'Запись в <a href="{whatsapp}">WhatsApp</a>, дерматолога — {dermatology_price}'
+        en = 'Booking by <a href="https://wa.me/1">WhatsApp</a>'
+        problems = problems_of(page("home.faq[1].a", ru, en), [
+            exception("home.faq[1].a", "placeholders", placeholder="{dermatology_price}")])
+        self.assertTrue(any("плейсхолдеры" in problem and "{whatsapp}" in problem
+                            for problem in problems))
+        self.assertFalse(any("{dermatology_price}" in problem and "исключение" in problem
+                             for problem in problems))
+
+    def test_placeholders_exception_needs_placeholder(self):
+        pair = page("home.faq[1].a", "{a}", "text")
+        problems = problems_of(pair, [exception("home.faq[1].a", "placeholders")])
+        self.assertTrue(any("нужно поле placeholder" in problem for problem in problems))
+        self.assertTrue(any(problem.startswith("home.faq[1].a: плейсхолдеры") for problem in problems))
+
+    def test_stale_placeholder_exception_is_a_problem(self):
+        fixed = page("home.faq[1].a", "{a}", "{a}")
+        problems = problems_of(fixed, [exception("home.faq[1].a", "placeholders", placeholder="{a}")])
+        self.assertIn("исключение ничего не снимает", problems[0])
 
     def test_stale_exception_is_a_problem(self):
         fixed = page("home.faq[0].a", "6 сеансов", "6 sessions")
