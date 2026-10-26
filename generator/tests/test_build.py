@@ -107,6 +107,25 @@ class ConsultationPriceTest(unittest.TestCase):
                     self.assertRaisesRegex(ValueError, "site.yml: consultation.price"):
                 pages.consultation_price({"consultation": {"price": price}})
 
+    def test_dermatology_price_is_filled_from_site(self):
+        site = {"consultation": {"price": "500 000 đ", "dermatology_price": "1 000 000 đ"}}
+        tokens = pages.content_tokens(consultation=pages.consultation_price(site),
+                                      dermatology=pages.dermatology_consultation_price(site))
+        self.assertEqual(
+            pages.fill_tokens("{consultation_price}, дерматолога — {dermatology_consultation_price}",
+                              tokens), "500 000 đ, дерматолога — 1 000 000 đ")
+
+    def test_malformed_dermatology_price_is_error_about_its_own_field(self):
+        for price in ("1000000", " ", "+1 000 000 đ"):
+            with self.subTest(price=price), \
+                    self.assertRaisesRegex(ValueError, "site.yml: consultation.dermatology_price"):
+                pages.dermatology_consultation_price(
+                    {"consultation": {"price": "500 000 đ", "dermatology_price": price}})
+
+    def test_unfilled_dermatology_placeholder_is_build_error(self):
+        with self.assertRaisesRegex(ValueError, "Нераскрытый плейсхолдер"):
+            pages.fill_tokens("дерматолога — {dermatology_consultation_price}", {})
+
 
 def category_context(prices):
     """Контекст сборки ровно с тем, что нужно цене направления: прайс и «от …»."""
@@ -847,3 +866,45 @@ class CategoryCardPricesInBuiltPagesTest(unittest.TestCase):
                 with self.subTest(language=code, category=cat["slug"]):
                     amount = self.AMOUNT_RE.search(caption).group()
                     self.assertEqual(caption, self.locales[code].format_from(amount))
+
+
+class DermatologyConsultationInBuiltPagesTest(unittest.TestCase):
+    """Консультация дерматолога названа только в русском тексте: на всех 15 русских страницах
+    обе цены, английские страницы прежние и о дерматологе молчат."""
+    RUSSIAN_SENTENCE = ("Консультация косметолога стоит {cosmetologist}, дерматолога — "
+                        "{dermatologist}; если вы делаете процедуру, консультация входит "
+                        "в её стоимость.")
+    ENGLISH_SENTENCE = ("A consultation with the aesthetician costs {cosmetologist}; if you have "
+                        "a treatment, the consultation is included in the treatment price.")
+    PAGES_WITH_BOOKING_ANSWER = 15
+
+    @classmethod
+    def setUpClass(cls):
+        cls.site, _content, _prices = build.load()
+        cls.pages = {"ru": build_real_pages("ru"), "en": build_real_pages("en")}
+
+    @staticmethod
+    def plain(html):
+        return re.sub(r"<[^>]+>", "", html).replace("\u00a0", " ")
+
+    def prices(self):
+        consultation = self.site["consultation"]
+        return {"cosmetologist": consultation["price"], "dermatologist": consultation["dermatology_price"]}
+
+    def pages_with(self, code, sentence):
+        return [path for path, html in self.pages[code].items() if sentence in self.plain(html)]
+
+    def test_russian_pages_name_both_prices(self):
+        found = self.pages_with("ru", self.RUSSIAN_SENTENCE.format(**self.prices()))
+        self.assertEqual(len(found), self.PAGES_WITH_BOOKING_ANSWER)
+
+    def test_russian_pages_do_not_keep_the_old_phrase(self):
+        old = "Консультация косметолога стоит {cosmetologist}; если".format(**self.prices())
+        self.assertEqual(self.pages_with("ru", old), [])
+
+    def test_english_pages_keep_their_sentence_and_never_name_a_dermatologist(self):
+        found = self.pages_with("en", self.ENGLISH_SENTENCE.format(**self.prices()))
+        self.assertEqual(len(found), self.PAGES_WITH_BOOKING_ANSWER)
+        for path, html in self.pages["en"].items():
+            with self.subTest(path=path):
+                self.assertNotIn("dermatolog", html.lower())

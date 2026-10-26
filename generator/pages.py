@@ -35,36 +35,47 @@ class BuildContext:
         return schema.render(self.site, self.languages, nodes)
 
 
-PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price|consultation_price)\}")
+PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price|consultation_price"
+                            r"|dermatology_consultation_price)\}")
 
 
-CONSULTATION_PRICE_KEY = "site.yml: consultation.price"
-
-
-def consultation_price(site):
-    """Цена консультации из site.yml. Запись та же, что у строк прайса, и проверяется
-    тем же разбором: опечатка в цене роняет сборку, а не уходит на все страницы.
-    Доплата «+…» — не цена консультации: это знак надбавки к процедуре."""
-    price = site["consultation"]["price"]
+def _consultation_field_price(site, field):
+    """Цена консультации из поля consultation.<field> файла site.yml. Запись та же, что у
+    строк прайса, и проверяется тем же разбором: опечатка в цене роняет сборку, а не уходит
+    на все страницы. Доплата «+…» — не цена консультации: это знак надбавки к процедуре."""
+    key = f"site.yml: consultation.{field}"
+    price = site["consultation"][field]
     try:
         value = pricing.price_value(price)
     except ValueError:
-        raise ValueError(f"{CONSULTATION_PRICE_KEY} — непонятная цена {price!r}, "
+        raise ValueError(f"{key} — непонятная цена {price!r}, "
                          f"допустимая форма — «500 000 đ»") from None
     if value is None:
-        raise ValueError(f"{CONSULTATION_PRICE_KEY} — цена не задана")
+        raise ValueError(f"{key} — цена не задана")
     if price.strip().startswith(pricing.ADDON_MARK):
-        raise ValueError(f"{CONSULTATION_PRICE_KEY} — {price!r} записана как доплата «+…»")
+        raise ValueError(f"{key} — {price!r} записана как доплата «+…»")
     return price
 
 
-def content_tokens(price=None, consultation=None):
+def consultation_price(site):
+    """Цена консультации косметолога: {consultation_price}."""
+    return _consultation_field_price(site, "price")
+
+
+def dermatology_consultation_price(site):
+    """Цена консультации дерматолога: {dermatology_consultation_price}. Только в русском тексте."""
+    return _consultation_field_price(site, "dermatology_price")
+
+
+def content_tokens(price=None, consultation=None, dermatology=None):
     """Плейсхолдеры текстов content.yml, кроме мессенджеров: цена услуги или направления
-    из prices.json (pricing.price_hint) и цена консультации из site.yml.
+    из prices.json (pricing.price_hint) и цены консультаций косметолога и дерматолога
+    из site.yml.
     Мессенджеры пишутся только как href="{whatsapp}" и раскрываются в
     contacts.fill_contact_links — с текстом страницы и метками. Плейсхолдер мессенджера
     в другом месте остаётся нераскрытым, и fill_tokens роняет сборку."""
-    tokens = {"{price}": price, "{consultation_price}": consultation}
+    tokens = {"{price}": price, "{consultation_price}": consultation,
+              "{dermatology_consultation_price}": dermatology}
     return {token: value for token, value in tokens.items() if value}
 
 
@@ -85,7 +96,8 @@ def render_faq(ctx, faq, price=None, page_title=None):
     в адреса языка страницы."""
     site_contacts = ctx.site["contacts"]
     message = contacts.contact_message(ctx.locale, page_title)
-    tokens = content_tokens(price, consultation_price(ctx.site))
+    tokens = content_tokens(price, consultation_price(ctx.site),
+                            dermatology_consultation_price(ctx.site))
 
     def finish(answer):
         answer = contacts.fill_contact_links(answer, site_contacts, message)

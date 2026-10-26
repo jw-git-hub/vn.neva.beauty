@@ -23,3 +23,48 @@ exceptions:
   - path: privacy
     check: links
     reason: 'П. 12.3: английская версия называет адрес своей английской страницы /en/privacy/ (одобрено на сравнении, E-0610). П. 1.2, 2.3, 2.6, 2.7: текст по-прежнему называет домен https://vn.neva.beauty, а ссылка ведёт на английскую главную /en/ — с английской страницы гость не должен попадать на русскую (находка check_i18n, 2026-10-17).'
+  - path: home.faq[1].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: categories[0].faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: categories[1].faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: categories[2].faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.lazernaya-epilyaciya.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.lpg-massazh.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.endosfera-terapiya.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.ultrazvukovaya-kavitaciya.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.smas-lifting.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.udalenie-tatuirovok-lazerom.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.udalenye-permanentnogo-makiyazha.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.karbonovyy-lazernyy-piling.faq[8].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.morpheus-8-rf-lifting.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.fotoomolozhenie-m22.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
+  - path: services.esteticheskaya-kosmetologiya-i-uhod.faq[4].a
+    check: placeholders
+    reason: 'владелец: дерматология только на русском (ответ 2026-10-26, пункт 5 F5). В русском ответе о записи консультация дерматолога называет {dermatology_consultation_price}, в английском дерматолога нет и плейсхолдера нет.'
