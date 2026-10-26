@@ -7,7 +7,7 @@
 @media(min-width:768px){.svc-hero__inner{grid-template-columns:1.1fr .9fr;gap:var(--sp-10);padding-block:var(--sp-14)}}
 @media(min-width:1024px){.svc-hero__inner{gap:var(--sp-12);padding-block:var(--sp-16)}}
 .svc-hero__text{max-width:580px}
-.svc-hero__text h1{font-size:clamp(2.25rem,5.5vw,var(--fs-800));margin:var(--sp-3) 0 var(--sp-4)}
+.svc-hero__text h1{font-size:min(clamp(2.25rem,5.5vw,var(--fs-800)),calc((100vw - 2 * var(--sp-6)) / var(--word-fit-service)));margin:var(--sp-3) 0 var(--sp-4)}
 .svc-hero__intro{font-size:var(--fs-500);color:var(--ink);margin-bottom:var(--sp-6)}
 .svc-hero__media{position:relative;display:flex;justify-content:center;order:-1}
 @media(min-width:768px){.svc-hero__media{order:0;align-self:start;margin-top:var(--sp-8)}}
@@ -66,10 +66,9 @@
 .pricelist__name,.pricelist__price{padding:var(--sp-4) 0;vertical-align:baseline;
   border-bottom:1px dashed var(--line)}
 .pricelist__row:last-child > *{border-bottom:none}
-/* Колонка имени сжимается до последнего: длинное слово переносится (по возможности
-   с дефисом), а не распирает таблицу и не выдавливает колонку цены за карточку. */
-.pricelist__name{padding-right:var(--sp-4);text-align:left;font-weight:inherit;color:var(--ink);
-  hyphens:auto;overflow-wrap:anywhere}
+/* Слово названия не рвётся: колонка имени не уже самого длинного слова. На узких экранах
+   слову хватает места за счёт размера шрифта, а не переноса (см. «УЗКИЕ ЭКРАНЫ» ниже). */
+.pricelist__name{padding-right:var(--sp-4);text-align:left;font-weight:inherit;color:var(--ink)}
 .pricelist__desc{display:block;font-size:var(--fs-200);color:var(--muted);font-weight:400;margin-top:2px}
 .pricelist__price{text-align:right;font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
 

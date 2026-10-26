@@ -6,7 +6,7 @@
 @media(min-width:768px){.hero__inner{grid-template-columns:1.05fr .95fr;gap:var(--sp-10);padding-block:var(--sp-20)}}
 @media(min-width:1024px){.hero__inner{gap:var(--sp-12);padding-block:var(--sp-24)}}
 .hero__text{max-width:560px}
-.hero__title{font-size:clamp(2.75rem,7vw,var(--fs-900));margin:var(--sp-4) 0}
+.hero__title{font-size:min(clamp(2.75rem,7vw,var(--fs-900)),calc((100vw - 2 * var(--sp-6)) / var(--word-fit-hero)));margin:var(--sp-4) 0}
 .hero__title span{display:block}
 .hero__sub{font-size:var(--fs-500);color:var(--ink);max-width:34ch;margin-bottom:var(--sp-8)}
 .hero__actions{display:flex;flex-wrap:wrap;gap:var(--sp-3);justify-content:center}

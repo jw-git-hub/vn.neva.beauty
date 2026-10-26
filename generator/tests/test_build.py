@@ -697,3 +697,26 @@ class JsonLdInBuiltPagesTest(unittest.TestCase):
     def test_russian_service_keeps_russian_id(self):
         service = self.node_of(self.ru["lazernaya-epilyaciya/index.html"], "Service")
         self.assertEqual(service["@id"], "https://vn.neva.beauty/lazernaya-epilyaciya/#service")
+
+
+class HeadingsKeepWholeWordsTest(unittest.TestCase):
+    """Слова заголовков и названий не рвутся переносом: словарных переносов в стилях нет,
+    а кегль заголовков, где слову может не хватить места, считается от токена --word-fit-*."""
+    CSS_DIR = build.OUT / "assets" / "css"
+    SOURCES = ("tokens.css", "base.css", "components.css", "home.css", "service.css")
+    FIT_TOKEN_RE = re.compile(r"var\((--word-fit-[\w-]+)\)")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.css = {name: (cls.CSS_DIR / name).read_text(encoding="utf-8") for name in cls.SOURCES}
+
+    def test_no_style_turns_on_automatic_hyphenation(self):
+        for name, text in self.css.items():
+            with self.subTest(file=name):
+                self.assertNotIn("hyphens:auto", text.replace(" ", ""))
+
+    def test_every_fit_token_in_use_is_defined(self):
+        used = {token for text in self.css.values() for token in self.FIT_TOKEN_RE.findall(text)}
+        self.assertEqual(used, {"--word-fit-section", "--word-fit-service", "--word-fit-hero"})
+        for token in used:
+            self.assertRegex(self.css["tokens.css"], rf"{token}:\d+(\.\d+)?;")
