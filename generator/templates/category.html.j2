@@ -17,7 +17,7 @@
      даёт отдельные заходы с LCP ~1,5 с, а у одной первой карточки их нет. #}
   <div class="related-grid" data-reveal-children>
     {% for slug in cat.services %}{% set r = services.get(slug) %}{% if r %}
-    <a class="related-card card" href="{{ href(slug) }}">
+    <a class="related-card card" href="{{ href(slug) }}"{% if loop.first %} data-reveal-skip{% endif %}>
       <div class="related-card__media">{{ responsive_img(card_image(r.hero_image), 'related_card', t('category.card_alt', title=r.title, category=cat.title), eager=loop.first) }}</div>
       {# h2, а не h3: на странице-категории услуги и есть разделы страницы — под h1
          без промежуточного h2 уровень бы «прыгал». В «Смотрите также» на странице

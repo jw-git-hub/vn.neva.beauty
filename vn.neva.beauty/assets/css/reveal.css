@@ -1,7 +1,9 @@
 /* ===== ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ (fade-up, пара к reveal.js) ===== */
-/* Скрываем только при включённом JS, чтобы без него контент был виден сразу. */
+/* Скрываем только при включённом JS, чтобы без него контент был виден сразу.
+   Карточка с data-reveal-skip в ряду не участвует: она на первом экране и без
+   анимации попадает в кадр вместе с первой отрисовкой (см. category.html.j2). */
 .js [data-reveal],
-.js [data-reveal-children] > *{
+.js [data-reveal-children] > :not([data-reveal-skip]){
   opacity:0;transform:translateY(20px);
   transition:opacity var(--t-reveal) var(--ease),transform var(--t-reveal) var(--ease)}
 .js [data-reveal].is-visible,
@@ -9,5 +11,5 @@
 
 @media (prefers-reduced-motion:reduce){
   .js [data-reveal],
-  .js [data-reveal-children] > *{opacity:1;transform:none;transition:none}
+  .js [data-reveal-children] > :not([data-reveal-skip]){opacity:1;transform:none;transition:none}
 }

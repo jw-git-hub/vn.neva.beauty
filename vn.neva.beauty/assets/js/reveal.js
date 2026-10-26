@@ -3,7 +3,7 @@
 // не дожидаясь зависшего или не загрузившегося скрипта (см. base.html.j2).
 const READY_CLASS = "reveal-ready";
 const BLOCK_SELECTOR = "[data-reveal]";
-const CARD_SELECTOR = "[data-reveal-children] > *";
+const CARD_SELECTOR = "[data-reveal-children] > :not([data-reveal-skip])";
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 // Блок (заголовок секции, таблица) считается вошедшим, когда его пятнадцатая
 // с небольшим часть показалась во вьюпорте, укороченном снизу на 10%.
