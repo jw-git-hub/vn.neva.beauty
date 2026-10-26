@@ -742,6 +742,11 @@ class HeadingsKeepWholeWordsTest(unittest.TestCase):
             self.assertRegex(self.css["tokens.css"], rf"{token}:\d+(\.\d+)?;")
 
 
+def plain_text(html):
+    """Видимый текст разметки: без тегов, неразрывные пробелы — обычными."""
+    return re.sub(r"<[^>]+>", "", html).replace("\u00a0", " ")
+
+
 class ServicePriceLineTest(unittest.TestCase):
     CONTEXT = SimpleNamespace(t=lambda key, price: f"{key}|{price}")
     SECTIONS = [{"items": [{"name": "A", "price": "700 000 đ"}, {"name": "B", "price": "900 000 đ"},
@@ -773,10 +778,6 @@ class ServicePriceLineInBuiltPagesTest(unittest.TestCase):
         cls.pages = {"ru": build_real_pages("ru"), "en": build_real_pages("en")}
         cls.locales = {code: load_locale(code) for code in cls.pages}
 
-    @staticmethod
-    def plain(html):
-        return re.sub(r"<[^>]+>", "", html).replace(" ", " ")
-
     def page_path(self, code, service_id):
         prefix = "en/" if code == "en" else ""
         return f"{prefix}{self.locales[code].slug(service_id)}/index.html"
@@ -797,8 +798,8 @@ class ServicePriceLineInBuiltPagesTest(unittest.TestCase):
             for service_id in self.content["services"]:
                 with self.subTest(language=code, service=service_id):
                     html = built[self.page_path(code, service_id)]
-                    line = self.plain(self.LINE_RE.search(html).group(1))
-                    answer = self.plain(self.ANSWER_RE.findall(html)[self.price_answer_index(service_id)])
+                    line = plain_text(self.LINE_RE.search(html).group(1))
+                    answer = plain_text(self.ANSWER_RE.findall(html)[self.price_answer_index(service_id)])
                     self.assertEqual(self.AMOUNT_RE.search(line).group(), self.AMOUNT_RE.search(answer).group())
 
     def test_line_words_come_from_language_strings(self):
@@ -806,7 +807,7 @@ class ServicePriceLineInBuiltPagesTest(unittest.TestCase):
             for service_id in self.content["services"]:
                 with self.subTest(language=code, service=service_id):
                     html = built[self.page_path(code, service_id)]
-                    line = self.plain(self.LINE_RE.search(html).group(1))
+                    line = plain_text(self.LINE_RE.search(html).group(1))
                     amount, is_range = pricing.price_summary(self.prices[service_id])
                     key = "service.price_line_from" if is_range else "service.price_line_exact"
                     self.assertEqual(line, self.locales[code].t(key, price=amount))
@@ -825,10 +826,6 @@ class CategoryCardPricesInBuiltPagesTest(unittest.TestCase):
         cls.pages = {"ru": build_real_pages("ru"), "en": build_real_pages("en")}
         cls.locales = {code: load_locale(code) for code in cls.pages}
 
-    @staticmethod
-    def plain(html):
-        return re.sub(r"<[^>]+>", "", html).replace(" ", " ")
-
     def answer_page_and_faq(self, code, cat):
         """Страница с ответом «Сколько стоит» этого направления и FAQ, из которого он взят."""
         prefix = "en/" if code == "en" else ""
@@ -841,7 +838,7 @@ class CategoryCardPricesInBuiltPagesTest(unittest.TestCase):
     def price_answer(self, code, cat):
         path, faq = self.answer_page_and_faq(code, cat)
         index = next(i for i, item in enumerate(faq) if "{price}" in item["a"])
-        return self.plain(self.ANSWER_RE.findall(self.pages[code][path])[index])
+        return plain_text(self.ANSWER_RE.findall(self.pages[code][path])[index])
 
     def test_every_category_card_has_a_caption(self):
         for code, built in self.pages.items():
@@ -852,7 +849,7 @@ class CategoryCardPricesInBuiltPagesTest(unittest.TestCase):
     def test_caption_amount_equals_amount_in_price_answer(self):
         for code, built in self.pages.items():
             home = built["en/index.html" if code == "en" else "index.html"]
-            captions = [self.plain(text) for text in self.CAPTION_RE.findall(home)]
+            captions = [plain_text(text) for text in self.CAPTION_RE.findall(home)]
             for cat, caption in zip(self.content["categories"], captions):
                 with self.subTest(language=code, category=cat["slug"]):
                     self.assertEqual(self.AMOUNT_RE.search(caption).group(),
@@ -861,7 +858,7 @@ class CategoryCardPricesInBuiltPagesTest(unittest.TestCase):
     def test_caption_words_come_from_language_strings(self):
         for code, built in self.pages.items():
             home = built["en/index.html" if code == "en" else "index.html"]
-            captions = [self.plain(text) for text in self.CAPTION_RE.findall(home)]
+            captions = [plain_text(text) for text in self.CAPTION_RE.findall(home)]
             for cat, caption in zip(self.content["categories"], captions):
                 with self.subTest(language=code, category=cat["slug"]):
                     amount = self.AMOUNT_RE.search(caption).group()
@@ -883,16 +880,12 @@ class DermatologyConsultationInBuiltPagesTest(unittest.TestCase):
         cls.site, _content, _prices = build.load()
         cls.pages = {"ru": build_real_pages("ru"), "en": build_real_pages("en")}
 
-    @staticmethod
-    def plain(html):
-        return re.sub(r"<[^>]+>", "", html).replace("\u00a0", " ")
-
     def prices(self):
         consultation = self.site["consultation"]
         return {"cosmetologist": consultation["price"], "dermatologist": consultation["dermatology_price"]}
 
     def pages_with(self, code, sentence):
-        return [path for path, html in self.pages[code].items() if sentence in self.plain(html)]
+        return [path for path, html in self.pages[code].items() if sentence in plain_text(html)]
 
     def test_russian_pages_name_both_prices(self):
         found = self.pages_with("ru", self.RUSSIAN_SENTENCE.format(**self.prices()))
