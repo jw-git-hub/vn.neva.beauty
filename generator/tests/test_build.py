@@ -5,6 +5,7 @@ import re
 import unittest
 import urllib.parse
 from dataclasses import replace
+from types import SimpleNamespace
 from unittest import mock
 
 from markupsafe import Markup
@@ -92,6 +93,50 @@ class LoadXDefaultLocaleTest(unittest.TestCase):
                 build.load_x_default_locale(site)
 
 
+class ConsultationPriceTest(unittest.TestCase):
+    def test_price_is_filled_from_site(self):
+        tokens = pages.content_tokens(consultation=pages.consultation_price(
+            {"consultation": {"price": "500 000 đ"}}))
+        self.assertEqual(pages.fill_tokens("стоит {consultation_price}", tokens),
+                         "стоит 500 000 đ")
+
+    def test_malformed_empty_or_addon_price_is_error_about_site(self):
+        for price in ("500000", " ", "+500 000 đ"):
+            with self.subTest(price=price), \
+                    self.assertRaisesRegex(ValueError, "site.yml: consultation.price"):
+                pages.consultation_price({"consultation": {"price": price}})
+
+
+def category_context(prices):
+    """Контекст сборки ровно с тем, что нужно цене направления: прайс и «от …»."""
+    return SimpleNamespace(prices=prices,
+                           locale=SimpleNamespace(format_from=lambda price: f"от {price}"))
+
+
+class CategoryPriceHintTest(unittest.TestCase):
+    PRICES = {
+        "face": [{"section": "Цены", "items": [
+            {"name": "Лицо", "desc": "1 сеанс", "price": "600 000 đ"}]}],
+        "body": [{"section": "Цены", "items": [
+            {"name": "Тело", "desc": "1 сеанс", "price": "800 000 đ"},
+            {"name": "Костюм", "desc": "", "price": "400 000 đ", "addon": True}]}],
+    }
+
+    def hint(self, **cat):
+        return pages._category_price_hint(category_context(self.PRICES),
+                                          {"services": ["face", "body"], **cat})
+
+    def test_minimum_is_taken_over_all_services(self):
+        self.assertEqual(self.hint(), "от 600 000 đ")
+
+    def test_price_names_narrow_the_minimum(self):
+        self.assertEqual(self.hint(price_names=["Тело"]), "800 000 đ")
+
+    def test_unknown_price_name_is_error(self):
+        with self.assertRaisesRegex(ValueError, "нет позиций"):
+            self.hint(price_names=["Тело", "Шея"])
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -166,19 +211,6 @@ class MessengerPlaceholderTest(unittest.TestCase):
         """{whatsapp} вне href="…" дал бы голый адрес без текста и меток — мимо contacts.py."""
         with self.assertRaises(ValueError):
             pages.fill_tokens("пишите {whatsapp}", pages.content_tokens())
-
-
-class ConsultationPriceTest(unittest.TestCase):
-    def test_price_is_filled_from_site(self):
-        tokens = pages.content_tokens(consultation=pages.consultation_price(
-            {"consultation": {"price": "500 000 đ"}}))
-        self.assertEqual(pages.fill_tokens("стоит {consultation_price}", tokens),
-                         "стоит 500 000 đ")
-
-    def test_malformed_or_empty_price_is_error(self):
-        for price in ("500000", " "):
-            with self.subTest(price=price), self.assertRaises(ValueError):
-                pages.consultation_price({"consultation": {"price": price}})
 
 
 class TranslatedEnglishPagesTest(unittest.TestCase):

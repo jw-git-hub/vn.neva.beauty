@@ -38,12 +38,23 @@ class BuildContext:
 PLACEHOLDER_RE = re.compile(r"\{(whatsapp|telegram|instagram|price|consultation_price)\}")
 
 
+CONSULTATION_PRICE_KEY = "site.yml: consultation.price"
+
+
 def consultation_price(site):
     """Цена консультации из site.yml. Запись та же, что у строк прайса, и проверяется
-    тем же разбором: опечатка в цене роняет сборку, а не уходит на все страницы."""
+    тем же разбором: опечатка в цене роняет сборку, а не уходит на все страницы.
+    Доплата «+…» — не цена консультации: это знак надбавки к процедуре."""
     price = site["consultation"]["price"]
-    if pricing.price_value(price) is None:
-        raise ValueError("site.yml: не задана цена консультации consultation.price")
+    try:
+        value = pricing.price_value(price)
+    except ValueError:
+        raise ValueError(f"{CONSULTATION_PRICE_KEY} — непонятная цена {price!r}, "
+                         f"допустимая форма — «500 000 đ»") from None
+    if value is None:
+        raise ValueError(f"{CONSULTATION_PRICE_KEY} — цена не задана")
+    if price.strip().startswith(pricing.ADDON_MARK):
+        raise ValueError(f"{CONSULTATION_PRICE_KEY} — {price!r} записана как доплата «+…»")
     return price
 
 
@@ -158,8 +169,12 @@ def build_service(ctx, service_id):
 
 
 def _category_price_hint(ctx, cat):
-    """Цена направления одной строкой: «от» самой низкой цены среди его услуг."""
+    """Цена направления одной строкой: «от» самой низкой цены среди его услуг.
+    price_names направления сужает отбор до позиций с этими названиями: самая дешёвая
+    позиция услуг может не относиться к теме направления (эндосфера лица в коррекции фигуры)."""
     sections = [sec for service_id in cat["services"] for sec in ctx.prices.get(service_id, [])]
+    if cat.get("price_names"):
+        sections = pricing.named_positions(sections, cat["price_names"])
     return pricing.price_hint(sections, ctx.locale.format_from)
 
 

@@ -135,30 +135,30 @@ class ComboTest(unittest.TestCase):
         self.assertEqual(SECTIONS, source)
 
 
-if __name__ == "__main__":
-    unittest.main()
-
 
 PRICE_TOKEN = "{price}"
 WOMEN, SINGLE_SECTION, ONE_SESSION = "Цены - Женщины", "Цены", "1 сеанс"
 
 
-def cheapest_positions(prices, service_ids):
+def cheapest_positions(prices, service_ids, names=None):
     """Позиции с самой низкой ценой среди услуг: {(услуга, раздел, название, описание)}.
-    Отбор тот же, что у pricing.price_hint: доплаты и позиции без цены не в счёт."""
+    Отбор тот же, что у сборки: доплаты и позиции без цены не в счёт, а names (price_names
+    направления) оставляет только позиции с этими названиями."""
     payable = [((slug, sec.get("section"), item["name"], item.get("desc", "")), value)
                for slug in service_ids for sec in prices.get(slug, []) for item in sec["items"]
-               if not pricing.is_addon(item)
+               if not pricing.is_addon(item) and (names is None or item["name"] in names)
                and (value := pricing.price_value(item["price"])) is not None]
     low = min(value for _, value in payable)
     return {position for position, value in payable if value == low}
 
 
 def pages_with_price_in_faq(content):
-    """Услуги и направления, в ответах FAQ которых стоит {price}: {страница: её услуги}."""
-    pages = {slug: [slug] for slug, svc in content["services"].items()
+    """Услуги и направления, в ответах FAQ которых стоит {price}:
+    {страница: (её услуги, price_names направления или None)}."""
+    pages = {slug: ([slug], None) for slug, svc in content["services"].items()
              if any(PRICE_TOKEN in item["a"] for item in svc.get("faq", []))}
-    pages.update({cat["slug"]: cat["services"] for cat in content["categories"]
+    pages.update({cat["slug"]: (cat["services"], cat.get("price_names"))
+                  for cat in content["categories"]
                   if any(PRICE_TOKEN in item["a"] for item in cat.get("faq", []))})
     return pages
 
@@ -187,9 +187,12 @@ class CheapestPositionNamedInFaqTest(unittest.TestCase):
                                         "Карбоновый лазерный пилинг", "")},
         "morpheus-8-rf-lifting": {("morpheus-8-rf-lifting", SINGLE_SECTION, "Кисти", "")},
         "fotoomolozhenie-m22": {("fotoomolozhenie-m22", SINGLE_SECTION, "Кисти рук", "")},
-        "korrekciya-figury": {("endosfera-terapiya", SINGLE_SECTION, "Эндосфера-терапия - Лицо",
+        "korrekciya-figury": {("lpg-massazh", SINGLE_SECTION, "LPG Массаж - Тело", ONE_SESSION),
+                              ("ultrazvukovaya-kavitaciya", SINGLE_SECTION, "УЗ-кавитация",
                                ONE_SESSION)},
-        "lifting-i-omolozhenie": {("morpheus-8-rf-lifting", SINGLE_SECTION, "Кисти", "")},
+        "lifting-i-omolozhenie": {("morpheus-8-rf-lifting", SINGLE_SECTION, "Лицо", ""),
+                                  ("fotoomolozhenie-m22", SINGLE_SECTION, "Лицо", ""),
+                                  ("fotoomolozhenie-m22", SINGLE_SECTION, "Лицо", "Лечение акне")},
         "lazernye-procedury": {("lazernaya-epilyaciya", WOMEN, "Лоб", ""),
                                ("lazernaya-epilyaciya", WOMEN, "Верхняя губа", "")},
     }
@@ -203,6 +206,26 @@ class CheapestPositionNamedInFaqTest(unittest.TestCase):
         self.assertEqual(set(self.pages), set(self.NAMED))
 
     def test_named_position_is_still_the_cheapest(self):
-        for page, services in self.pages.items():
+        for page, (services, names) in self.pages.items():
             with self.subTest(page=page):
-                self.assertEqual(cheapest_positions(self.prices, services), self.NAMED.get(page))
+                self.assertEqual(cheapest_positions(self.prices, services, names),
+                                 self.NAMED.get(page))
+
+class NamedPositionsTest(unittest.TestCase):
+    def test_keeps_only_named_positions_in_every_section(self):
+        self.assertEqual(pricing.named_positions(SECTIONS, ["Лоб"]), [
+            {"section": "Цены - Женщины", "items": [SECTIONS[0]["items"][1]]},
+            {"section": "Цены - Мужчины", "items": [SECTIONS[1]["items"][0]]},
+        ])
+
+    def test_hint_of_named_positions_skips_cheaper_others(self):
+        named = pricing.named_positions(SECTIONS, ["КОМБО 1 (подмышки, голени)"])
+        self.assertEqual(pricing.price_hint(named, from_ru), "1 600 000 đ")
+
+    def test_unknown_name_is_error(self):
+        with self.assertRaisesRegex(ValueError, "нет позиций"):
+            pricing.named_positions(SECTIONS, ["Лоб", "Нос"])
+
+
+if __name__ == "__main__":
+    unittest.main()

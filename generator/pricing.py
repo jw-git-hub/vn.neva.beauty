@@ -60,6 +60,16 @@ def price_hint(sections, format_from):
     return format_from(min(values, key=price_value))
 
 
+def named_positions(sections, names):
+    """Разделы прайса только с позициями из списка названий. Названия, которого нет
+    в прайсе, — ошибка сборки: опечатка иначе молча вернула бы цену всех позиций."""
+    missing = set(names) - {item["name"] for sec in sections for item in sec["items"]}
+    if missing:
+        raise ValueError(f"В прайсе нет позиций {sorted(missing)}")
+    return [{**sec, "items": [item for item in sec["items"] if item["name"] in names]}
+            for sec in sections]
+
+
 def compare_rows(rows, services, prices, format_from):
     """Строки сравнительной таблицы: название услуги берётся из content.yml,
     цена — из prices.json. Второго источника цен не появляется, поэтому таблица
