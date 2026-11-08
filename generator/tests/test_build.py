@@ -223,7 +223,8 @@ class ContactLinksInBuiltPagesTest(unittest.TestCase):
         html = self.pages["lpg-massazh/index.html"]
         self.assertIn('var PAGE = "lpg-massazh";', html)
         self.assertIn('"reachGoal", "contact"', html)
-        self.assertIn('d.addEventListener("click", reportContact);', html)
+        self.assertIn('d.addEventListener("click", reportLinkClick);', html)
+        self.assertIn('d.addEventListener("auxclick", reportLinkClick);', html)
 
 
 class MessengerPlaceholderTest(unittest.TestCase):

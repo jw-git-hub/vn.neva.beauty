@@ -35,29 +35,72 @@
       Object.defineProperty(d, "referrer", {get: function () { return source; }});
     }
   } catch (e) {}
-  ym({{ site.metrika_id }}, "init", {
+  var COUNTER = {{ site.metrika_id }};
+  ym(COUNTER, "init", {
        clickmap:true,
        trackLinks:true,
        accurateTrackBounce:true,
        webvisor:false
   });
-  {#- Обращение: один обработчик на весь документ ловит клик по любой ссылке связи
-      (data-contact, см. contacts.py) и отправляет цель contact с параметрами визита:
-      канал, язык, страница, место кнопки. Ссылки открываются в новой вкладке, страница
-      остаётся на месте, и вызов успевает уйти; до загрузки tag.js он ждёт в очереди
-      ym.a. Автоцель «переход в мессенджер» (trackLinks) работает по-прежнему. #}
+  {#- Клики по ссылкам: один обработчик на весь документ, click и auxclick (средняя
+      кнопка — «открыть в новой вкладке»). Ссылка связи (data-contact, см. contacts.py)
+      уходит целью contact: плоские параметры визита (канал, язык, страница, место
+      кнопки) и ветка «contacts by page» → страница → канал → место, чтобы пара
+      «страница → мессенджер» была в одной таблице. Переход на другой сайт и mailto:/tel:
+      уходят параметрами визита «exits by page» → страница → сайт, без цели: заводить её
+      в кабинете не нужно. Ссылка связи второй раз в exits не попадает.
+
+      Известное ограничение: если клик по ссылке — первое действие гостя, tag.js ещё не
+      загружен и вызов ждёт в очереди ym.a. Ссылка связи открывается в новой вкладке или
+      в приложении; если гость не вернётся на страницу, вызов может не уйти. Внешняя ссылка
+      в той же вкладке (th.neva.beauty) до загрузки tag.js теряет вызов при уходе со
+      страницы. Автоцель «переход в мессенджер» (trackLinks) работает по-прежнему. #}
   var PAGE = {{ page.id | tojson }};
-  function reportContact(event) {
-    var link = event.target.closest && event.target.closest("[data-contact]");
-    if (!link) return;
-    ym({{ site.metrika_id }}, "reachGoal", "contact", {
-      channel: link.getAttribute("data-contact"),
-      lang: d.documentElement.lang,
-      page: PAGE,
-      place: link.getAttribute("data-place")
-    });
+  var PAGE_URL = {{ page.url | tojson }};
+  var CONTACTS_BY_PAGE = "contacts by page";
+  var EXITS_BY_PAGE = "exits by page";
+  var SCHEME_NAMES = {"mailto:": "e-mail", "tel:": "phone"};
+  var WEB_SCHEMES = ["http:", "https:"];
+  var MIDDLE_BUTTON = 1;
+
+  function nest(keys, leaf) {
+    return keys.reduceRight(function (inner, key) {
+      var level = {};
+      level[key] = inner;
+      return level;
+    }, leaf);
   }
-  d.addEventListener("click", reportContact);
+
+  function reportContact(link) {
+    var channel = link.getAttribute("data-contact");
+    var place = link.getAttribute("data-place");
+    var params = {channel: channel, lang: d.documentElement.lang, page: PAGE, place: place};
+    params[CONTACTS_BY_PAGE] = nest([PAGE_URL, channel], place);
+    ym(COUNTER, "reachGoal", "contact", params);
+  }
+
+  function destinationOf(link) {
+    if (WEB_SCHEMES.indexOf(link.protocol) === -1) return SCHEME_NAMES[link.protocol] || null;
+    return link.hostname === location.hostname ? null : link.hostname;
+  }
+
+  function reportExit(link) {
+    var destination = destinationOf(link);
+    if (destination === null) return;
+    var params = {};
+    params[EXITS_BY_PAGE] = nest([PAGE_URL], destination);
+    ym(COUNTER, "params", params);
+  }
+
+  function reportLinkClick(event) {
+    if (event.type === "auxclick" && event.button !== MIDDLE_BUTTON) return;
+    var link = event.target.closest && event.target.closest("a[href]");
+    if (!link) return;
+    if (link.hasAttribute("data-contact")) reportContact(link);
+    else reportExit(link);
+  }
+  d.addEventListener("click", reportLinkClick);
+  d.addEventListener("auxclick", reportLinkClick);
 
   var SRC = "https://mc.yandex.ru/metrika/tag.js";
   var started = false;
