@@ -195,7 +195,7 @@ GitHub Pages на собственном домене. Весь контент, 
 | **Стили** | Чистый CSS, слои по каскаду, минификация `rcssmin` в один бандл |
 | **Шрифты** | Самохостинг Cormorant + Manrope (вариативные woff2, сабсеты cyrillic/latin) |
 | **Графика** | SVG-иконки, `WebP` с `JPG`-фолбэком, декоративный canvas-фон |
-| **Тесты** | юнит-тесты (`unittest`, `generator/tests/`), `check_prices.py` — парити-тест цен, `check_headings.py` — иерархия заголовков (BeautifulSoup4), `check_fonts.py` — покрытие шрифтов, `check_images.py` — целостность картинок, `check_contacts.py` — ссылки связи, `check_i18n.py` — языки сайта |
+| **Тесты** | юнит-тесты (`unittest`, `generator/tests/`), `check_prices.py` — парити-тест цен, `check_headings.py` — иерархия заголовков (BeautifulSoup4), `check_fonts.py` — покрытие шрифтов, `check_images.py` — целостность картинок, `check_contacts.py` — ссылки связи, `check_i18n.py` — языки сайта, `check_layout.py` — наезд текста на цену в «Популярном» (Playwright + Chrome) |
 | **Аналитика** | Яндекс.Метрика |
 | **CI/CD** | GitHub Actions → GitHub Pages, кастомный домен через `CNAME`; после деплоя — уведомление IndexNow |
 
@@ -225,7 +225,7 @@ flowchart LR
     D --> F
     E --> G["Статический HTML<br/>vn.neva.beauty/"]
     F --> G
-    G --> H{{"check_prices · check_headings · check_fonts<br/>check_images · check_contacts · check_i18n"}}
+    G --> H{{"check_prices · check_headings · check_fonts<br/>check_images · check_contacts · check_i18n · check_layout"}}
     H -->|OK| I["GitHub Actions"]
     I --> J["🌐 GitHub Pages<br/>vn.neva.beauty"]
     J --> K["IndexNow<br/>Bing · Яндекс"]
@@ -370,6 +370,7 @@ flowchart LR
 │  ├─ check_images.py         #   целостность картинок и srcset
 │  ├─ check_contacts.py       #   ссылки связи
 │  ├─ check_i18n.py           #   языки: hreflang, пары страниц, ссылки, кириллица
+│  ├─ check_layout.py         #   наезд текста на цену в «Популярном» (Chrome)
 │  ├─ make_brand_assets.py    #   разовая генерация фавиконов и превью из логотипа
 │  ├─ data/
 │  │  ├─ site.yml             #   бизнес, контакты, конфиг, языки, IndexNow
@@ -407,7 +408,7 @@ python generator/build.py
 python -m unittest discover -s generator/tests -t generator
 cd generator && python check_prices.py && python check_headings.py \
   && python check_fonts.py && python check_images.py \
-  && python check_contacts.py && python check_i18n.py
+  && python check_contacts.py && python check_i18n.py && python check_layout.py
 
 # 4. Локальный просмотр
 cd ../vn.neva.beauty && python -m http.server 8000

@@ -198,7 +198,7 @@ price accuracy is guarded by an automated test.
 | **Styles** | Plain CSS, cascade layers, `rcssmin` minification into a single bundle |
 | **Fonts** | Self-hosted Cormorant + Manrope (variable woff2, cyrillic/latin subsets) |
 | **Graphics** | SVG icons, `WebP` with `JPG` fallback, decorative canvas background |
-| **Tests** | unit tests (`unittest`, `generator/tests/`), `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity, `check_contacts.py` — contact links, `check_i18n.py` — site languages |
+| **Tests** | unit tests (`unittest`, `generator/tests/`), `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity, `check_contacts.py` — contact links, `check_i18n.py` — site languages, `check_layout.py` — text overlapping the price in "Popular" (Playwright + Chrome) |
 | **Analytics** | Yandex.Metrica |
 | **CI/CD** | GitHub Actions → GitHub Pages, custom domain via `CNAME`; IndexNow notification after deploy |
 
@@ -229,7 +229,7 @@ flowchart LR
     D --> F
     E --> G["Static HTML<br/>vn.neva.beauty/"]
     F --> G
-    G --> H{{"check_prices · check_headings · check_fonts<br/>check_images · check_contacts · check_i18n"}}
+    G --> H{{"check_prices · check_headings · check_fonts<br/>check_images · check_contacts · check_i18n · check_layout"}}
     H -->|OK| I["GitHub Actions"]
     I --> J["🌐 GitHub Pages<br/>vn.neva.beauty"]
     J --> K["IndexNow<br/>Bing · Yandex"]
@@ -379,6 +379,7 @@ flowchart LR
 │  ├─ check_images.py         #   image and srcset integrity
 │  ├─ check_contacts.py       #   contact links
 │  ├─ check_i18n.py           #   languages: hreflang, page pairs, links, Cyrillic
+│  ├─ check_layout.py         #   text overlapping the price in "Popular" (Chrome)
 │  ├─ make_brand_assets.py    #   one-off favicon and preview generation from the logo
 │  ├─ data/
 │  │  ├─ site.yml             #   business, contacts, config, languages, IndexNow
@@ -416,7 +417,7 @@ python generator/build.py
 python -m unittest discover -s generator/tests -t generator
 cd generator && python check_prices.py && python check_headings.py \
   && python check_fonts.py && python check_images.py \
-  && python check_contacts.py && python check_i18n.py
+  && python check_contacts.py && python check_i18n.py && python check_layout.py
 
 # 4. Local preview
 cd ../vn.neva.beauty && python -m http.server 8000

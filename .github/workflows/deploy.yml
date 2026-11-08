@@ -68,6 +68,12 @@ jobs:
       - name: Check languages
         run: python generator/check_i18n.py
 
+      # Наезд текста на цену в «Популярном» виден только глазами на узких экранах.
+      # Проверка открывает главную обоих языков в Chrome (он есть на ubuntu-latest) на
+      # ширинах от 250 px; правка на 560–679 px подобрана под самую длинную подпись.
+      - name: Check layout
+        run: python generator/check_layout.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
