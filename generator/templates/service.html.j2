@@ -90,7 +90,7 @@
             <tbody>
               {% for it in rows %}
               <tr class="pricelist__row">
-                <th class="pricelist__name" scope="row">{{ it.name }}{% if it.desc %}<span class="pricelist__desc">{{ it.desc }}</span>{% endif %}</th>
+                <th class="pricelist__name" scope="row">{{ it.name | long_word_breaks }}{% if it.desc %}<span class="pricelist__desc">{{ it.desc }}</span>{% endif %}</th>
                 <td class="pricelist__price">{{ it.price }}</td>
               </tr>
               {% endfor %}
@@ -128,7 +128,7 @@
         <tbody>
           {% for row in svc.compare.rows %}
           <tr class="pricelist__row">
-            <th class="pricelist__name" scope="row">{{ row.title }}<span class="pricelist__desc">{{ row.task }}</span></th>
+            <th class="pricelist__name" scope="row">{{ row.title | long_word_breaks }}<span class="pricelist__desc">{{ row.task }}</span></th>
             <td class="pricelist__price">{{ row.price }}</td>
           </tr>
           {% endfor %}

@@ -363,6 +363,7 @@ flowchart LR
 │  ├─ translation*.py         #   данные перевода, автотест пар строк, замок
 │  ├─ translation_status.py   #   что ещё не переведено
 │  ├─ typography.py           #   неразрывные пробелы при рендере
+│  ├─ long_words.py           #   мягкие переносы в словах прайса от 20 букв
 │  ├─ indexnow.py             #   файл-ключ и уведомление IndexNow
 │  ├─ check_prices.py         #   парити-тест цен
 │  ├─ check_headings.py       #   проверка иерархии заголовков

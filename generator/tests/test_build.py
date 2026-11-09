@@ -723,19 +723,15 @@ class JsonLdInBuiltPagesTest(unittest.TestCase):
 class HeadingsKeepWholeWordsTest(unittest.TestCase):
     """Слова заголовков и названий не рвутся переносом (решение 26.10): словарных переносов
     в стилях нет, а кегль заголовков, где слову может не хватить места, считается от токена
-    --word-fit-*. Одно исключение — по решению владельца 09.11.2026: в названиях прайса уже
-    404 px по слогам переносятся только слова от 20 букв. Тест пропускает этот блок только
-    в service.css и только слово в слово; любой другой hyphens:auto — ошибка."""
+    --word-fit-*. Одно исключение — по решению владельца 09.11.2026: мягкие переносы, которые
+    сборка ставит в слова названий прайса от 20 букв, видны только уже 404 px."""
     CSS_DIR = build.OUT / "assets" / "css"
     SOURCES = ("tokens.css", "base.css", "components.css", "home.css", "service.css", "legal.css")
     FIT_TOKEN_RE = re.compile(r"var\((--word-fit-[\w-]+)\)")
     WHITESPACE_RE = re.compile(r"\s+")
-    LONG_PRICE_WORD_FILE = "service.css"
-    LONG_PRICE_WORD_EXCEPTION = (
-        "@media(max-width:403.98px){"
-        ".pricelist__name{hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:20 8 8;"
-        "-webkit-hyphenate-limit-before:8;-webkit-hyphenate-limit-after:8}"
-        ".pricelist__desc{hyphens:manual;-webkit-hyphens:manual}}")
+    PRICE_NAME_RULE_RE = re.compile(r"(?:^|[}/])\.pricelist__name\{([^}]*)\}")
+    SOFT_HYPHENS_OFF = "hyphens:none;-webkit-hyphens:none"
+    SOFT_HYPHENS_ON_BELOW_404 = "@media(max-width:403.98px){.pricelist__name{hyphens:manual;-webkit-hyphens:manual}}"
 
     @classmethod
     def setUpClass(cls):
@@ -746,18 +742,19 @@ class HeadingsKeepWholeWordsTest(unittest.TestCase):
         """CSS без пробелов и переводов строк: правило узнаётся независимо от вёрстки файла."""
         return cls.WHITESPACE_RE.sub("", text)
 
-    def test_long_price_word_exception_stands_once(self):
-        exception = self.compact(self.LONG_PRICE_WORD_EXCEPTION)
-        self.assertEqual(1, self.compact(self.css[self.LONG_PRICE_WORD_FILE]).count(exception))
-
     def test_no_style_turns_on_automatic_hyphenation(self):
-        exception = self.compact(self.LONG_PRICE_WORD_EXCEPTION)
         for name, text in self.css.items():
             with self.subTest(file=name):
-                css = self.compact(text)
-                if name == self.LONG_PRICE_WORD_FILE:
-                    css = css.replace(exception, "", 1)
-                self.assertNotIn("hyphens:auto", css)
+                self.assertNotIn("hyphens:auto", self.compact(text))
+
+    def test_soft_hyphens_in_price_names_are_off_from_404(self):
+        base_rules = self.PRICE_NAME_RULE_RE.findall(self.compact(self.css["service.css"]))
+        self.assertTrue(any(self.SOFT_HYPHENS_OFF in rule for rule in base_rules))
+
+    def test_soft_hyphens_in_price_names_are_on_only_below_404(self):
+        service = self.compact(self.css["service.css"])
+        self.assertEqual(1, service.count(self.SOFT_HYPHENS_ON_BELOW_404))
+        self.assertNotIn("hyphens:manual", service.replace(self.SOFT_HYPHENS_ON_BELOW_404, ""))
 
     def test_every_fit_token_in_use_is_defined(self):
         used = {token for text in self.css.values() for token in self.FIT_TOKEN_RE.findall(text)}

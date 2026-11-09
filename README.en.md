@@ -372,6 +372,7 @@ flowchart LR
 │  ├─ translation*.py         #   translation data, pair-of-strings autotest, lock
 │  ├─ translation_status.py   #   what is still untranslated
 │  ├─ typography.py           #   non-breaking spaces at render time
+│  ├─ long_words.py           #   soft hyphens in price-list words of 20+ letters
 │  ├─ indexnow.py             #   key file and IndexNow notification
 │  ├─ check_prices.py         #   price parity test
 │  ├─ check_headings.py       #   heading hierarchy check

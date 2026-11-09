@@ -2,7 +2,7 @@ import json, re, urllib.parse, yaml
 from pathlib import Path
 from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-import contacts, images, indexnow, language_redirect, language_switch, pages, sitewide, taxonomy, translation, typography
+import contacts, images, indexnow, language_redirect, language_switch, long_words, pages, sitewide, taxonomy, translation, typography
 from locales import load_locale, load_privacy, localized_site
 from routes import NOT_FOUND, Routes
 
@@ -80,6 +80,8 @@ def make_env(locale, routes, base_path, site):
         card_image=images.related_stem,
         asset=lambda path: sitewide.asset_url(OUT, base_path, path),
     )
+    # Мягкие переносы в словах от 20 букв названий прайса — по решению владельца (long_words.py).
+    e.filters["long_word_breaks"] = lambda text: long_words.soft_hyphenate(text, locale.code)
     return e
 
 def build_locale(site, content, prices, locale, routes, base_path, main_locale):

@@ -153,9 +153,11 @@
     const tops = [...range.getClientRects()].map((rect) => rect.top);
     return tops.length > 1 && Math.max(...tops) - Math.min(...tops) > LINE_BREAK_MIN_SHIFT;
   };
+  // Верх знака — по последнему прямоугольнику: Chrome относит дефис мягкого переноса
+  // к знаку после переноса, и первый прямоугольник этого знака лежит ещё на прежней строке.
   const topOfCharacter = (node, index) => {
-    const rect = rangeOf(node, index, index + 1).getClientRects()[0];
-    return rect ? rect.top : null;
+    const rects = rangeOf(node, index, index + 1).getClientRects();
+    return rects.length ? rects[rects.length - 1].top : null;
   };
   const findBreakIndex = (node, word) => {
     let previousTop = null;

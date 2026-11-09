@@ -131,14 +131,19 @@ def page_soup(view, slug):
     return BeautifulSoup(page_html(view, slug), "html.parser")
 
 
+# Мягкий перенос сборка ставит в слова названий от 20 букв (long_words.py). Он невидим,
+# пока слово не перенесено, и названием не является — сверка идёт без него.
+SOFT_HYPHEN = "\u00ad"
+
+
 def name_text(name_element):
-    """Название позиции без описания. Описание убирается из копии: разбор страницы
-    лежит в кэше и нужен следующим сверкам нетронутым."""
+    """Название позиции без описания и мягких переносов. Описание убирается из копии:
+    разбор страницы лежит в кэше и нужен следующим сверкам нетронутым."""
     own = copy.copy(name_element)
     description = own.select_one(".pricelist__desc")
     if description:
         description.extract()
-    return clean(own.get_text())
+    return clean(own.get_text().replace(SOFT_HYPHEN, ""))
 
 
 @lru_cache(maxsize=None)
