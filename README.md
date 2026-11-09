@@ -195,7 +195,7 @@ GitHub Pages на собственном домене. Весь контент, 
 | **Стили** | Чистый CSS, слои по каскаду, минификация `rcssmin` в один бандл |
 | **Шрифты** | Самохостинг Cormorant + Manrope (вариативные woff2, сабсеты cyrillic/latin) |
 | **Графика** | SVG-иконки, `WebP` с `JPG`-фолбэком, декоративный canvas-фон |
-| **Тесты** | юнит-тесты (`unittest`, `generator/tests/`), `check_prices.py` — парити-тест цен, `check_headings.py` — иерархия заголовков (BeautifulSoup4), `check_fonts.py` — покрытие шрифтов, `check_images.py` — целостность картинок, `check_contacts.py` — ссылки связи, `check_i18n.py` — языки сайта, `check_layout.py` — наезд текста на цену в «Популярном» (Playwright + Chrome) |
+| **Тесты** | юнит-тесты (`unittest`, `generator/tests/`), `check_prices.py` — парити-тест цен, `check_headings.py` — иерархия заголовков (BeautifulSoup4), `check_fonts.py` — покрытие шрифтов, `check_images.py` — целостность картинок, `check_contacts.py` — ссылки связи, `check_i18n.py` — языки сайта, `check_layout.py` — наезд текста на цену в «Популярном» и узкие экраны 250–349 px по всем страницам, закрытым и с открытым меню (Playwright + Chrome) |
 | **Аналитика** | Яндекс.Метрика |
 | **CI/CD** | GitHub Actions → GitHub Pages, кастомный домен через `CNAME`; после деплоя — уведомление IndexNow |
 
@@ -370,7 +370,8 @@ flowchart LR
 │  ├─ check_images.py         #   целостность картинок и srcset
 │  ├─ check_contacts.py       #   ссылки связи
 │  ├─ check_i18n.py           #   языки: hreflang, пары страниц, ссылки, кириллица
-│  ├─ check_layout.py         #   наезд текста на цену в «Популярном» (Chrome)
+│  ├─ check_layout.py         #   «Популярное» и узкие экраны всех страниц (Chrome)
+│  ├─ check_layout.js         #   замер узкого экрана страницы в браузере
 │  ├─ make_brand_assets.py    #   разовая генерация фавиконов и превью из логотипа
 │  ├─ data/
 │  │  ├─ site.yml             #   бизнес, контакты, конфиг, языки, IndexNow

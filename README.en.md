@@ -198,7 +198,7 @@ price accuracy is guarded by an automated test.
 | **Styles** | Plain CSS, cascade layers, `rcssmin` minification into a single bundle |
 | **Fonts** | Self-hosted Cormorant + Manrope (variable woff2, cyrillic/latin subsets) |
 | **Graphics** | SVG icons, `WebP` with `JPG` fallback, decorative canvas background |
-| **Tests** | unit tests (`unittest`, `generator/tests/`), `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity, `check_contacts.py` — contact links, `check_i18n.py` — site languages, `check_layout.py` — text overlapping the price in "Popular" (Playwright + Chrome) |
+| **Tests** | unit tests (`unittest`, `generator/tests/`), `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity, `check_contacts.py` — contact links, `check_i18n.py` — site languages, `check_layout.py` — text overlapping the price in "Popular" and narrow screens 250–349 px on every page, closed and with the menu open (Playwright + Chrome) |
 | **Analytics** | Yandex.Metrica |
 | **CI/CD** | GitHub Actions → GitHub Pages, custom domain via `CNAME`; IndexNow notification after deploy |
 
@@ -379,7 +379,8 @@ flowchart LR
 │  ├─ check_images.py         #   image and srcset integrity
 │  ├─ check_contacts.py       #   contact links
 │  ├─ check_i18n.py           #   languages: hreflang, page pairs, links, Cyrillic
-│  ├─ check_layout.py         #   text overlapping the price in "Popular" (Chrome)
+│  ├─ check_layout.py         #   "Popular" and narrow screens of every page (Chrome)
+│  ├─ check_layout.js         #   in-browser measurement of one page at a narrow width
 │  ├─ make_brand_assets.py    #   one-off favicon and preview generation from the logo
 │  ├─ data/
 │  │  ├─ site.yml             #   business, contacts, config, languages, IndexNow

@@ -121,6 +121,9 @@
 @media(max-width:349.98px){
   .popular-card{flex-wrap:wrap;row-gap:var(--sp-2)}
   .popular-card__info{flex:1 1 0;min-width:auto}
+  /* Поля карточки 16 px вместо 20, как у карточек FAQ и прайса на узком экране:
+     «PHOTOREJUVENATION» в строке раздела (161 px) на 250 px выходил на поле на 1 px. */
+  .popular-card{padding-inline:var(--sp-4)}
 }
 @media(min-width:560px) and (max-width:679.98px){
   :lang(en) .popular-card{flex-wrap:wrap;row-gap:var(--sp-2)}

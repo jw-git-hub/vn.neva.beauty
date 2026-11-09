@@ -69,8 +69,8 @@
 .pricelist__name,.pricelist__price{padding:var(--sp-4) 0;vertical-align:baseline;
   border-bottom:1px dashed var(--line)}
 .pricelist__row:last-child > *{border-bottom:none}
-/* Слово названия не рвётся: колонка имени не уже самого длинного слова. На узких экранах
-   слову хватает места за счёт размера шрифта, а не переноса (см. «УЗКИЕ ЭКРАНЫ» ниже). */
+/* Слово названия не рвётся: колонка имени не уже самого длинного слова. Уже 350 px строка
+   становится карточкой, а на самых узких экранах ужимается кегль (см. «УЗКИЕ ЭКРАНЫ» ниже). */
 .pricelist__name{padding-right:var(--sp-4);text-align:left;font-weight:inherit;color:var(--ink)}
 .pricelist__desc{display:block;font-size:var(--fs-200);color:var(--muted);font-weight:400;margin-top:2px}
 .pricelist__price{text-align:right;font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -95,17 +95,24 @@
   /* Та же причина, что у .faq в components.css: колонка героя была auto и растягивалась
      под длинное слово заголовка («Photorejuvenation» в 36 px — около 290 px). */
   .svc-hero__inner{grid-template-columns:minmax(0,1fr)}
-}
-@media(max-width:299.98px){
-  /* Таблица прайса и сравнения на 250 px: цена не переносится (в ней обычные пробелы между
-     разрядами, nowrap обязателен) и занимает до 129 px из 160, а колонка названия
-     сжималась до 31 px — слова шли по букве в строку, таблица вытягивалась на 8000 px.
-     Строка становится карточкой: название сверху, цена под ним; пунктир между
-     строками переходит с ячеек на саму строку. */
+
+  /* Таблица прайса и сравнения: цена не переносится (в ней обычные пробелы между
+     разрядами, nowrap обязателен), а колонка названия не уже самого длинного слова.
+     На 250 px цена занимала до 129 px из 160, колонка названия сжималась до 31 px —
+     слова шли по букве в строку, таблица вытягивалась на 8000 px. На 300–336 px
+     «перманентного» (120 px) рядом с «от 1 000 000 đ» (111 px) выталкивали цену
+     на поле карточки: на 320 px — на 17 px. Строка становится карточкой: название
+     сверху, цена под ним; пунктир между строками переходит с ячеек на саму строку. */
   .pricelist__rows{padding-inline:var(--sp-4)}
   .pricelist__table,.pricelist__table tbody,.pricelist__row{display:block}
   .pricelist__row{padding-block:var(--sp-4);border-bottom:1px dashed var(--line)}
   .pricelist__row:last-child{border-bottom:none}
   .pricelist__name,.pricelist__price{display:block;padding:0;border-bottom:none}
   .pricelist__price{margin-top:var(--sp-2);text-align:left}
+  /* Слово названия не рвётся и в карточке: «высококонцентрированная» (уход за лицом,
+     вкладка чисток) — 210 px, а строке названия остаётся окно минус 82 px. Кегль названия
+     ужимается, пока самое длинное слово прайса не влезет (--word-fit-price), — только
+     уже 302 px, на 250 px до 12,3 px. Подпись под названием не крупнее его. */
+  .pricelist__name{font-size:min(1em,calc((100vw - 2 * var(--sp-6) - 2px - 2 * var(--sp-4)) / var(--word-fit-price)))}
+  .pricelist__desc{font-size:min(var(--fs-200),1em)}
 }

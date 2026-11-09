@@ -724,7 +724,7 @@ class HeadingsKeepWholeWordsTest(unittest.TestCase):
     """Слова заголовков и названий не рвутся переносом: словарных переносов в стилях нет,
     а кегль заголовков, где слову может не хватить места, считается от токена --word-fit-*."""
     CSS_DIR = build.OUT / "assets" / "css"
-    SOURCES = ("tokens.css", "base.css", "components.css", "home.css", "service.css")
+    SOURCES = ("tokens.css", "base.css", "components.css", "home.css", "service.css", "legal.css")
     FIT_TOKEN_RE = re.compile(r"var\((--word-fit-[\w-]+)\)")
 
     @classmethod
@@ -739,7 +739,8 @@ class HeadingsKeepWholeWordsTest(unittest.TestCase):
     def test_every_fit_token_in_use_is_defined(self):
         used = {token for text in self.css.values() for token in self.FIT_TOKEN_RE.findall(text)}
         self.assertEqual(used, {"--word-fit-section", "--word-fit-service", "--word-fit-hero",
-                         "--word-fit-faq"})
+                         "--word-fit-faq", "--word-fit-faq-answer", "--word-fit-price",
+                         "--word-fit-legal-url"})
         for token in used:
             self.assertRegex(self.css["tokens.css"], rf"{token}:\d+(\.\d+)?;")
 
