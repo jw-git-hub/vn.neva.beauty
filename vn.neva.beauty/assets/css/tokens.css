@@ -15,12 +15,12 @@
      кусок (слово с прицепленным коротким словом) не влезет в строку. Число — ширина куска
      в em с запасом около 4 %: у заголовков раздела «на·фотоомоложение» 8,29, у h1 услуги
      «Photorejuvenation» 7,30, у h1 главной «и косметологии» 6,40, у вопроса FAQ «Morpheus8·treatments» 11,02,
-     у ответа FAQ «of·Morpheus8·treatments» 11,94, у названия прайса «высококонцентрированная» 13,11,
+     у ответа FAQ «of·Morpheus8·treatments» 11,94,
      у адреса сайта в политике «at·https://vn.neva.beauty/en/privacy/.» 17,2 (уменьшается только ссылка).
      Перемерить после правки текстов: F5/scripts/chunks-top.js (SEL='h1,h2' или 'summary.faq__q'). Кегль = (окно − поля контейнера) / число, и только если он
      меньше обычного (min в правиле), так что на широком экране вид прежний. */
   --word-fit-section:8.6; --word-fit-service:7.6; --word-fit-hero:6.7; --word-fit-faq:11.5;
-  --word-fit-faq-answer:12.4; --word-fit-price:13.7; --word-fit-legal-url:17.9;
+  --word-fit-faq-answer:12.4; --word-fit-legal-url:17.9;
   --faq-mark:14px; /* ширина «+» у вопроса FAQ на узком экране */
   /* пространство (шаг 4/8) */
   --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.25rem; --sp-6:1.5rem;

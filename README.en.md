@@ -198,7 +198,7 @@ price accuracy is guarded by an automated test.
 | **Styles** | Plain CSS, cascade layers, `rcssmin` minification into a single bundle |
 | **Fonts** | Self-hosted Cormorant + Manrope (variable woff2, cyrillic/latin subsets) |
 | **Graphics** | SVG icons, `WebP` with `JPG` fallback, decorative canvas background |
-| **Tests** | unit tests (`unittest`, `generator/tests/`), `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity, `check_contacts.py` — contact links, `check_i18n.py` — site languages, `check_layout.py` — text overlapping the price in "Popular" and narrow screens 250–349 px on every page, closed and with the menu open (Playwright + Chrome) |
+| **Tests** | unit tests (`unittest`, `generator/tests/`), `check_prices.py` — price parity, `check_headings.py` — heading hierarchy (BeautifulSoup4), `check_fonts.py` — font coverage, `check_images.py` — image integrity, `check_contacts.py` — contact links, `check_i18n.py` — site languages, `check_layout.py` — text overlapping the price in "Popular" and narrow screens 250–403 px on every page, closed and with the menu open (Playwright + Chrome) |
 | **Analytics** | Yandex.Metrica |
 | **CI/CD** | GitHub Actions → GitHub Pages, custom domain via `CNAME`; IndexNow notification after deploy |
 

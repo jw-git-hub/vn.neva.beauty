@@ -70,7 +70,7 @@
   border-bottom:1px dashed var(--line)}
 .pricelist__row:last-child > *{border-bottom:none}
 /* Слово названия не рвётся: колонка имени не уже самого длинного слова. Уже 350 px строка
-   становится карточкой, а на самых узких экранах ужимается кегль (см. «УЗКИЕ ЭКРАНЫ» ниже). */
+   становится карточкой; слово от 20 букв уже 404 px переносится по слогам (см. «УЗКИЕ ЭКРАНЫ» ниже). */
 .pricelist__name{padding-right:var(--sp-4);text-align:left;font-weight:inherit;color:var(--ink)}
 .pricelist__desc{display:block;font-size:var(--fs-200);color:var(--muted);font-weight:400;margin-top:2px}
 .pricelist__price{text-align:right;font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -109,10 +109,18 @@
   .pricelist__row:last-child{border-bottom:none}
   .pricelist__name,.pricelist__price{display:block;padding:0;border-bottom:none}
   .pricelist__price{margin-top:var(--sp-2);text-align:left}
-  /* Слово названия не рвётся и в карточке: «высококонцентрированная» (уход за лицом,
-     вкладка чисток) — 210 px, а строке названия остаётся окно минус 82 px. Кегль названия
-     ужимается, пока самое длинное слово прайса не влезет (--word-fit-price), — только
-     уже 302 px, на 250 px до 12,3 px. Подпись под названием не крупнее его. */
-  .pricelist__name{font-size:min(1em,calc((100vw - 2 * var(--sp-6) - 2px - 2 * var(--sp-4)) / var(--word-fit-price)))}
-  .pricelist__desc{font-size:min(var(--fs-200),1em)}
+}
+/* Исключение из решения 26.10 «слова названий прайса не рвутся переносом» — по решению
+   владельца 09.11.2026. «высококонцентрированная» (уход за лицом, вкладка «Прайс-лист
+   на услуги чистки») — 210 px. Рядом с ценой колонка названия не уже этого слова, и до
+   404 px таблица шире карточки: на 350 px страница ехала вбок на 9 px, на 360 цены
+   вылезали за рамку карточки на 23 px, на 390 стояли на её поле. В карточке уже 350 px
+   слово не помещалось в строку до 292 px. Перенос по слогам — только в словах от 20 букв
+   (в Safari, где нет hyphenate-limit-chars, — от 16), в названиях прайса такое одно;
+   подписи под названием не переносятся. Тест сборки (HeadingsKeepWholeWordsTest)
+   пропускает только этот блок, слово в слово. */
+@media(max-width:403.98px){
+  .pricelist__name{hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:20 8 8;
+    -webkit-hyphenate-limit-before:8;-webkit-hyphenate-limit-after:8}
+  .pricelist__desc{hyphens:manual;-webkit-hyphens:manual}
 }

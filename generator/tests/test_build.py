@@ -721,26 +721,48 @@ class JsonLdInBuiltPagesTest(unittest.TestCase):
 
 
 class HeadingsKeepWholeWordsTest(unittest.TestCase):
-    """Слова заголовков и названий не рвутся переносом: словарных переносов в стилях нет,
-    а кегль заголовков, где слову может не хватить места, считается от токена --word-fit-*."""
+    """Слова заголовков и названий не рвутся переносом (решение 26.10): словарных переносов
+    в стилях нет, а кегль заголовков, где слову может не хватить места, считается от токена
+    --word-fit-*. Одно исключение — по решению владельца 09.11.2026: в названиях прайса уже
+    404 px по слогам переносятся только слова от 20 букв. Тест пропускает этот блок только
+    в service.css и только слово в слово; любой другой hyphens:auto — ошибка."""
     CSS_DIR = build.OUT / "assets" / "css"
     SOURCES = ("tokens.css", "base.css", "components.css", "home.css", "service.css", "legal.css")
     FIT_TOKEN_RE = re.compile(r"var\((--word-fit-[\w-]+)\)")
+    WHITESPACE_RE = re.compile(r"\s+")
+    LONG_PRICE_WORD_FILE = "service.css"
+    LONG_PRICE_WORD_EXCEPTION = (
+        "@media(max-width:403.98px){"
+        ".pricelist__name{hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:20 8 8;"
+        "-webkit-hyphenate-limit-before:8;-webkit-hyphenate-limit-after:8}"
+        ".pricelist__desc{hyphens:manual;-webkit-hyphens:manual}}")
 
     @classmethod
     def setUpClass(cls):
         cls.css = {name: (cls.CSS_DIR / name).read_text(encoding="utf-8") for name in cls.SOURCES}
 
+    @classmethod
+    def compact(cls, text):
+        """CSS без пробелов и переводов строк: правило узнаётся независимо от вёрстки файла."""
+        return cls.WHITESPACE_RE.sub("", text)
+
+    def test_long_price_word_exception_stands_once(self):
+        exception = self.compact(self.LONG_PRICE_WORD_EXCEPTION)
+        self.assertEqual(1, self.compact(self.css[self.LONG_PRICE_WORD_FILE]).count(exception))
+
     def test_no_style_turns_on_automatic_hyphenation(self):
+        exception = self.compact(self.LONG_PRICE_WORD_EXCEPTION)
         for name, text in self.css.items():
             with self.subTest(file=name):
-                self.assertNotIn("hyphens:auto", text.replace(" ", ""))
+                css = self.compact(text)
+                if name == self.LONG_PRICE_WORD_FILE:
+                    css = css.replace(exception, "", 1)
+                self.assertNotIn("hyphens:auto", css)
 
     def test_every_fit_token_in_use_is_defined(self):
         used = {token for text in self.css.values() for token in self.FIT_TOKEN_RE.findall(text)}
         self.assertEqual(used, {"--word-fit-section", "--word-fit-service", "--word-fit-hero",
-                         "--word-fit-faq", "--word-fit-faq-answer", "--word-fit-price",
-                         "--word-fit-legal-url"})
+                         "--word-fit-faq", "--word-fit-faq-answer", "--word-fit-legal-url"})
         for token in used:
             self.assertRegex(self.css["tokens.css"], rf"{token}:\d+(\.\d+)?;")
 
