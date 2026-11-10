@@ -68,7 +68,7 @@ def make_env(locale, routes, base_path, site):
         # Ссылка связи: адрес с текстом страницы и метки канала и места (contacts.py).
         contact=lambda channel, place, page: contacts.link_attrs(
             site["contacts"], channel, place,
-            contacts.contact_message(locale, page.get("contact_title"))),
+            contacts.page_contact_message(locale, page)),
         alternates=routes.alternates, x_default=routes.x_default,
         # og:locale других языков для og:locale:alternate — в порядке таблицы маршрутов.
         alternate_og_locales=[other.og_locale for other in routes.locales

@@ -66,3 +66,36 @@ class LinkErrorsTest(unittest.TestCase):
                              'data-place="hero">W</a>', "html.parser")
         self.assertEqual(check_contacts.link_errors(soup, "page.html", CONTACTS,
                                                     "Хочу на: M 22 лифтинг"), [])
+
+
+class ChannelOfTest(unittest.TestCase):
+    def test_channel_is_found_by_host_in_any_spelling(self):
+        for href, channel in (("https://instagram.com/other", "instagram"),
+                              ("https://www.instagram.com/other/", "instagram"),
+                              ("https://api.whatsapp.com/send?phone=100", "whatsapp"),
+                              ("https://wa.me/100", "whatsapp"),
+                              ("https://telegram.me/salon", "telegram"),
+                              ("https://t.me/salon", "telegram"),
+                              ("https://WWW.Instagram.com/x", "instagram")):
+            with self.subTest(href=href):
+                self.assertEqual(check_contacts.channel_of(href), channel)
+
+    def test_other_hosts_and_relative_links_are_not_channels(self):
+        for href in ("/prices/", "https://example.com/t.me", "https://facebook.com/salon", ""):
+            with self.subTest(href=href):
+                self.assertIsNone(check_contacts.channel_of(href))
+
+    def test_raw_link_with_variant_host_is_error(self):
+        self.assertTrue(errors('<a href="https://www.instagram.com/salon/">I</a>'))
+        self.assertTrue(errors('<a href="https://api.whatsapp.com/send?phone=100">W</a>'))
+
+
+class H1TextTest(unittest.TestCase):
+    def test_page_without_h1_names_its_file(self):
+        soup = BeautifulSoup("<html><body><p>нет заголовка</p></body></html>", "html.parser")
+        with self.assertRaisesRegex(ValueError, "lpg/index.html"):
+            check_contacts.h1_text(soup, "lpg/index.html")
+
+    def test_whitespace_of_heading_is_squeezed(self):
+        soup = BeautifulSoup("<h1>LPG \n массаж</h1>", "html.parser")
+        self.assertEqual(check_contacts.h1_text(soup, "x.html"), "LPG массаж")

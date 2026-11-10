@@ -89,13 +89,14 @@ def fill_tokens(text, tokens):
     return text
 
 
-def render_faq(ctx, faq, price=None, page_title=None):
+def render_faq(ctx, faq, price=None, page=None):
     """Финализирует HTML-ответы FAQ: ссылки на мессенджеры получают текст страницы
     и метки (contacts.fill_contact_links), остальные плейсхолдеры подставляются
     (см. content_tokens), внутренние ссылки href="/<идентификатор>/" переводятся
-    в адреса языка страницы."""
+    в адреса языка страницы. Название страницы для текста обращения берётся из её данных
+    page — тем же путём, что и в шаблонах (contacts.page_contact_message)."""
     site_contacts = ctx.site["contacts"]
-    message = contacts.contact_message(ctx.locale, page_title)
+    message = contacts.page_contact_message(ctx.locale, page)
     tokens = content_tokens(price, consultation_price(ctx.site),
                             dermatology_consultation_price(ctx.site))
 
@@ -155,7 +156,7 @@ def _service_node(ctx, service_id, svc, cat, sections):
         service_type=cat["title"])
 
 
-def _prepare_service_texts(ctx, svc, hint):
+def _prepare_service_texts(ctx, svc, hint, page):
     """Подставляет цену и контакты в тексты услуги, собирает сравнительную таблицу."""
     if svc.get("price_lead"):
         svc["price_lead"] = fill_tokens(svc["price_lead"], content_tokens(hint))
@@ -163,7 +164,7 @@ def _prepare_service_texts(ctx, svc, hint):
         svc["compare"]["rows"] = pricing.compare_rows(
             svc["compare"]["rows"], ctx.content["services"], ctx.prices, ctx.locale.format_from)
     if svc.get("faq"):
-        svc["faq"] = render_faq(ctx, svc["faq"], hint, svc["title"])
+        svc["faq"] = render_faq(ctx, svc["faq"], hint, page)
 
 
 def service_price_line(ctx, sections):
@@ -186,14 +187,15 @@ def build_service(ctx, service_id):
     view = ctx.price_translation.translate_sections(service_id, pricing.price_view(sections))
     nodes = [schema.breadcrumb_node(_service_crumbs(ctx, service_id, svc, cat)),
              _service_node(ctx, service_id, svc, cat, view)]
-    _prepare_service_texts(ctx, svc, pricing.price_hint(sections, ctx.locale.format_from))
+    page = {"id": service_id, "url": ctx.path(service_id),
+            contacts.PAGE_TITLE_KEY: svc["title"]}
+    _prepare_service_texts(ctx, svc, pricing.price_hint(sections, ctx.locale.format_from), page)
     if svc.get("faq"):
         nodes.append(schema.faq_node(svc["faq"]))
-    page = {"id": service_id, "url": ctx.path(service_id), "contact_title": svc["title"],
-            "seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
-            "schema_json": ctx.schema(nodes),
-            "hero_image": f"/assets/img/{svc['hero_image']}.webp",  # LCP → preload
-            "hero_stem": svc["hero_image"], "hero_slot": "service_hero"}
+    page.update({"seo_title": svc["seo_title"], "seo_desc": svc["seo_desc"],
+                 "schema_json": ctx.schema(nodes),
+                 "hero_image": f"/assets/img/{svc['hero_image']}.webp",  # LCP → preload
+                 "hero_stem": svc["hero_image"], "hero_slot": "service_hero"})
     return ctx.env.get_template("service.html.j2").render(
         site=ctx.site, page=page, svc=svc, slug=service_id, category=cat,
         sections=view, services=ctx.content["services"],
@@ -215,12 +217,12 @@ def build_category(ctx, cat):
               {"name": cat["title"], "url": ctx.url(cat["page_id"])}]
     service_urls = [ctx.url(service_id) for service_id in cat["services"]]
     nodes = [schema.breadcrumb_node(crumbs), schema.item_list_node(cat["title"], service_urls)]
+    page = {"id": cat["page_id"], "url": cat["url"], contacts.PAGE_TITLE_KEY: cat["title"]}
     if cat.get("faq"):
-        cat["faq"] = render_faq(ctx, cat["faq"], _category_price_hint(ctx, cat), cat["title"])
+        cat["faq"] = render_faq(ctx, cat["faq"], _category_price_hint(ctx, cat), page)
         nodes.append(schema.faq_node(cat["faq"]))
-    page = {"id": cat["page_id"], "url": cat["url"], "contact_title": cat["title"],
-            "seo_title": cat["seo_title"],
-            "seo_desc": cat["seo_desc"], "schema_json": ctx.schema(nodes)}
+    page.update({"seo_title": cat["seo_title"], "seo_desc": cat["seo_desc"],
+                 "schema_json": ctx.schema(nodes)})
     return ctx.env.get_template("category.html.j2").render(
         site=ctx.site, page=page, cat=cat, services=ctx.content["services"],
         categories=ctx.content["categories"])

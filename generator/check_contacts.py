@@ -26,12 +26,10 @@ GENERIC_PAGES = (HOME, PRIVACY, NOT_FOUND)
 LEGAL_TEXT_CLASS = "legal-page"
 
 
-def channel_of(href, site_contacts):
-    """Канал, на адрес которого ведёт ссылка, или None."""
-    for channel in contacts.CHANNELS:
-        if href.startswith(site_contacts[f"{channel}_url"]):
-            return channel
-    return None
+def channel_of(href):
+    """Канал, на хост которого ведёт ссылка, или None. Узнаётся по хосту, а не по точному
+    адресу из site.yml: любое написание хоста канала обязано пройти через contacts.py."""
+    return contacts.channel_of_url(href)
 
 
 def squeeze(text):
@@ -41,7 +39,8 @@ def squeeze(text):
 
 
 def text_of(href):
-    return urllib.parse.parse_qs(urllib.parse.urlsplit(href).query).get("text", [None])[0]
+    query = urllib.parse.parse_qs(urllib.parse.urlsplit(href).query)
+    return query.get(contacts.PREFILL_PARAM, [None])[0]
 
 
 def text_error(href, channel, site_contacts, expected_message):
@@ -73,7 +72,7 @@ def link_errors(soup, name, site_contacts, expected_message):
     errors = []
     for link in checked_links(soup):
         href = link.get("href", "")
-        channel = channel_of(href, site_contacts)
+        channel = channel_of(href)
         if channel is None:
             if link.has_attr("data-contact"):
                 errors.append(f"{name}: метка data-contact на чужой ссылке {href!r}")
@@ -85,13 +84,28 @@ def link_errors(soup, name, site_contacts, expected_message):
     return errors
 
 
-def h1_text(soup):
-    return squeeze(soup.find("h1").get_text())
+def h1_text(soup, name):
+    """Текст h1 страницы. Страница услуги или раздела без h1 — ошибка с именем файла."""
+    heading = soup.find("h1")
+    if heading is None:
+        raise ValueError(f"{name}: на странице нет заголовка h1, нужно для текста обращения")
+    return squeeze(heading.get_text())
 
 
-def expected_message(soup, page_id, locale):
-    title = None if page_id in GENERIC_PAGES else h1_text(soup)
+def expected_message(soup, name, page_id, locale):
+    title = None if page_id in GENERIC_PAGES else h1_text(soup, name)
     return contacts.contact_message(locale, title)
+
+
+def page_errors(path, page_id, locale, site, name):
+    """Нарушения одной собранной страницы; страница без h1 даёт одну строку с её именем."""
+    soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+    site_contacts = localized_site(site, locale)["contacts"]
+    try:
+        message = expected_message(soup, name, page_id, locale)
+    except ValueError as error:
+        return [str(error)]
+    return link_errors(soup, name, site_contacts, message)
 
 
 def locale_pages(site, content, locales):
@@ -108,10 +122,7 @@ def main():
     locales = build.load_locales(site)
     errors, checked = [], 0
     for locale, page_id, path in locale_pages(site, content, locales):
-        soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
-        site_contacts = localized_site(site, locale)["contacts"]
-        errors += link_errors(soup, str(path.relative_to(SITE.parent)), site_contacts,
-                              expected_message(soup, page_id, locale))
+        errors += page_errors(path, page_id, locale, site, str(path.relative_to(SITE.parent)))
         checked += 1
     print(f"страниц проверено: {checked}")
     if errors:

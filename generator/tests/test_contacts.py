@@ -88,3 +88,20 @@ class PrefillFlagTest(unittest.TestCase):
     def test_string_flag_is_error(self):
         with self.assertRaises(ValueError):
             contacts.prefill_channels(dict(CONTACTS, telegram_prefill="false"))
+
+
+class PageContactMessageTest(unittest.TestCase):
+    """Название страницы в текст обращения идёт одним путём — из данных страницы."""
+
+    def setUp(self):
+        self.locale = load_locale("ru")
+
+    def test_title_of_page_data_goes_into_text(self):
+        page = {contacts.PAGE_TITLE_KEY: "LPG-массаж"}
+        self.assertEqual(contacts.page_contact_message(self.locale, page),
+                         contacts.contact_message(self.locale, "LPG-массаж"))
+
+    def test_page_without_title_or_without_data_gives_generic_text(self):
+        generic = contacts.contact_message(self.locale)
+        self.assertEqual(contacts.page_contact_message(self.locale, {}), generic)
+        self.assertEqual(contacts.page_contact_message(self.locale, None), generic)
