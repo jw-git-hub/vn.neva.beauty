@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
+  
+<script>
 (function (C) {
   function stored(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function hasPage(code) { return Object.prototype.hasOwnProperty.call(C.pairs, code); }
   function isInternal(referrer) {
-    try { return !!referrer && new URL(referrer).host === location.host; } catch (e) { return false; }
+    try { return !!referrer && new URL(referrer).host === location.host; } catch (e) { return true; }
   }
   function prefersGroup(languages, group) {
     return languages.some(function (tag) {
@@ -16,7 +18,7 @@
   }
   function choose(languages) {
     var saved = stored(C.storageKey);
-    if (saved && C.pairs[saved]) return saved;
+    if (saved && hasPage(saved)) return saved;
     for (var i = 0; i < C.groups.length; i++) {
       if (prefersGroup(languages, C.groups[i][1])) return C.groups[i][0];
     }
@@ -25,10 +27,19 @@
   if (new RegExp(C.bots, "i").test(navigator.userAgent) || isInternal(document.referrer)) return;
   var languages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
   var target = choose(languages);
-  if (target === C.current || !C.pairs[target]) return;
-  try { sessionStorage.setItem(C.sourceKey, document.referrer); } catch (e) {}
+  if (target === C.current || !hasPage(target)) return;
+  try { sessionStorage.setItem(C.sourceKey, document.referrer); sessionStorage.setItem(C.sourceTargetKey, JSON.stringify({path: C.pairs[target], at: Date.now()})); } catch (e) {}
   location.replace(C.pairs[target] + location.search + location.hash);
-})({"bots": "bot|crawl|spider|slurp|lighthouse|pagespeed|preview|google|facebookexternalhit|whatsapp|headless", "current": "en", "fallback": "en", "groups": [["ru", ["ru", "uk", "be", "kk"]]], "pairs": {"en": "/en/privacy/", "ru": "/privacy/"}, "sourceKey": "neva.source", "storageKey": "neva.lang"});
+})({"bots": "bot|crawl|spider|slurp|lighthouse|pagespeed|preview|google|facebookexternalhit|whatsapp|headless", "current": "en", "fallback": "en", "groups": [["ru", ["ru", "uk", "be", "kk"]]], "pairs": {"en": "/en/privacy/", "ru": "/privacy/"}, "sourceKey": "neva.source", "sourceTargetKey": "neva.source.target", "storageKey": "neva.lang"});
+</script>
+  <script>
+(function (STORAGE_KEY) {
+  document.addEventListener("click", function (event) {
+    var link = event.target.closest && event.target.closest("[data-lang]");
+    if (!link) return;
+    try { localStorage.setItem(STORAGE_KEY, link.getAttribute("data-lang")); } catch (e) {}
+  });
+})("neva.lang");
 </script>
   
   <link rel="stylesheet" href="/assets/css/bundle.min.css?v=967ca9c4">
@@ -112,7 +123,8 @@
       "logo": "https://vn.neva.beauty/assets/img/logo-neva-beauty.png",
       "sameAs": [
         "https://www.instagram.com/vn.neva.beauty/",
-        "https://t.me/doctor_cosmetolog_pro_channel"
+        "https://t.me/doctor_cosmetolog_pro_channel",
+        "https://www.facebook.com/vn.neva.beauty"
       ]
     },
     {
@@ -149,7 +161,8 @@
       },
       "sameAs": [
         "https://www.instagram.com/vn.neva.beauty/",
-        "https://t.me/doctor_cosmetolog_pro_channel"
+        "https://t.me/doctor_cosmetolog_pro_channel",
+        "https://www.facebook.com/vn.neva.beauty"
       ]
     },
     {
@@ -610,6 +623,23 @@
   <script type="module" src="/assets/js/nav.js"></script>
   <script type="module" src="/assets/js/reveal.js" onerror="showWithoutReveal()"></script>
   
+  <script>
+(function (SOURCE_KEY, TARGET_KEY, TTL_MS) {
+  function readHandoff() {
+    try { return JSON.parse(sessionStorage.getItem(TARGET_KEY)); } catch (e) { return null; }
+  }
+  function isFresh(handoff) {
+    if (!handoff || handoff.path !== location.pathname) return false;
+    var age = Date.now() - handoff.at;
+    return age >= 0 && age < TTL_MS;
+  }
+  try {
+    var accepted = isFresh(readHandoff());
+    sessionStorage.removeItem(TARGET_KEY);
+    if (!accepted) sessionStorage.removeItem(SOURCE_KEY);
+  } catch (e) {}
+})("neva.source", "neva.source.target", 60000);
+</script>
   
 <!-- Yandex.Metrika counter --><script>
 (function (w, d) {
