@@ -57,6 +57,9 @@ contacts:
   # без текста, а откуда пишут, покажет только Метрика.
   telegram_prefill: true
   instagram_url: "https://instagram.com/vn.neva.beauty"
+  # Страница в Facebook: видимых ссылок на сайте нет, адрес идёт только в разметку
+  # (business.same_as) и в раздел контактов llms.txt.
+  facebook_url: "https://www.facebook.com/vn.neva.beauty"
 
 # Консультации (ответ владельца 2026-10-26). Цены сборка подставляет в ответы о записи вместо
 # {consultation_price} (косметолог, price) и {dermatology_consultation_price} (дерматолог,
@@ -82,6 +85,7 @@ business:
   same_as:
     - "https://www.instagram.com/vn.neva.beauty/"
     - "https://t.me/doctor_cosmetolog_pro_channel"   # публичный Telegram-канал
+    - "https://www.facebook.com/vn.neva.beauty"
   # Описание салона для разметки (посетителю не видно): пересказ блока «Коротко о Neva Beauty»
   # без новых фактов. Английское — в locales/en.yml, site.business.description.
   description: "Neva Beauty — центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. Приём по записи, обслуживание на русском и английском языках."

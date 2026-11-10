@@ -118,7 +118,8 @@ def build_llms(site, content, prices, locale, routes):
     lines += ["", t("llms.contacts_title"),
               f"- WhatsApp: {contacts['whatsapp_url']}",
               f"- Telegram: {contacts['telegram_url']}",
-              f"- Instagram: {contacts['instagram_url']}", ""]
+              f"- Instagram: {contacts['instagram_url']}",
+              f"- Facebook: {contacts['facebook_url']}", ""]
     return "\n".join(lines)
 
 
