@@ -23,6 +23,8 @@ import threading
 from contextlib import contextmanager
 from pathlib import Path
 
+import language_redirect
+
 ROOT = Path(__file__).resolve().parent
 SITE = ROOT.parent / "vn.neva.beauty"
 HOST = "127.0.0.1"
@@ -49,7 +51,7 @@ WIDTHS = (250, 270, 290, 300, 320, 340, 350, 360, 390, 420, 480, 559, 560, 600,
           640, 679, 680, 767, 768, 900, 1024, 1280, 1440)
 VIEWPORT_HEIGHT = 800
 BROWSER_CHANNEL = "chrome"
-LANGUAGE_STORAGE_KEY = "neva.lang"
+LANGUAGE_STORAGE_KEY = language_redirect.STORAGE_KEY
 CARD_SELECTOR = ".popular-card"
 INFO_SELECTOR = ".popular-card__info"
 PRICE_SELECTOR = ".popular-card__price"

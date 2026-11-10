@@ -61,7 +61,10 @@ def make_env(locale, routes, base_path, site):
         t=locale.t, href=lambda page_id: routes.href(locale, page_id),
         language_links=lambda page: language_switch.language_links(routes, locale, page["id"]),
         language_redirect_config=lambda page: language_redirect.config(site, routes, locale, page["id"]),
+        language_storage_key=language_redirect.STORAGE_KEY,
         language_source_key=language_redirect.SOURCE_KEY,
+        language_source_target_key=language_redirect.SOURCE_TARGET_KEY,
+        language_source_ttl_ms=language_redirect.SOURCE_TTL_MS,
         # Корневая 404 переадресует неизвестные адреса чужого языка на его 404.
         not_found_redirects=lambda page: (
             routes.not_found_redirects(locale) if page["id"] == NOT_FOUND else []),

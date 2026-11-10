@@ -144,11 +144,3 @@ function forgetHashWhenOffscreen(){
 
 window.addEventListener('hashchange', forgetHashWhenOffscreen);
 forgetHashWhenOffscreen();
-
-// Ручной выбор языка запоминается: автовыбор по браузеру (строчный скрипт в начале
-// <head>, generator/language_redirect.py) читает тот же ключ и выбор не перебивает.
-// Переход по ссылке не отменяется — пилюля работает и без этой памяти.
-const LANG_KEY = 'neva.lang';
-document.querySelectorAll('[data-lang]').forEach(link => link.addEventListener('click', () => {
-  try { localStorage.setItem(LANG_KEY, link.dataset.lang); } catch (e) { /* приватный режим: без памяти */ }
-}));

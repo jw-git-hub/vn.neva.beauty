@@ -1,0 +1,15 @@
+{#- Запоминание ручного выбора языка. Строчный скрипт в head: клик по переключателю
+    (ссылки с data-lang) ловится на документе и работает сразу, не дожидаясь nav.js
+    (модуль грузится позже). Скрипт выбора языка (language_redirect.html.j2) читает тот
+    же ключ и выбор не перебивает. Переход по ссылке не отменяется — переключатель
+    работает и без этой памяти. Имя ключа — language_redirect.STORAGE_KEY. Комментариев
+    внутри скрипта нет: он стоит и на английских страницах. -#}
+<script>
+(function (STORAGE_KEY) {
+  document.addEventListener("click", function (event) {
+    var link = event.target.closest && event.target.closest("[data-lang]");
+    if (!link) return;
+    try { localStorage.setItem(STORAGE_KEY, link.getAttribute("data-lang")); } catch (e) {}
+  });
+})({{ language_storage_key | tojson }});
+</script>

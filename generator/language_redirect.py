@@ -7,9 +7,14 @@
 """
 from routes import NOT_FOUND
 
-# Ключи хранилищ браузера. STORAGE_KEY пишет и nav.js (ручной выбор языка).
+# Ключи хранилищ браузера. STORAGE_KEY — ручной выбор языка: пишет partials/language_choice,
+# читает скрипт выбора языка. Имя ключа живёт только здесь, в страницы оно попадает из шаблонов.
 STORAGE_KEY = "neva.lang"
 SOURCE_KEY = "neva.source"  # источник визита на время перехода — для Метрики
+# Куда и когда ушёл переход: источник принимается только на целевой странице и пока свеж
+# (partials/source_guard); оборванный переход не оставит старый источник во вкладке.
+SOURCE_TARGET_KEY = "neva.source.target"
+SOURCE_TTL_MS = 60_000
 # Поисковые и ИИ-краулеры, сборщики превью ссылок, Lighthouse: им — запрошенная страница.
 # «google» — инструменты Google, исполняющие JS без «bot» в имени (Google-InspectionTool
 # проверки URL в Search Console, GoogleOther): иначе проверка русского адреса показала
@@ -41,4 +46,5 @@ def config(site, routes, current, page_id):
     return {"current": current.code,
             "pairs": {locale.code: routes.href(locale, page_id) for locale in locales},
             "groups": _groups(locales), "fallback": _fallback(site, locales),
-            "storageKey": STORAGE_KEY, "sourceKey": SOURCE_KEY, "bots": BOT_PATTERN}
+            "storageKey": STORAGE_KEY, "sourceKey": SOURCE_KEY,
+            "sourceTargetKey": SOURCE_TARGET_KEY, "bots": BOT_PATTERN}

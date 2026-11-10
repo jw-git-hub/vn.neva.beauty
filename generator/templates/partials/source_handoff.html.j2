@@ -1,0 +1,7 @@
+{#- Макрос: JS-оператор «запомнить источник визита перед переходом» для строчных скриптов
+    выбора языка и корневой 404. Источник (referrer) кладётся под одним ключом, куда и
+    когда ушёл переход — под другим (читает source_guard.html.j2). Все три аргумента —
+    выражения JS. Закрытое хранилище переход не отменяет. -#}
+{% macro remember_source(source_key, target_key, target_path) -%}
+try { sessionStorage.setItem({{ source_key }}, document.referrer); sessionStorage.setItem({{ target_key }}, JSON.stringify({path: {{ target_path }}, at: Date.now()})); } catch (e) {}
+{%- endmacro %}

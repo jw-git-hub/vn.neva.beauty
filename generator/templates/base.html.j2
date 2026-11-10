@@ -11,6 +11,7 @@
   {%- if redirect %}
   {% include 'partials/language_redirect.html.j2' %}
   {%- endif %}
+  {% include 'partials/language_choice.html.j2' %}
   {# Ссылки на то, без чего страница не рисуется, — первыми в head, до разметки
      Schema.org. Пока её JSON не разобран, сканер предзагрузки о стилях не знает:
      на мобильном канале HTML приезжает несколькими порциями, и запрос CSS уходил
@@ -136,6 +137,7 @@
   <script type="module" src="{{ base_path }}/assets/js/nav.js"></script>
   <script type="module" src="{{ base_path }}/assets/js/reveal.js" onerror="showWithoutReveal()"></script>
   {% block extra_js %}{% endblock %}
+  {% include 'partials/source_guard.html.j2' %}
   {% include 'partials/metrika.html.j2' %}
 </body>
 </html>

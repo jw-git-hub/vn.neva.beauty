@@ -1,0 +1,23 @@
+{#- Страж источника визита: стоит перед счётчиком Метрики (metrika.html.j2), который
+    забирает источник из sessionStorage. Источник, сохранённый при переадресации по языку
+    или из 404, принимается только на странице, куда ушёл переход (путь совпадает), и
+    пока он свеж. Иначе он удаляется: оборванная переадресация не должна подменить
+    источник позднего визита в той же вкладке. Запись о цели удаляется всегда. Комментариев
+    внутри скрипта нет: он стоит и на английских страницах. -#}
+<script>
+(function (SOURCE_KEY, TARGET_KEY, TTL_MS) {
+  function readHandoff() {
+    try { return JSON.parse(sessionStorage.getItem(TARGET_KEY)); } catch (e) { return null; }
+  }
+  function isFresh(handoff) {
+    if (!handoff || handoff.path !== location.pathname) return false;
+    var age = Date.now() - handoff.at;
+    return age >= 0 && age < TTL_MS;
+  }
+  try {
+    var accepted = isFresh(readHandoff());
+    sessionStorage.removeItem(TARGET_KEY);
+    if (!accepted) sessionStorage.removeItem(SOURCE_KEY);
+  } catch (e) {}
+})({{ language_source_key | tojson }}, {{ language_source_target_key | tojson }}, {{ language_source_ttl_ms | tojson }});
+</script>

@@ -3,13 +3,17 @@
     Робот и переход внутри сайта — без перехода. Иначе: сохранённый ручной выбор, иначе
     первая группа языков браузера, иначе язык для остальных. location.replace не
     оставляет записи в истории — «Назад» не зацикливается; строка запроса и якорь
-    сохраняются, источник визита кладётся в sessionStorage для Метрики.
+    сохраняются, источник визита и цель перехода кладутся в sessionStorage для Метрики
+    (принимает их source_guard.html.j2). Без URL (IE11) переход считается внутренним —
+    переадресации нет, скрипт не ломается.
     Комментариев внутри скрипта нет: он стоит и на английских страницах. -#}
+{% from 'partials/source_handoff.html.j2' import remember_source %}
 <script>
 (function (C) {
   function stored(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function hasPage(code) { return Object.prototype.hasOwnProperty.call(C.pairs, code); }
   function isInternal(referrer) {
-    try { return !!referrer && new URL(referrer).host === location.host; } catch (e) { return false; }
+    try { return !!referrer && new URL(referrer).host === location.host; } catch (e) { return true; }
   }
   function prefersGroup(languages, group) {
     return languages.some(function (tag) {
@@ -18,7 +22,7 @@
   }
   function choose(languages) {
     var saved = stored(C.storageKey);
-    if (saved && C.pairs[saved]) return saved;
+    if (saved && hasPage(saved)) return saved;
     for (var i = 0; i < C.groups.length; i++) {
       if (prefersGroup(languages, C.groups[i][1])) return C.groups[i][0];
     }
@@ -27,8 +31,8 @@
   if (new RegExp(C.bots, "i").test(navigator.userAgent) || isInternal(document.referrer)) return;
   var languages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
   var target = choose(languages);
-  if (target === C.current || !C.pairs[target]) return;
-  try { sessionStorage.setItem(C.sourceKey, document.referrer); } catch (e) {}
+  if (target === C.current || !hasPage(target)) return;
+  {{ remember_source("C.sourceKey", "C.sourceTargetKey", "C.pairs[target]") }}
   location.replace(C.pairs[target] + location.search + location.hash);
 })({{ redirect | tojson }});
 </script>

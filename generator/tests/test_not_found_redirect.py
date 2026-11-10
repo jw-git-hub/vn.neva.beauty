@@ -14,6 +14,7 @@ ENGLISH_NOT_FOUND = "/en/404.html"
 
 
 SOURCE_KEY = "neva.source"
+TARGET_KEY = "neva.source.target"
 SEARCH_REFERRER = "https://www.google.com/"
 
 
@@ -67,11 +68,12 @@ class NotFoundRedirectScriptTest(RootNotFoundPages):
     def test_referrer_is_kept_for_metrika_after_redirect(self):
         result = self.run_script(["/en/no-such-page/"], SEARCH_REFERRER)[0]
         self.assertEqual(result["target"], ENGLISH_NOT_FOUND)
-        self.assertEqual(result["store"], {SOURCE_KEY: SEARCH_REFERRER})
+        self.assertEqual(result["store"][SOURCE_KEY], SEARCH_REFERRER)
+        self.assertEqual(json.loads(result["store"][TARGET_KEY])["path"], ENGLISH_NOT_FOUND)
 
     def test_direct_visit_stores_empty_source(self):
         result = self.run_script(["/en/no-such-page/"])[0]
-        self.assertEqual(result["store"], {SOURCE_KEY: ""})
+        self.assertEqual(result["store"][SOURCE_KEY], "")
 
     def test_nothing_stored_when_page_stays(self):
         results = self.run_script(["/no-such-page/", ENGLISH_NOT_FOUND], SEARCH_REFERRER)
