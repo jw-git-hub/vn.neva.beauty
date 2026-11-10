@@ -16,11 +16,12 @@ import pair_terms
 import price_translation
 import translation_lock
 import translation_pairs
-from locales import LOCALES_DIR, load_privacy, site_problems, ui_problems
+import translation_problem
+from locales import LOCALES_DIR, PRIVACY_FILE, load_privacy, site_problems, ui_problems
+from translation_problem import tag
 
 CONTENT_FILE = "content.yml"
 PRICES_FILE = "prices.yml"
-PRIVACY_FILE = "privacy.html"
 
 
 @dataclass(frozen=True)
@@ -55,17 +56,17 @@ def _lock_problems(site, content, locale, main_locale):
         return []
     current = translation_lock.source_fingerprints(site, content, main_locale,
                                                    load_privacy(main_locale.code))
-    return translation_lock.lock_problems(locked, current)
+    return tag(translation_problem.LOCK, translation_lock.lock_problems(locked, current))
 
 
-def _data_problems(site, prices, catalog, locale, main_locale):
+def _data_problems(site, prices, raw_catalog, locale, main_locale):
     """Проблемы перевода вне текстов страниц: прайс, интерфейс, строки site, политика."""
-    problems = price_translation.catalog_problems(prices, catalog)
-    problems += ui_problems(main_locale, locale)
-    problems += site_problems(site, locale)
+    problems = tag(translation_problem.PRICES, price_translation.catalog_problems(prices, raw_catalog))
+    problems += tag(translation_problem.UI, ui_problems(main_locale, locale))
+    problems += tag(translation_problem.SITE, site_problems(site, locale))
     if not privacy_exists(locale.code):
-        problems.append(f"privacy: нет перевода политики "
-                        f"(data/locales/{locale.code}/{PRIVACY_FILE})")
+        problems += tag(translation_problem.PRIVACY, [
+            f"privacy: нет перевода политики (data/locales/{locale.code}/{PRIVACY_FILE})"])
     return problems
 
 
@@ -78,7 +79,7 @@ def _privacy_texts(locale, main_locale):
 
 def _pair_problems(site, content, prices, merged, merge_problems, catalog, locale, main_locale):
     """Автотест пар «русская — английская строка»: числа, ссылки, теги, термины."""
-    untranslated = {problem.partition(":")[0] for problem in merge_problems}
+    untranslated = [problem.partition(":")[0] for problem in merge_problems]
     pairs = (translation_pairs.content_pairs(content, merged, untranslated)
              + translation_pairs.site_pairs(site, locale.site)
              + translation_pairs.price_pairs(prices, catalog)
@@ -92,10 +93,12 @@ def translation_problems(site, content, prices, locale, main_locale, check_lock=
     if locale.code == main_locale.code:
         return LanguageData(copy.deepcopy(content),
                             price_translation.PriceTranslation.identity()), []
-    merged, problems = overlay.merge_translation(content, load_overlay(locale.code))
-    catalog = load_price_catalog(locale.code)
-    merge_problems = list(problems)
-    problems += _data_problems(site, prices, catalog, locale, main_locale)
+    merged, merge_texts = overlay.merge_translation(content, load_overlay(locale.code))
+    merge_problems = tag(translation_problem.CONTENT, merge_texts)
+    problems = list(merge_problems)
+    raw_catalog = load_price_catalog(locale.code)
+    catalog = price_translation.sanitized(raw_catalog)
+    problems += _data_problems(site, prices, raw_catalog, locale, main_locale)
     problems += _pair_problems(site, content, prices, merged, merge_problems, catalog,
                                locale, main_locale)
     if check_lock:

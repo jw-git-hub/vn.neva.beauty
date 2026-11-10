@@ -76,7 +76,7 @@ def _merge_list(master, overlay, path, problems):
     elif not isinstance(overlay, list) or len(overlay) != len(master):
         size = len(overlay) if isinstance(overlay, list) else "не список"
         problems.append(f"{path}: в мастере {len(master)} элементов, в переводе {size}")
-        overlay = [None] * len(master)
+        return copy.deepcopy(master)  # элементы без пары не разбираются: проблема уже названа
     return [_merge_node(item, patch, f"{path}[{index}]", problems)
             for index, (item, patch) in enumerate(zip(master, overlay))]
 

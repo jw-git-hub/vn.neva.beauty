@@ -63,6 +63,17 @@ class MergeTranslationTest(unittest.TestCase):
         self.assertIn("home.faq: в мастере 1 элементов, в переводе 0",
                       overlay.merge_translation(MASTER, short)[1])
 
+    def test_list_of_other_length_gives_one_problem_not_one_per_item(self):
+        """Элементы списка другой длины не разбираются по полям: хватает одной строки о длине."""
+        short = copy.deepcopy(FULL); short["home"]["faq"] = []
+        self.assertEqual(overlay.merge_translation(MASTER, short)[1],
+                         ["home.faq: в мастере 1 элементов, в переводе 0"])
+
+    def test_list_of_other_length_keeps_master_items(self):
+        short = copy.deepcopy(FULL); short["home"]["faq"] = []
+        merged, _ = overlay.merge_translation(MASTER, short)
+        self.assertEqual(merged["home"]["faq"], MASTER["home"]["faq"])
+
     def test_empty_string_is_error(self):
         empty = copy.deepcopy(FULL); empty["home"]["seo_title"] = ""
         self.assertEqual(overlay.merge_translation(MASTER, empty)[1],

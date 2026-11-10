@@ -284,10 +284,14 @@ class ExceptionsTest(unittest.TestCase):
         pair = tp.Pair("home.faq[0].a", "6 сеансов", None, tp.CHECKS_OF_PAGE)
         self.assertEqual(problems_of(pair, [self.NUMBERS]), [])
 
-    def test_group_prefix_is_known_to_status(self):
-        import translation_status
-        self.assertEqual(translation_status.group_of("pair_exceptions «x» numbers: нет причины"),
-                         "pair_exceptions")
+    def test_problems_of_exceptions_form_their_own_group(self):
+        problems = problems_of(self.PAIR, [exception("home.faq[0].a", "numbers", reason="")])
+        self.assertEqual({problem.group for problem in problems if "pair_exceptions" in problem},
+                         {"pair_exceptions"})
+
+    def test_findings_take_the_group_of_their_pair(self):
+        pair = tp.Pair("site tagline", "5 сеансов", "Sessions", tp.CHECKS_OF_SITE, group="site")
+        self.assertEqual([problem.group for problem in problems_of(pair)], ["site"])
 
 
 class LoadExceptionsTest(unittest.TestCase):

@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent
 LOCALES_DIR = ROOT / "data" / "locales"
 DEFAULT_OG_IMAGE = "/assets/img/og-default.jpg"
 REQUIRED_KEYS = ("code", "html_lang", "og_locale", "url_prefix", "ui")
+PRIVACY_FILE = "privacy.html"  # текст политики языка: data/locales/<код>/privacy.html
 
 
 def _flatten(tree, prefix=""):
@@ -140,7 +141,7 @@ def localized_site(site, locale):
 
 def load_privacy(code, directory=LOCALES_DIR):
     """Текст политики конфиденциальности на языке — готовый HTML."""
-    path = directory / code / "privacy.html"
+    path = directory / code / PRIVACY_FILE
     if not path.exists():
         raise FileNotFoundError(f"Нет текста политики конфиденциальности языка {code}: {path}")
     return Markup(path.read_text(encoding="utf-8").rstrip("\n"))
@@ -187,6 +188,8 @@ def _params(text):
 def _key_problem(main, other, key):
     if key not in other.ui:
         return f"ui {key}: нет перевода"
+    if not isinstance(other.ui[key], str):
+        return f"ui {key}: перевод должен быть строкой, а не {type(other.ui[key]).__name__}"
     lost = sorted(_params(main.ui[key]) - _params(other.ui[key]))
     return f"ui {key}: потерян параметр {{{lost[0]}}}" if lost else None
 

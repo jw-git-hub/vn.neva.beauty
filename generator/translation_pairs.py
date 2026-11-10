@@ -5,7 +5,7 @@
 механически, а находки входят в общий список проблем перевода (translation.py): сборка
 падает, translation_status.py их показывает. Проблемы с адресом строки — как у замка
 и накладки, сообщения по-русски. Отступления — pair_exceptions.yml (pair_exceptions.py).
-Плейсхолдеры строк интерфейса проверяет locales.ui_problems, цифры перед đ — прайс.
+Плейсхолдеры строк интерфейса проверяет locales.ui_problems, цифры перед валютой — прайс (price_translation).
 """
 import re
 from collections import Counter
@@ -17,6 +17,7 @@ import overlay
 import pair_exceptions
 import pair_terms
 import price_translation
+import translation_problem
 from locales import site_strings
 from pair_exceptions import Finding
 
@@ -46,6 +47,7 @@ class Pair:
     en: str  # None — перевода нет, это уже названо другой проверкой
     checks: tuple
     is_document: bool = False  # политика: теги сравниваются по порядку во всём документе
+    group: str = translation_problem.CONTENT  # группа проблем строки в translation_status.py
 
 
 def _page_checks(path):
@@ -57,16 +59,23 @@ def _text_or_none(value):
     return value if isinstance(value, str) and value.strip() else None
 
 
+def _is_under(path, roots):
+    """Путь строки равен одному из корней или лежит внутри него (словарь «a.b», список «a[0]»)."""
+    return any(path == root or path.startswith((f"{root}.", f"{root}[")) for root in roots)
+
+
 def content_pairs(content, merged, untranslated_paths):
-    """Тексты страниц: путь как у overlay.source_strings. Непереведённое — без пары."""
+    """Тексты страниц: путь как у overlay.source_strings. Непереведённое — без пары;
+    путь из untranslated_paths закрывает и всё, что лежит под ним (список другой длины)."""
     russian, english = overlay.source_strings(content), overlay.source_strings(merged)
-    return [Pair(path, text, None if path in untranslated_paths else english.get(path),
+    return [Pair(path, text, None if _is_under(path, untranslated_paths) else english.get(path),
                  _page_checks(path)) for path, text in russian.items()]
 
 
 def site_pairs(site, locale_site):
     english = site_strings(locale_site)
-    return [Pair(f"site {path}", text, _text_or_none(english.get(path)), CHECKS_OF_SITE)
+    return [Pair(f"site {path}", text, _text_or_none(english.get(path)), CHECKS_OF_SITE,
+                 group=translation_problem.SITE)
             for path, text in site_strings(site).items()]
 
 
@@ -84,7 +93,8 @@ def _price_dictionaries(catalog):
 
 def _translated_price_pairs(catalog):
     return {_price_label(kind, key, owner): Pair(_price_label(kind, key, owner), key,
-                                                 _text_or_none(value), CHECKS_OF_PRICE)
+                                                 _text_or_none(value), CHECKS_OF_PRICE,
+                                                 group=translation_problem.PRICES)
             for owner, kind, dictionary in _price_dictionaries(catalog)
             for key, value in dictionary.items()}
 
@@ -96,7 +106,8 @@ def price_pairs(prices, catalog):
     for _, kind, key in price_translation.required_keys(prices):
         label = _price_label(kind, key)
         if kind in PRICE_KINDS:
-            pairs.setdefault(label, Pair(label, key, None, CHECKS_OF_PRICE))
+            pairs.setdefault(label, Pair(label, key, None, CHECKS_OF_PRICE,
+                                         group=translation_problem.PRICES))
     return list(pairs.values())
 
 
@@ -104,7 +115,8 @@ def privacy_pairs(privacy):
     """Политика целиком: (русский html, английский html) или None, если перевода нет."""
     if privacy is None:
         return []
-    return [Pair(PRIVACY_PATH, privacy[0], privacy[1], CHECKS_OF_PRIVACY, is_document=True)]
+    return [Pair(PRIVACY_PATH, privacy[0], privacy[1], CHECKS_OF_PRIVACY, is_document=True,
+                 group=translation_problem.PRIVACY)]
 
 
 def _numbers_of(text):
@@ -215,4 +227,7 @@ def pair_problems(pairs, terms, exceptions):
     kept, problems = pair_exceptions.apply_exceptions(
         findings, exceptions, CHECKS, {pair.path for pair in pairs},
         {pair.path for pair in pairs if pair.en is not None})
-    return [f"{finding.path}: {finding.message}" for finding in kept] + problems
+    group_of_path = {pair.path: pair.group for pair in pairs}
+    return ([translation_problem.Problem(f"{finding.path}: {finding.message}",
+                                         group_of_path[finding.path]) for finding in kept]
+            + translation_problem.tag(translation_problem.PAIR_EXCEPTIONS, problems))

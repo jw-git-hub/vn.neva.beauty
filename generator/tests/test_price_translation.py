@@ -11,6 +11,10 @@ CATALOG = {"sections": {"Цены": "Prices"},
            "descs": {"{0} сеансов — курс {1} đ": "{0} sessions — course {1} đ"}}
 
 
+DIGITS_BEFORE_CURRENCY = ("prices names «Лицо»: в переводе цифры перед валютой (đ, VND, dong) — "
+                          "цены в переводе нет")
+
+
 class MaskNumbersTest(unittest.TestCase):
     def test_numbers_with_thousand_spaces(self):
         self.assertEqual(pt.mask_numbers("5 сеансов — курс 1 000 000 đ"),
@@ -33,8 +37,19 @@ class CatalogProblemsTest(unittest.TestCase):
                       self.problems(names={**CATALOG["names"], "Лоб": "Forehead"}))
 
     def test_digits_before_dong_are_error(self):
-        self.assertIn("prices names «Лицо»: в переводе цифры перед đ — цены в переводе нет",
+        self.assertIn(DIGITS_BEFORE_CURRENCY,
                       self.problems(names={**CATALOG["names"], "Лицо": "Face 2 500 000 đ"}))
+
+    def test_digits_before_vnd_or_dong_are_error(self):
+        for name in ("Face 500000VND", "Face 500 000 vnd", "Face 500000 dong", "Face 5 Dong"):
+            with self.subTest(name=name):
+                self.assertIn(DIGITS_BEFORE_CURRENCY,
+                              self.problems(names={**CATALOG["names"], "Лицо": name}))
+
+    def test_numbers_beside_other_words_are_fine(self):
+        for name in ("Face 30 min", "Face 3 dongles", "Face VND"):
+            with self.subTest(name=name):
+                self.assertEqual(self.problems(names={**CATALOG["names"], "Лицо": name}), [])
 
     def test_digits_in_desc_translation_are_error(self):
         self.assertIn("prices descs «{0} сеансов — курс {1} đ»: в переводе описания цифры — "

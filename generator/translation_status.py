@@ -9,20 +9,12 @@ import build
 import translation
 from locales import load_locale
 
-GROUP_OF_PREFIX = (("ui ", "ui"), ("site ", "site"), ("prices", "prices"), ("privacy", "privacy"), ("замок", "замок"),
-                   ("pair_exceptions", "pair_exceptions"))
-CONTENT_GROUP = "content"
-
-
-def group_of(problem):
-    return next((group for prefix, group in GROUP_OF_PREFIX if problem.startswith(prefix)),
-                CONTENT_GROUP)
-
-
 def grouped(problems):
+    """Проблемы по группам. Группу несёт сама проблема (translation_problem.Problem):
+    её назначает стадия, нашедшая проблему, а не разбор текста сообщения."""
     groups = defaultdict(list)
     for problem in problems:
-        groups[group_of(problem)].append(problem)
+        groups[problem.group].append(problem)
     return groups
 
 

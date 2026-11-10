@@ -3,7 +3,8 @@
 Цен здесь нет по построению: ключ словаря — русская строка из prices.json, значение —
 её перевод. Числа в описаниях («5 сеансов — … 560 000 đ») переводчик видит масками
 {0}, {1}…, а сборка подставляет их из русской строки, поэтому новая цена в prices.json
-перевод не трогает. Цифры перед đ в переводе — ошибка: так в перевод не попадёт сумма.
+перевод не трогает. Цифры перед валютой (đ, VND, dong) в переводе — ошибка: так в перевод
+не попадёт сумма.
 Признак комбо считается по русскому названию до перевода (pricing.price_view).
 """
 import re
@@ -13,7 +14,9 @@ OVERRIDES = "overrides"
 NUMBER_RE = re.compile(r"\d+(?: \d{3})*")
 MASK_RE = re.compile(r"\{(\d+)\}")
 DIGIT_RE = re.compile(r"\d")
-DIGIT_BEFORE_DONG_RE = re.compile(r"\d\s*đ")
+# Цифры перед обозначением донга: «500 000 đ», «500000VND», «500000 dong». Латинские
+# обозначения — целым словом, чтобы «3 dongles» не считалось ценой.
+DIGIT_BEFORE_DONG_RE = re.compile(r"\d\s*(?:đ|(?:vnd|dong)\b)", re.IGNORECASE)
 FIELD_OF_KIND = {"names": "name", "descs": "desc"}
 
 
@@ -48,7 +51,7 @@ def _value_problems(kind, key, value):
     if not (isinstance(value, str) and value.strip()):
         return [f"{label}: перевод должен быть непустой строкой"]
     if DIGIT_BEFORE_DONG_RE.search(value):
-        return [f"{label}: в переводе цифры перед đ — цены в переводе нет"]
+        return [f"{label}: в переводе цифры перед валютой (đ, VND, dong) — цены в переводе нет"]
     if kind != "descs":
         return []
     if DIGIT_RE.search(MASK_RE.sub("", value)):
@@ -56,6 +59,64 @@ def _value_problems(kind, key, value):
     if _masks(value) != _masks(key):
         return [f"{label}: маски перевода {_masks(value)} не совпадают с масками ключа {_masks(key)}"]
     return []
+
+
+def _clean_map(value):
+    """Словарь «русская строка: перевод» без ключей-не-строк; не словарь — пустой."""
+    return {key: text for key, text in value.items() if isinstance(key, str)} \
+        if isinstance(value, dict) else {}
+
+
+def _clean_kinds(kinds):
+    """Переопределения одной услуги: виды чистятся, неизвестный вид остаётся — его называет
+    _structure_problems."""
+    unknown = {kind: value for kind, value in kinds.items() if kind not in KINDS}
+    return {**unknown, **{kind: _clean_map(kinds.get(kind)) for kind in KINDS}}
+
+
+def sanitized(catalog):
+    """Словарь перевода только из верных частей: кривая часть (список вместо словаря,
+    ключ-число) выпадает, а catalog_problems называет её отдельной строкой. Дальше
+    сборка и проверки работают с чистым словарём и не падают трейсбеком."""
+    if not isinstance(catalog, dict):
+        return {}
+    cleaned = {kind: _clean_map(catalog.get(kind)) for kind in KINDS}
+    overrides = catalog.get(OVERRIDES)
+    cleaned[OVERRIDES] = {service_id: _clean_kinds(kinds)
+                          for service_id, kinds in (overrides.items() if isinstance(overrides, dict) else ())
+                          if isinstance(kinds, dict)}
+    unknown = {key: value for key, value in catalog.items() if key not in cleaned}
+    return {**unknown, **cleaned}
+
+
+def _bad_map(label, value):
+    """Строка о значении, которое должно быть словарём «русская строка: перевод»."""
+    if value is None or isinstance(value, dict):
+        return []
+    return [f"{label}: должен быть словарём «русская строка: перевод», а не {_kind_name(value)}"]
+
+
+def _kind_name(value):
+    return {list: "списком", str: "строкой"}.get(type(value), type(value).__name__)
+
+
+def _shape_problems(catalog):
+    """Форма файла prices.yml: словари там, где нужны словари, и строковые ключи."""
+    if not isinstance(catalog, dict):
+        return [f"prices: файл должен быть словарём с ключами {', '.join(KINDS)}, а не "
+                f"{_kind_name(catalog)}"]
+    problems = []
+    for kind in KINDS:
+        problems += _bad_map(f"prices {kind}", catalog.get(kind))
+    overrides = catalog.get(OVERRIDES)
+    problems += _bad_map(f"prices {OVERRIDES}", overrides)
+    for service_id, kinds in sorted((overrides if isinstance(overrides, dict) else {}).items(),
+                                    key=lambda pair: str(pair[0])):
+        problems += _bad_map(f"prices {OVERRIDES} «{service_id}»", kinds)
+        for kind in KINDS:
+            problems += _bad_map(f"prices {OVERRIDES} «{service_id}» {kind}",
+                                 kinds.get(kind) if isinstance(kinds, dict) else None)
+    return problems
 
 
 def _dictionaries(catalog, prices):
@@ -97,9 +158,12 @@ def _coverage_problems(prices, catalog):
     return problems
 
 
-def catalog_problems(prices, catalog):
-    """Все проблемы словаря перевода прайса — одним списком."""
-    problems = _structure_problems(prices, catalog)
+def catalog_problems(prices, raw_catalog):
+    """Все проблемы словаря перевода прайса — одним списком. Принимает словарь как он
+    прочитан из файла: кривую форму называет строкой, остальное проверяет по чистой части."""
+    catalog = sanitized(raw_catalog)
+    problems = _shape_problems(raw_catalog)
+    problems += _structure_problems(prices, catalog)
     problems += list(dict.fromkeys(_coverage_problems(prices, catalog)))  # без повторов
     for _, kind, dictionary in _dictionaries(catalog, prices):
         for key, value in dictionary.items():

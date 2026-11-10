@@ -5,6 +5,7 @@ from unittest import mock
 import build
 import translation
 from locales import load_locale
+from translation_problem import Problem
 from tests.pseudo_translation import (PREFIX, pseudo_content, pseudo_pair_patches, pseudo_prices,
                                       pseudo_site)
 
@@ -45,6 +46,37 @@ class TranslationTest(unittest.TestCase):
         problems = self.problems(overlay={}, catalog={}, privacy=False)
         self.assertIn("privacy: нет перевода политики (data/locales/en/privacy.html)", problems)
         self.assertGreater(len(problems), 369)
+
+    def test_crooked_price_catalog_gives_lines_not_traceback(self):
+        """Список вместо словаря, словарь вместо списка и подобное — строка в общем списке."""
+        full = pseudo_prices(self.prices)
+        for key, crooked in (("names", []), ("descs", ["a"]), ("sections", "x"),
+                             ("overrides", ["a"]), ("overrides", {"lpg-massazh": []}),
+                             ("overrides", {"lpg-massazh": {"names": ["x"]}})):
+            with self.subTest(key=key, crooked=crooked):
+                problems = self.problems(catalog={**full, key: crooked})
+                self.assertTrue(any("должен быть словарём" in problem for problem in problems))
+                mock.patch.stopall()
+
+    def test_catalog_that_is_not_a_dictionary_gives_a_line(self):
+        problems = self.problems(catalog=["a"])
+        self.assertTrue(any(problem.startswith("prices: файл должен быть словарём")
+                            for problem in problems))
+
+    def test_ui_value_that_is_not_a_string_gives_a_line(self):
+        for value in (5, None, {"note": None}):
+            with self.subTest(value=value):
+                self.english = replace(self.english, ui={**self.main.ui, "price.from": value})
+                problems = self.problems()
+                self.assertIn(f"ui price.from: перевод должен быть строкой, а не "
+                              f"{type(value).__name__}", problems)
+                mock.patch.stopall()
+
+    def test_description_that_is_not_a_string_gives_a_line(self):
+        site = pseudo_site(self.site)
+        site["business"]["description"] = {"note": None}
+        self.english = replace(self.english, site=site)
+        self.assertIn("site business.description: нет перевода", self.problems())
 
     def test_prepare_raises_with_whole_list(self):
         for patch in self.patched(overlay={}):
@@ -90,10 +122,27 @@ class TranslationTest(unittest.TestCase):
 
 
 class StatusGroupsTest(unittest.TestCase):
-    def test_groups(self):
+    def test_group_comes_from_the_problem_not_from_its_text(self):
         import translation_status
-        self.assertEqual({translation_status.group_of(problem) for problem in (
-            "ui nav.home: нет перевода", "home.seo_title: нет перевода",
-            "prices names «Лоб»: нет перевода (lpg-massazh)", "privacy: нет перевода политики",
-            "замок privacy: в мастере строки больше нет")},
-            {"ui", "content", "prices", "privacy", "замок"})
+        problems = [Problem("ui nav.home: нет перевода", "content"),
+                    Problem("home.seo_title: нет перевода", "ui")]
+        groups = translation_status.grouped(problems)
+        self.assertEqual({group: list(items) for group, items in groups.items()},
+                         {"content": [problems[0]], "ui": [problems[1]]})
+
+    def test_every_stage_tags_its_own_group(self):
+        """Реальные проблемы пустого перевода раскладываются по стадиям, которые их нашли."""
+        site, content, prices = build.load()
+        locales = build.load_locales(site)
+        english = replace(locales[1], ui={}, site={})
+        with mock.patch("translation.load_overlay", return_value={}), \
+                mock.patch("translation.load_price_catalog", return_value={}), \
+                mock.patch("translation.privacy_exists", return_value=False), \
+                mock.patch("translation.translation_lock.load_lock",
+                           return_value={"content.home.seo_title": "0" * 16}):
+            _, problems = translation.translation_problems(site, content, prices, english,
+                                                           locales[0])
+        self.assertLessEqual({"content", "ui", "site", "prices", "privacy", "замок"},
+                             {problem.group for problem in problems})
+        self.assertTrue(all(problem.startswith("ui ") for problem in problems
+                            if problem.group == "ui"))
