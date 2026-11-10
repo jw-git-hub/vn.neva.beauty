@@ -65,7 +65,7 @@ categories:
     even in Vietnam''s hot climate.'
   faq:
   - q: What non-surgical body contouring treatments does Neva Beauty offer?
-    a: 'At Neva Beauty, a beauty center in Da Nang, body contouring is done with three device-based methods:
+    a: 'At Neva Beauty, a beauty center in Da Nang, non-surgical body contouring is done with three device-based methods:
       <a href="/lpg-massazh/">LPG massage</a>, <a href="/endosfera-terapiya/">Endosphere therapy</a> and
       <a href="/ultrazvukovaya-kavitaciya/">ultrasonic cavitation</a>. All of them are non-surgical and
       require no recovery period.'
@@ -101,7 +101,7 @@ categories:
     hot climate.'
   faq:
   - q: What non-surgical face lifting and rejuvenation treatments does Neva Beauty offer?
-    a: 'At Neva Beauty, a beauty center in Da Nang, face lifting and rejuvenation are done with three
+    a: 'At Neva Beauty, a beauty center in Da Nang, non-surgical face lifting and rejuvenation are done with three
       device-based methods: <a href="/smas-lifting/">HIFU treatment</a>, <a href="/morpheus-8-rf-lifting/">Morpheus8
       RF microneedling</a> and <a href="/fotoomolozhenie-m22/">M22 photorejuvenation</a>. All of them
       are non-surgical and do not require a lengthy recovery.'
@@ -341,7 +341,7 @@ services:
       and body areas. Prices in VND by area. Message us to book.'
     intro: HIFU treatment (high-intensity focused ultrasound) at Neva Beauty, a beauty center in Da Nang,
       is a non-surgical face lift. Focused ultrasound acts on the deep muscle and connective-tissue layer
-      (SMAS) without surgery and stimulates the production of your own collagen, restoring definition
+      (SMAS) and stimulates the production of your own collagen, restoring definition
       to the facial contours and lifting the neck and decollete area. At Neva Beauty, HIFU is a single
       treatment rather than a course. It is done on the face, neck and decollete, and also on body areas
       (abdomen, arms, thighs). Results develop gradually and are long-lasting. There is no recovery period,
@@ -401,13 +401,13 @@ services:
       only.
     benefits:
     - title: A Comprehensive Solution
-      text: RF microneedling effectively eliminates sagging skin, wrinkles, enlarged pores and acne scars
+      text: Morpheus8 effectively eliminates sagging skin, wrinkles, enlarged pores and acne scars
         through deep collagen stimulation.
     - title: Safety and Comfort
-      text: In RF microneedling, handpieces with insulated needles allow precise control of the treatment
+      text: Morpheus8 handpieces with insulated needles allow precise control of the treatment
         depth, keeping damage to the epidermis to a minimum.
     - title: A Deep Lifting Effect
-      text: By working at the level of the subcutaneous fat, RF microneedling provides long-lasting tissue
+      text: By working at the level of the subcutaneous fat, Morpheus8 provides long-lasting tissue
         firming that ordinary facials cannot achieve.
     - title: Versatility
       text: RF microneedling suits any skin type and can be used all year round, which matters when you
@@ -458,10 +458,10 @@ services:
       text: M22 effectively deals with age spots, visible blood vessels and acne, restoring a healthy,
         even complexion to the face.
     - title: Safety and Smart Control
-      text: The built-in cooling system makes photorejuvenation as comfortable as possible, minimizing
-        discomfort.
+      text: The built-in cooling system of the M22 platform makes the treatment as comfortable as possible,
+        minimizing discomfort.
     - title: Deep Skin Stimulation
-      text: In photorejuvenation, light pulses activate the production of your own collagen and elastin,
+      text: Light pulses from the M22 platform activate the production of your own collagen and elastin,
         increasing skin density and giving a long-lasting lifting effect.
     - title: A Versatile Solution
       text: The wide range of M22 filters allows the settings to be tailored individually for any skin

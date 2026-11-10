@@ -295,7 +295,8 @@ flowchart LR
 
 - **📖 Glossary and a pair-of-strings autotest.** `glossary.yml` holds the approved terms
   ("Laser Hair Removal", not "laser epilation"). Required terms carry a `required` word
-  that must appear in the English string whenever the Russian one contains the term. Every
+  that must appear in the English string whenever the Russian one contains the term, once
+  for each such term. Every
   "Russian — English string" pair is checked mechanically (`translation_pairs.py`):
   numbers, `{…}` placeholders, links, tags and required terms. Deviations are allowed only
   in `pair_exceptions.yml`, each with a reason, and each lifts one check on one string; an

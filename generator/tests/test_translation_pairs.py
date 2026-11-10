@@ -151,7 +151,7 @@ class RequiredTermsTest(unittest.TestCase):
     def test_missing_required_word_is_named(self):
         self.assertEqual(
             self.check("Подбирается на консультации.", "Chosen individually."),
-            ["services.x.faq[0].a: термины: в русском «консультации» (термин «консультация»), "
+            ["services.x.faq[0].a: термины: в русском «на консультации» (термин «на консультации»), "
              "в переводе нет «consultation»"])
 
     def test_present_word_passes_in_any_case(self):

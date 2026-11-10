@@ -201,12 +201,18 @@ def _tags(pair, terms):
     return [Finding(pair.path, CHECK_TAGS, message)] if message else []
 
 
+def _terms_message(missing):
+    found = ", ".join(f"«{fragment}» (термин «{term.ru}»)" for term, fragment in missing.found)
+    if not missing.present:
+        return f"термины: в русском {found}, в переводе нет «{missing.required}»"
+    return (f"термины: в русском {found}, в переводе «{missing.required}» только "
+            f"{missing.present} из {len(missing.found)} — по одному на термин")
+
+
 def _terms(pair, terms):
-    return [Finding(pair.path, CHECK_TERMS,
-                    f"термины: в русском «{fragment}» (термин «{term.ru}»), "
-                    f"в переводе нет «{term.required}»", term.required)
-            for term, fragment in pair_terms.required_terms(pair.ru, terms)
-            if not pair_terms.english_has(term, pair.en)]
+    """По находке на каждое слово required, которого в переводе меньше, чем терминов."""
+    return [Finding(pair.path, CHECK_TERMS, _terms_message(missing), missing.required)
+            for missing in pair_terms.missing_words(pair.ru, pair.en, terms)]
 
 
 CHECKERS = {CHECK_NUMBERS: _numbers, CHECK_PLACEHOLDERS: _placeholders, CHECK_LINKS: _links,

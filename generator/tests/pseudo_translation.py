@@ -15,11 +15,10 @@ TERMS_LOCALE = "en"
 
 
 def _missing_required_words(pseudo):
-    """Слова required глоссария, которых в псевдопереводе нет. Настоящий перевод ставит
-    их сам, а русский текст с приставкой без них проверку терминов не пройдёт."""
-    terms = pair_terms.load_terms(TERMS_LOCALE)
-    return [term.required for term, _ in pair_terms.required_terms(pseudo, terms)
-            if not pair_terms.english_has(term, pseudo)]
+    """[MissingWord] — слова required глоссария, которых в псевдопереводе не хватает
+    (по вхождению на термин). Настоящий перевод ставит их сам, а русский текст с
+    приставкой без них проверку терминов не пройдёт."""
+    return pair_terms.missing_words(pseudo, pseudo, pair_terms.load_terms(TERMS_LOCALE))
 
 
 def _glue_digits(pseudo, word):
@@ -33,9 +32,10 @@ def _pseudo_text(text, with_terms):
     pseudo = PREFIX + text
     if not with_terms:
         return pseudo
-    for word in _missing_required_words(pseudo):
+    for missing in _missing_required_words(pseudo):
+        word = missing.required
         glued = _glue_digits(pseudo, word) if any(char.isdigit() for char in word) else pseudo
-        pseudo = glued if glued != pseudo else pseudo + " " + word
+        pseudo = glued if glued != pseudo else pseudo + f" {word}" * missing.shortfall
     return pseudo
 
 

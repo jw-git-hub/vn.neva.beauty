@@ -9,7 +9,8 @@
 #             prices names «Лоб»              — название или раздел прайса;
 #             privacy                         — политика целиком;
 #     check:  numbers | placeholders | links | tags | terms;
-#     term:   только для terms — слово required из глоссария (снимается один термин, а не все);
+#     term:   только для terms — слово required из глоссария (снимается это слово со всеми его
+#             терминами в строке, остальные слова проверяются);
 #     placeholder: только для placeholders — плейсхолдер вида {имя} (снимается один, а не все);
 #     reason: почему отступление намеренное (обязательно).
 #
@@ -84,3 +85,26 @@ exceptions:
     check: placeholders
     placeholder: '{dermatology_consultation_price}'
     reason: *ru_only_dermatology
+  - path: services.smas-lifting.intro
+    check: terms
+    term: surgery
+    reason: 'Русская строка говорит одно дважды: «безоперационная подтяжка лица без хирургии». «Non-surgical face lift» передаёт оба слова, факт и сила обещания те же; второе «without surgery» было тавтологией (GEO-06) и после переноса во второе предложение осталось повтором (отложено на этапе 11, убрано 2026-11-10). Снимается только «surgery»: «non-surgical» и остальные термины строки проверяются.'
+  - path: services.ultrazvukovaya-kavitaciya.intro
+    check: terms
+    term: non-surgical
+    reason: '«Безоперационная аппаратная коррекция фигуры» — одно словосочетание: «non-surgical body contouring» переводит оба термина, «безоперационная» и «коррекция фигуры» (глоссарий: Non-Surgical Body Contouring). Второе «non-surgical» дало бы «non-surgical, device-based non-surgical body contouring». Находка подсчёта вхождений required (2026-11-10). Снимается только «non-surgical».'
+  - path: services.morpheus-8-rf-lifting.benefits[0].text
+    check: numbers
+    reason: &device_name 'Карточка «Why … Works» называет аппарат (отложенная находка GEO-04, этап 11): русская страница называет процедуру «Morpheus 8», а части аппарата — его манипулы, встроенная система охлаждения и световые импульсы платформы M22. В русской карточке название не стоит, поэтому проверка чисел видит лишние 8 или 22 — это часть названия аппарата по глоссарию (Morpheus8, M22), а не число. Других чисел в строке нет ни в русском, ни в английском.'
+  - path: services.morpheus-8-rf-lifting.benefits[1].text
+    check: numbers
+    reason: *device_name
+  - path: services.morpheus-8-rf-lifting.benefits[2].text
+    check: numbers
+    reason: *device_name
+  - path: services.fotoomolozhenie-m22.benefits[1].text
+    check: numbers
+    reason: *device_name
+  - path: services.fotoomolozhenie-m22.benefits[2].text
+    check: numbers
+    reason: *device_name
