@@ -23,8 +23,10 @@ class WebSiteLanguageTest(unittest.TestCase):
 
     def test_render_passes_languages_to_graph(self):
         site, _content, _prices = build.load()
-        self.assertIn('"inLanguage": [\n        "ru",\n        "en"\n      ]',
-                      schema.render(site, ["ru", "en"]))
+        rendered = schema.render(site, ["ru", "en"])
+        graph = json.loads(re.search(r"\{.*\}", rendered, re.S).group(0))["@graph"]
+        website = next(node for node in graph if node["@type"] == "WebSite")
+        self.assertEqual(website["inLanguage"], ["ru", "en"])
 
 
 class BeautySalonNodeTest(unittest.TestCase):

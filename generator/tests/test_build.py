@@ -1,5 +1,6 @@
 import contextlib
 import copy
+import functools
 import json
 import re
 import unittest
@@ -16,6 +17,7 @@ import pages
 import pricing
 import taxonomy
 from locales import load_locale
+from translation import load_overlay
 from routes import Routes
 from tests.pseudo_translation import (pseudo_content, pseudo_pair_patches, pseudo_prices,
                                       pseudo_site)
@@ -60,10 +62,16 @@ def build_pages_of_test_english(x_default_locale="en", ui_overrides=None):
     return {path.relative_to(build.OUT).as_posix(): html for path, html in written.items()}
 
 
+@functools.lru_cache(maxsize=None)
+def default_test_english_pages():
+    """Тестовый английский с настройками по умолчанию: одна сборка на весь модуль тестов."""
+    return build_pages_of_test_english()
+
+
 class HreflangInBuiltPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pages = build_pages_of_test_english()
+        cls.pages = default_test_english_pages()
 
     def test_indexable_page_lists_every_language_and_x_default(self):
         html = self.pages["en/index.html"]
@@ -157,10 +165,6 @@ class CategoryPriceHintTest(unittest.TestCase):
             self.hint(price_names=["Тело", "Шея"])
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 WHATSAPP_HREF_RE = re.compile(r'href="(https://wa\.me/[^"]*)"')
 TELEGRAM_HREF_RE = re.compile(r'href="(https://t\.me/[^"]*)"')
 
@@ -175,15 +179,7 @@ def contact_texts(html, href_re=WHATSAPP_HREF_RE):
 class ContactLinksInBuiltPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        site, content, prices = build.load()
-        locale = load_locale("ru")
-        routes = Routes([locale], taxonomy.page_ids(content), site["base_url"], "ru")
-        written = {}
-        with mock.patch("build.write",
-                        side_effect=lambda path, html: written.update({path: html})):
-            build.build_locale(site, content, prices, locale, routes, "", locale)
-        cls.pages = {path.relative_to(build.OUT).as_posix(): html
-                     for path, html in written.items()}
+        cls.pages = build_real_pages("ru")
 
     def test_service_page_links_carry_service_title(self):
         self.assertEqual(contact_texts(self.pages["lpg-massazh/index.html"]),
@@ -237,7 +233,7 @@ class MessengerPlaceholderTest(unittest.TestCase):
 class TranslatedEnglishPagesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pages = build_pages_of_test_english()
+        cls.pages = default_test_english_pages()
 
     def test_price_list_uses_translated_names(self):
         html = self.pages["en/lpg-massazh/index.html"]
@@ -277,9 +273,11 @@ class EnglishHeadingTemplateTest(unittest.TestCase):
         self.assertNotIn("{title}", html)
 
 
+@functools.lru_cache(maxsize=None)
 def build_real_pages(code):
     """Собирает страницы настоящего языка сайта (ru или en) с обоими языками в таблице
-    маршрутов, не пиша файлов. Возвращает {путь страницы: html}."""
+    маршрутов, не пиша файлов. Возвращает {путь страницы: html}. Сборка языка одна на весь
+    модуль тестов: результат общий, тесты его не меняют."""
     site, content, prices = build.load()
     locales = build.load_locales(site)
     routes = Routes(locales, taxonomy.page_ids(content), site["base_url"],
@@ -710,10 +708,10 @@ class JsonLdInBuiltPagesTest(unittest.TestCase):
                 self.assertEqual(html.count('"inLanguage"'), 1, path)
 
     def test_english_service_has_english_id_and_title_as_name(self):
-        _site, content, _prices = build.load()
+        english_title = load_overlay("en")["services"]["lazernaya-epilyaciya"]["title"]
         service = self.node_of(self.en["en/laser-hair-removal/index.html"], "Service")
         self.assertEqual(service["@id"], "https://vn.neva.beauty/en/laser-hair-removal/#service")
-        self.assertEqual(service["name"], "Laser Hair Removal")
+        self.assertEqual(service["name"], english_title)
 
     def test_russian_service_keeps_russian_id(self):
         service = self.node_of(self.ru["lazernaya-epilyaciya/index.html"], "Service")
@@ -943,3 +941,7 @@ class HeaderAndHeroTokensTest(unittest.TestCase):
                       "--hero-photo-width-max", "--hero-photo-ratio", "--hero-photo-min"):
             with self.subTest(token=token):
                 self.assertRegex(tokens, rf"{token}:")
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -65,7 +65,7 @@ class BuildLlmsFileTest(unittest.TestCase):
         text = sitewide.build_llms_file(self.site, self.contents, self.prices,
                                         self.locales, self.routes)
         self.assertTrue(text.startswith(russian))
-        self.assertTrue(text[len(russian):].startswith("\n# Neva Beauty — English\n"))
+        self.assertTrue(text[len(russian):].startswith(f"\n# {self.site['brand']} — English\n"))
         english = text[len(russian):]
         self.assertIn("https://vn.neva.beauty/en/laser-hair-removal/", english)
         self.assertIsNone(re.search("[А-Яа-яЁё]", english))
