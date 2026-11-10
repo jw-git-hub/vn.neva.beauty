@@ -14,6 +14,7 @@ from locales import LOCALES_DIR, site_strings
 
 LOCK_FILE = "content.lock.json"
 FINGERPRINT_LENGTH = 16
+CHANGED, ADDED, REMOVED = "изменён", "добавлен", "удалён"
 
 
 def fingerprint(text):
@@ -40,6 +41,18 @@ def lock_problems(locked, current):
             problems.append(f"замок {path}: русский текст изменился — "
                             f"обновите перевод и поставьте замок заново")
     return problems
+
+
+def lock_changes(previous, current):
+    """Что перезапирание меняет в замке: строки «изменён/добавлен/удалён <путь>».
+    Нет прежнего замка — язык запирается впервые, список пуст."""
+    if previous is None:
+        return []
+    changes = [f"{CHANGED} {path}" for path in sorted(set(previous) & set(current))
+               if previous[path] != current[path]]
+    changes += [f"{ADDED} {path}" for path in sorted(set(current) - set(previous))]
+    changes += [f"{REMOVED} {path}" for path in sorted(set(previous) - set(current))]
+    return changes
 
 
 def load_lock(code, directory=LOCALES_DIR):

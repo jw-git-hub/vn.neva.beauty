@@ -21,7 +21,10 @@ def main(code):
                  + "\n".join(problems))
     fingerprints = translation_lock.source_fingerprints(site, content, main_locale,
                                                         load_privacy(main_locale.code))
+    changes = translation_lock.lock_changes(translation_lock.load_lock(code), fingerprints)
     translation_lock.write_lock(code, fingerprints)
+    if changes:
+        print(f"Перезаперто, изменилось путей: {len(changes)}\n" + "\n".join(changes))
     print(f"Замок {code}: строк {len(fingerprints)}")
 
 

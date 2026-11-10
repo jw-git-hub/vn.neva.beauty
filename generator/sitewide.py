@@ -96,10 +96,11 @@ def _llms_service_lines(content, prices, locale, routes):
 
 def _llms_pages_lines(locale, routes):
     """Главная и политика конфиденциальности — раздел только у языков, где задан
-    его заголовок: русский блок остаётся прежним байт в байт."""
-    if not locale.llms_pages_title:
+    его заголовок (ui.llms.pages_title): русский блок остаётся прежним байт в байт."""
+    title = locale.t("llms.pages_title")
+    if not title:
         return []
-    return ["", locale.llms_pages_title,
+    return ["", title,
             f"- [{locale.t('nav.home')}]({routes.url(locale, HOME)})",
             f"- [{locale.t('footer.privacy')}]({routes.url(locale, PRIVACY)})"]
 

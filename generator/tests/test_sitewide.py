@@ -88,7 +88,7 @@ class BuildLlmsFileTest(unittest.TestCase):
 
     def test_russian_block_has_no_pages_section(self):
         main, russian, _english = self.english_block()
-        self.assertEqual(main.llms_pages_title, "")
+        self.assertEqual(main.t("llms.pages_title"), "")
         self.assertNotIn(self.routes.url(main, PRIVACY), russian)
         self.assertNotIn(f"]({self.routes.url(main, HOME)})", russian)
 
