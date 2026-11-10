@@ -9,7 +9,11 @@
     одинакова на всех языках;
   - ссылки, картинки и манифест неосновных языков указывают на существующие файлы,
     а ссылки на страницы — внутрь своего языка;
-  - в неосновных языках нет кириллицы вне элементов с чужим lang;
+  - в неосновных языках нет кириллицы вне элементов с чужим lang, в том числе расширенной
+    (U+0460–U+04FF), и в служебных файлах под префиксом языка (манифест, json, txt, xml,
+    js, css, svg), а не только в страницах;
+  - при непустом base_path каждая корневая ссылка начинается с него (иначе на превью по
+    подпути она ведёт мимо сайта);
   - sitemap содержит canonical каждой собранной страницы без noindex, без повторов и
     без лишнего; ожидаемый список берётся из самих страниц, а не из функции сборки sitemap;
   - у каждой страницы языка есть собранный файл, а под префиксом языка нет страниц,
@@ -34,14 +38,17 @@ SITEMAP_FILE = "sitemap.xml"
 X_DEFAULT = "x-default"
 NOINDEX_TOKEN = "noindex"
 HTML_EXTENSION = ".html"
+# Служебные текстовые файлы под префиксом языка: в них тоже не должно быть кириллицы.
+LANGUAGE_TEXT_SUFFIXES = (".webmanifest", ".json", ".txt", ".xml", ".js", ".css", ".svg")
 # Селекторы строк прайса — те же, что в check_prices.py: позиции панелей и комбо.
 PRICE_ROW_SELECTOR = ".pricelist__panel .pricelist__row, .pricelist__panel .combo"
 JSON_LD_SELECTOR = 'script[type="application/ld+json"]'
 # Всё, что тянется с адреса: ссылки, подключения, картинки, карточка превью.
 ADDRESSED_SELECTOR = "a[href], link[href], img[src], meta[property='og:image'][content]"
 ADDRESS_ATTRIBUTES = ("href", "src", "content")
-# Кириллица буквой или записью \\uXXXX (так |tojson пишет её в скриптах): блок U+0400–U+045F.
-CYRILLIC_PATTERN = r"(?:[А-Яа-яЁё]|\\u04[0-5][0-9a-fA-F])"
+# Кириллица буквой или записью \\uXXXX (так |tojson пишет её в скриптах): весь блок
+# U+0400–U+04FF, включая расширенную кириллицу U+0460–U+04FF (ѣ, ҙ, ӏ и подобные).
+CYRILLIC_PATTERN = r"(?:[\u0400-\u04FF]|\\u04[0-9a-fA-F]{2})"
 # Фрагмент вокруг кириллицы: 20 знаков до буквы, сама буква и 39 после — всего до 60.
 FRAGMENT_RE = re.compile(r"[^\n]{0,20}" + CYRILLIC_PATTERN + r"[^\n]{0,39}")
 FRAGMENT_LENGTH = 60
@@ -189,16 +196,30 @@ def link_problem(tag, path, locale, site_dir):
     return None
 
 
+def base_path_problem(address, base_path):
+    """Корневая ссылка («/en/…») без префикса base_path: на превью по подпути она ведёт
+    мимо сайта, хотя файл с таким путём в сборке есть и проверка файла её пропустила бы.
+    Полные адреса и относительные ссылки не трогаются."""
+    address = address.strip()
+    is_root_link = address.startswith("/") and not address.startswith("//")
+    if not base_path or not is_root_link:
+        return None
+    if address == base_path or address.startswith((base_path + "/", base_path + "?", base_path + "#")):
+        return None
+    return f"ссылка без префикса {base_path}"
+
+
 def link_errors(soup, page_name, locale, main_locale, site_dir, base_url, base_path=""):
-    """Ссылки, подключения и картинки неосновного языка: файл существует, страница
-    лежит под префиксом языка. Основной язык этой проверкой не охватывается."""
-    if locale.code == main_locale.code:
-        return []
+    """Ссылки, подключения и картинки страницы. Любой язык: корневая ссылка начинается
+    с base_path. Неосновной язык: файл существует, страница лежит под префиксом языка;
+    основной язык этой частью не охватывается."""
+    is_main = locale.code == main_locale.code
     errors = []
     for tag in soup.select(ADDRESSED_SELECTOR):
         address = next(tag[name] for name in ADDRESS_ATTRIBUTES if tag.has_attr(name))
-        path = site_path(address, base_url, base_path)
-        problem = link_problem(tag, path, locale, site_dir) if path is not None else None
+        problem = base_path_problem(address, base_path)
+        path = None if is_main or problem else site_path(address, base_url, base_path)
+        problem = problem or (link_problem(tag, path, locale, site_dir) if path is not None else None)
         if problem:
             errors.append(f"{page_name}: <{tag.name}> {address!r}: {problem}")
     return errors
@@ -220,14 +241,31 @@ def without_foreign_language(soup):
     return copied
 
 
-def cyrillic_errors(soup, page_name):
-    """Кириллица в разметке неосновного языка: текст, атрибуты, скрипты, JSON-LD."""
-    html = str(without_foreign_language(soup))
-    fragments = [match.group().strip() for match in FRAGMENT_RE.finditer(html)]
+def fragment_errors(text, name):
+    """Одна строка о кириллице в тексте: число мест и до трёх коротких фрагментов."""
+    fragments = [match.group().strip() for match in FRAGMENT_RE.finditer(text)]
     if not fragments:
         return []
     shown = FRAGMENT_SEPARATOR.join(fragments[:FRAGMENT_LIMIT])
-    return [f"{page_name}: кириллица ({len(fragments)} мест): {shown}"]
+    return [f"{name}: кириллица ({len(fragments)} мест): {shown}"]
+
+
+def cyrillic_errors(soup, page_name):
+    """Кириллица в разметке неосновного языка: текст, атрибуты, скрипты, JSON-LD."""
+    return fragment_errors(str(without_foreign_language(soup)), page_name)
+
+
+def language_file_errors(site_dir, locales):
+    """Кириллица в служебных текстовых файлах под префиксом неосновного языка
+    (манифест языка и подобные): не HTML, поэтому страничная проверка их не видит."""
+    errors = []
+    for locale in locales[1:]:
+        root = site_dir / locale.url_prefix.lstrip("/")
+        for found in sorted(root.rglob("*")):
+            if found.is_file() and found.suffix in LANGUAGE_TEXT_SUFFIXES:
+                shown = str(found.relative_to(site_dir.parent))
+                errors += fragment_errors(found.read_text(encoding="utf-8"), shown)
+    return errors
 
 
 def sitemap_errors(sitemap_text, expected_urls):
@@ -285,6 +323,7 @@ def check_pages(site, content, setup):
         urls += indexable_urls_of(soup)
         checked += 1
     errors += stale_page_errors(SITE, setup.routes.locales, expected_files)
+    errors += language_file_errors(SITE, setup.routes.locales)
     return PageReport(errors, signatures, checked, urls)
 
 

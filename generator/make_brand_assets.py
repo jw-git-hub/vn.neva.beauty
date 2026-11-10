@@ -269,20 +269,30 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    card_code = parse_args().card
-    if card_code:
-        site, content, prices = build.load()
-        locales = build.load_locales(site)
-        locale = next((item for item in locales if item.code == card_code), None)
-        if locale is None:
-            raise SystemExit(f"Нет языка {card_code!r} среди {[item.code for item in locales]}")
-        build_locale_card(site, content, prices, locale, locales[0])
-        return
+def build_card_of_language(card_code):
+    """Режим --card: только карточка превью одного языка сайта."""
+    site, content, prices = build.load()
+    locales = build.load_locales(site)
+    locale = next((item for item in locales if item.code == card_code), None)
+    if locale is None:
+        raise SystemExit(f"Нет языка {card_code!r} среди {[item.code for item in locales]}")
+    build_locale_card(site, content, prices, locale, locales[0])
+
+
+def build_all_assets():
+    """Режим по умолчанию: иконки, логотип организации и карточка основного языка."""
     site = yaml.safe_load((ROOT / "data/site.yml").read_text(encoding="utf-8"))
     content = yaml.safe_load((ROOT / "data/content.yml").read_text(encoding="utf-8"))
     build_icons()
     build_social(site, content["categories"])
+
+
+def main():
+    card_code = parse_args().card
+    if card_code:
+        build_card_of_language(card_code)
+    else:
+        build_all_assets()
 
 
 if __name__ == "__main__":

@@ -1,3 +1,5 @@
+import contextlib
+import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -195,6 +197,31 @@ class LinkErrorsTest(unittest.TestCase):
         body = '<a href="/preview/en/lpg-massage/">a</a><img src="/preview/favicon.ico">'
         self.assertEqual(self.errors(body, base_path="/preview"), [])
 
+    def test_root_link_without_base_path_is_error(self):
+        """Файл /en/lpg-massage/ в сборке есть, но на превью по подпути ссылка ведёт мимо сайта."""
+        for body in ('<a href="/en/lpg-massage/">a</a>', '<img src="/favicon.ico">',
+                     '<link href="/en/site.webmanifest">', '<a href="/previewer/">a</a>'):
+            with self.subTest(body=body):
+                errors = self.errors(body, base_path="/preview")
+                self.assertTrue(any("без префикса /preview" in error for error in errors))
+
+    def test_base_path_alone_with_query_or_anchor_has_the_prefix(self):
+        for address in ("/preview", "/preview/", "/preview#faq", "/preview?x=1", "/preview/en/"):
+            with self.subTest(address=address):
+                self.assertIsNone(check_i18n.base_path_problem(address, "/preview"))
+        self.assertIsNotNone(check_i18n.base_path_problem("/previewer/", "/preview"))
+        self.assertIsNone(check_i18n.base_path_problem("/en/", ""))
+
+    def test_full_and_relative_addresses_are_not_base_path_errors(self):
+        body = ('<a href="https://example.com/x">a</a><a href="//cdn.example.com/x.js">b</a>'
+                '<a href="#faq">c</a><a href="tel:+84">d</a>')
+        self.assertEqual(self.errors(body, base_path="/preview"), [])
+
+    def test_main_language_root_link_without_base_path_is_error(self):
+        errors = self.errors('<a href="/lpg-massazh/">x</a>', locale=RU, base_path="/preview")
+        self.assertEqual(len(errors), 1)
+        self.assertIn("без префикса /preview", errors[0])
+
 
 def cyrillic(body, head=""):
     soup = parse(f'<html lang="en"><head>{head}</head><body>{body}</body></html>')
@@ -238,6 +265,17 @@ class CyrillicErrorsTest(unittest.TestCase):
 
     def test_escaped_cyrillic_in_script_is_error(self):
         for escaped in ("\\u041c\\u0430\\u0441", "\\u043C\\u0430", "\\u0401", "\\u0451"):
+            with self.subTest(escaped=escaped):
+                self.assertTrue(cyrillic(f'<script>var s = "{escaped}";</script>'))
+
+    def test_extended_cyrillic_is_error(self):
+        """Старая кириллица и буквы неславянских языков (U+0460–U+04FF) — тоже кириллица."""
+        for letter in ("ѣ", "ҙ", "ӏ", "Ѡ"):
+            with self.subTest(letter=letter):
+                self.assertTrue(cyrillic(f"<p>word {letter} word</p>"))
+
+    def test_escaped_extended_cyrillic_in_script_is_error(self):
+        for escaped in ("\\u0463", "\\u0499", "\\u04CF", "\\u04ff"):
             with self.subTest(escaped=escaped):
                 self.assertTrue(cyrillic(f'<script>var s = "{escaped}";</script>'))
 
@@ -363,11 +401,87 @@ class BuiltSiteTest(unittest.TestCase):
         self.write("about/index.html")
         self.assertEqual(check_i18n.stale_page_errors(self.site_dir, [RU, EN], self.expected), [])
 
+    def test_cyrillic_in_non_html_file_under_prefix_is_error(self):
+        self.write("en/site.webmanifest", '{"name": "Центр красоты"}')
+        errors = check_i18n.language_file_errors(self.site_dir, [RU, EN])
+        self.assertEqual(len(errors), 1)
+        self.assertIn("en/site.webmanifest", errors[0])
+        self.assertIn("кириллица", errors[0])
+
+    def test_latin_non_html_file_and_main_language_files_pass(self):
+        self.write("en/site.webmanifest", '{"name": "Beauty Center"}')
+        self.write("site.webmanifest", '{"name": "Центр красоты"}')
+        self.assertEqual(check_i18n.language_file_errors(self.site_dir, [RU, EN]), [])
+
+    def test_cyrillic_in_non_html_file_is_reported_by_check_pages(self):
+        self.write_pair()
+        self.write("en/site.webmanifest", '{"name": "Центр"}')
+        self.assertTrue(any("site.webmanifest" in error for error in self.run_check().errors))
+
+    def test_check_pages_collects_signatures_and_count(self):
+        self.write_pair()
+        report = self.run_check()
+        self.assertEqual(report.checked, 2)
+        self.assertEqual(set(report.signatures), {PAGE_ID})
+        self.assertEqual(set(report.signatures[PAGE_ID]), {"ru", "en"})
+
+    def test_check_pages_reports_wrong_canonical(self):
+        self.write_pair('<link rel="canonical" href="https://vn.neva.beauty/en/other/">')
+        self.assertTrue(any("canonical" in error for error in self.run_check().errors))
+
     def test_stale_page_is_reported_by_check_pages(self):
         self.write_pair()
         self.write("en/old-slug/index.html")
         errors = self.run_check().errors
         self.assertTrue(any(error.startswith("лишняя страница") for error in errors))
+
+
+class MainTest(unittest.TestCase):
+    """main читает сборку, обходит страницы и сверяет отпечатки и sitemap: печатает итог
+    и завершается кодом 0 или 1."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._dir.cleanup)
+        self.site_dir = Path(self._dir.name) / "site"
+        self.site_dir.mkdir()
+
+    def run_main(self, report, sitemap_text):
+        (self.site_dir / check_i18n.SITEMAP_FILE).write_text(sitemap_text, encoding="utf-8")
+        output = io.StringIO()
+        with mock.patch.object(check_i18n, "SITE", self.site_dir), \
+                mock.patch.object(check_i18n.build, "load", return_value=({}, {}, {})), \
+                mock.patch.object(check_i18n, "make_setup",
+                                  return_value=check_i18n.Setup(ROUTES, BASE_URL, "")), \
+                mock.patch.object(check_i18n, "check_pages", return_value=report), \
+                contextlib.redirect_stdout(output):
+            try:
+                check_i18n.main()
+                code = 0
+            except SystemExit as exit_signal:
+                code = exit_signal.code
+        return code, output.getvalue()
+
+    def signatures(self, english_headings=(1, 2)):
+        make = lambda headings: check_i18n.Signature(headings, 0, 0, ())
+        return {PAGE_ID: {"ru": make((1, 2)), "en": make(english_headings)}}
+
+    def test_clean_site_prints_ok_and_exits_normally(self):
+        report = check_i18n.PageReport([], self.signatures(), 2, [RU_URL, EN_URL])
+        code, output = self.run_main(report, sitemap(RU_URL, EN_URL))
+        self.assertEqual(code, 0)
+        self.assertIn("страниц проверено: 2", output)
+        self.assertIn("I18N OK", output)
+
+    def test_page_errors_signature_and_sitemap_errors_all_fail_the_run(self):
+        report = check_i18n.PageReport(["нет пары: en/x/index.html"], self.signatures((1, 3)),
+                                       2, [RU_URL, EN_URL])
+        code, output = self.run_main(report, sitemap(RU_URL))
+        self.assertEqual(code, 1)
+        self.assertIn("нет пары: en/x/index.html", output)
+        self.assertIn("уровни заголовков", output)
+        self.assertIn(f"sitemap: нет адреса {EN_URL}", output)
+        self.assertNotIn("I18N OK", output)
 
 
 if __name__ == "__main__":
