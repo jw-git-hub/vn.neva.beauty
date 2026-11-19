@@ -41,7 +41,7 @@ exceptions:
     check: placeholders
     placeholder: '{dermatology_consultation_price}'
     reason: *ru_only_dermatology
-  - path: services.lazernaya-epilyaciya.faq[4].a
+  - path: services.lazernaya-epilyaciya.faq[10].a
     check: placeholders
     placeholder: '{dermatology_consultation_price}'
     reason: *ru_only_dermatology
@@ -61,7 +61,7 @@ exceptions:
     check: placeholders
     placeholder: '{dermatology_consultation_price}'
     reason: *ru_only_dermatology
-  - path: services.udalenie-tatuirovok-lazerom.faq[4].a
+  - path: services.udalenie-tatuirovok-lazerom.faq[9].a
     check: placeholders
     placeholder: '{dermatology_consultation_price}'
     reason: *ru_only_dermatology
