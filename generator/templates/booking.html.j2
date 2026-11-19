@@ -1,8 +1,8 @@
 {% extends "base.html.j2" %}
 {#- Страница записи: единая ссылка «Записаться» для карточки Google Карт и профиля
    Instagram. Блоки собраны из готовых — первый экран раздела, кнопки блока записи,
-   карточки «Популярного», FAQ; своё у страницы одно — перенос цены в карточках услуг
-   на 560–680 px (popular-grid--services, home.css). #}
+   карточки «Популярного», FAQ. Длинные названия услуг переносят цену под название
+   общим правилом карточек (home.css); наезд проверяет check_layout.py. #}
 {% block content %}
 <section class="section section--lead container">
   <nav class="breadcrumbs breadcrumbs--lead" aria-label="{{ t('nav.breadcrumbs_label') }}">
