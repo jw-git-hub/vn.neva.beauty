@@ -21,6 +21,8 @@ ui:
     close_menu: "Закрыть меню"
     drawer_label: "Мобильное меню"
     breadcrumbs_label: "Хлебные крошки"
+    # Страница записи: крошки, подвал, llms.txt.
+    booking: "Запись"
   cta:
     book: "Записаться"
     services: "Услуги"
@@ -41,6 +43,8 @@ ui:
     contacts_title: "Контакты"
     copyright: "© Neva Beauty — Da Nang, Vietnam"
     privacy: "Политика конфиденциальности"
+    # Ссылка на карточку салона (site.yml business.maps_url).
+    maps: "Google Карты"
   home:
     hero_alt: "Безупречная кожа и макияж — центр красоты Neva Beauty"
     services_eyebrow: "Услуги"

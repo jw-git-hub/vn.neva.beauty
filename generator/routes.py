@@ -1,13 +1,18 @@
 """Таблица маршрутов: страница × язык → адрес.
 
 Идентификатор страницы — ключ услуги или раздела из content.yml (русский слаг)
-либо служебный HOME, PRIVACY, NOT_FOUND. Слаг — атрибут языка.
+либо служебный HOME, BOOKING, PRIVACY, NOT_FOUND. Слаг — атрибут языка.
 """
 import re
 
 HOME = "home"
+# Страница записи — единая ссылка «Записаться» для карточки Google Карт и профиля
+# Instagram. Идентификатор — русский слаг, как у страниц услуг: адрес /zapis/.
+BOOKING = "zapis"
 PRIVACY = "privacy"
 NOT_FOUND = "404"
+# Страницы вне таксономии: они есть на каждом языке всегда.
+FIXED_PAGES = (HOME, BOOKING, PRIVACY, NOT_FOUND)
 NOT_FOUND_FILE = "404.html"
 INDEX_FILE = "index.html"
 # Внутренние ссылки в текстах content.yml пишутся как href="/<идентификатор>/".
@@ -90,7 +95,7 @@ def _check_unique_slugs(locales, page_ids):
 
 class Routes:
     def __init__(self, locales, page_ids, base_url, x_default_locale, base_path=""):
-        page_ids = set(page_ids) | {HOME, PRIVACY, NOT_FOUND}
+        page_ids = set(page_ids) | set(FIXED_PAGES)
         _check_not_empty(locales)
         _check_main_in_root(locales)
         _check_unique_prefixes(locales)

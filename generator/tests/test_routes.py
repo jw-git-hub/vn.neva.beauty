@@ -228,6 +228,7 @@ APPROVED_ENGLISH_PATHS = {
     "korrekciya-figury": "/en/body-contouring/",
     "lifting-i-omolozhenie": "/en/non-surgical-face-lift/",
     "lazernye-procedury": "/en/laser-treatments/",
+    "zapis": "/en/booking/",
     "privacy": "/en/privacy/",
     "404": "/en/404.html",
 }

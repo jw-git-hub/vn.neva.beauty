@@ -16,10 +16,12 @@ import build
 import contacts
 import taxonomy
 from locales import localized_site
-from routes import HOME, NOT_FOUND, PRIVACY, Routes
+from routes import BOOKING, FIXED_PAGES, HOME, NOT_FOUND, PRIVACY, Routes
 
 SITE = build.OUT
-GENERIC_PAGES = (HOME, PRIVACY, NOT_FOUND)
+# Страницы с общим текстом обращения: у них нет названия услуги. Страница записи — тоже:
+# на неё приходят из карточки Google Карт и профиля Instagram, не выбрав услугу.
+GENERIC_PAGES = (HOME, BOOKING, PRIVACY, NOT_FOUND)
 # Текст политики (data/locales/<код>/privacy.html) даёт контакты оператора для вопросов
 # о персональных данных. Это не кнопки записи: текст «Хочу записаться» и метки
 # обращений им не нужны, и проверка их пропускает.
@@ -113,7 +115,7 @@ def locale_pages(site, content, locales):
     page_ids = taxonomy.page_ids(content)
     routes = Routes(locales, page_ids, site["base_url"], build.load_x_default_locale(site))
     for locale in locales:
-        for page_id in page_ids + list(GENERIC_PAGES):
+        for page_id in page_ids + list(FIXED_PAGES):
             yield locale, page_id, SITE / routes.out_file(locale, page_id)
 
 

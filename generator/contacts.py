@@ -18,7 +18,8 @@ CHANNEL_HOSTS = {"whatsapp": ("wa.me", "api.whatsapp.com"),
                  "telegram": ("t.me", "telegram.me"),
                  "instagram": ("instagram.com",)}
 WWW_PREFIX = "www."
-PLACES = ("header", "hero", "strip", "booking", "drawer", "footer", "faq")
+# booking — блок записи внизу страниц, booking-page — кнопки первого экрана страницы записи.
+PLACES = ("header", "hero", "strip", "booking", "booking-page", "drawer", "footer", "faq")
 # Instagram не умеет подставлять текст в директ — у него адрес всегда голый.
 ALWAYS_PREFILLED = ("whatsapp",)
 FAQ_PLACE = "faq"

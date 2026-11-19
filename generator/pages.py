@@ -6,7 +6,7 @@ import contacts
 import pricing
 import schema
 import taxonomy
-from routes import HOME, NOT_FOUND, PRIVACY
+from routes import BOOKING, HOME, NOT_FOUND, PRIVACY
 
 
 @dataclass
@@ -228,6 +228,46 @@ def build_category(ctx, cat):
         categories=ctx.content["categories"])
 
 
+def _booking_cards(ctx):
+    """Карточки «Услуги и цены» страницы записи: раздел, услуга и цена одной строкой —
+    та же, что в сравнительной таблице и llms.txt (pricing.price_hint): одна цена
+    на услугу — она сама, несколько — «от» самой низкой. Порядок — как в меню."""
+    services = ctx.content["services"]
+    return [{"id": service_id, "category": cat["title"], "title": services[service_id]["title"],
+             "price": pricing.price_hint(ctx.prices.get(service_id, []), ctx.locale.format_from)}
+            for cat in ctx.content["categories"] for service_id in cat["services"]]
+
+
+def _booking_crumbs(ctx):
+    return [{"name": ctx.t("nav.home"), "url": ctx.url(HOME)},
+            {"name": ctx.t("nav.booking"), "url": ctx.url(BOOKING)}]
+
+
+def _prepare_booking_texts(ctx, booking, page):
+    """Цены консультаций в абзац блока «Консультация», ссылки и цены — в ответы FAQ."""
+    consultation = booking["consultation"]
+    consultation["text"] = fill_tokens(consultation["text"], content_tokens(
+        consultation=consultation_price(ctx.site),
+        dermatology=dermatology_consultation_price(ctx.site)))
+    booking["faq"] = render_faq(ctx, booking["faq"], page=page)
+
+
+def build_booking(ctx):
+    """Страница записи. Название страницы для текста обращения не задано: сюда приходят
+    из карточки Google Карт и профиля Instagram, не выбрав услугу, — текст общий."""
+    booking = ctx.content["booking"]
+    page = {"id": BOOKING, "url": ctx.path(BOOKING)}
+    _prepare_booking_texts(ctx, booking, page)
+    nodes = [schema.breadcrumb_node(_booking_crumbs(ctx)),
+             schema.contact_page_node(ctx.site["base_url"], ctx.url(BOOKING),
+                                      booking["title"], booking["seo_desc"]),
+             schema.faq_node(booking["faq"])]
+    page.update({"seo_title": booking["seo_title"], "seo_desc": booking["seo_desc"],
+                 "schema_json": ctx.schema(nodes)})
+    return ctx.env.get_template("booking.html.j2").render(
+        site=ctx.site, page=page, booking=booking, cards=_booking_cards(ctx))
+
+
 def _noindex_page(ctx, page_id, title_key):
     """Служебная страница: закрыта от индексации, разметка — только общий граф бизнеса."""
     return {"id": page_id, "url": ctx.path(page_id), "seo_title": ctx.t(title_key),
@@ -253,5 +293,6 @@ def build_all(ctx, privacy_body):
     for cat in ctx.content["categories"]:
         if cat["is_page"]:
             yield cat["page_id"], build_category(ctx, cat)
+    yield BOOKING, build_booking(ctx)
     yield PRIVACY, build_privacy(ctx, privacy_body)
     yield NOT_FOUND, build_not_found(ctx)

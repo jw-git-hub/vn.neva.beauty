@@ -17,9 +17,11 @@
     </nav>
     <div class="site-footer__col">
       <h2 class="site-footer__title">{{ t('footer.contacts_title') }}</h2>
+      <a class="site-footer__link" href="{{ href('zapis') }}">{{ t('nav.booking') }}</a>
       <a class="site-footer__link" {{ contact('whatsapp', 'footer', page) }}>WhatsApp</a>
       <a class="site-footer__link" {{ contact('telegram', 'footer', page) }}>Telegram</a>
       <a class="site-footer__link" {{ contact('instagram', 'footer', page) }}>Instagram</a>
+      <a class="site-footer__link" href="{{ site.business.maps_url }}" target="_blank" rel="noopener">{{ t('footer.maps') }}</a>
     </div>
   </div>
   <div class="site-footer__bottom container">

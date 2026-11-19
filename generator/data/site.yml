@@ -86,6 +86,11 @@ business:
     - "https://www.instagram.com/vn.neva.beauty/"
     - "https://t.me/doctor_cosmetolog_pro_channel"   # публичный Telegram-канал
     - "https://www.facebook.com/vn.neva.beauty"
+  # Карточка салона в Google: адрес карты (hasMap в разметке BeautySalon, ссылка «Google Карты»
+  # в подвале и в llms.txt, кнопка на странице записи) и ссылка «оставить отзыв» той же карточки.
+  # Обе ведут на карточку Neva Beauty (проверено). Адрес текстом на сайте по-прежнему не пишем.
+  maps_url: "https://maps.google.com/?cid=16150397359579650785"
+  review_url: "https://g.page/r/CeHaJn_UvCHgEBM/review"
   # Описание салона для разметки (посетителю не видно): пересказ блока «Коротко о Neva Beauty»
   # без новых фактов. Английское — в locales/en.yml, site.business.description.
   description: "Neva Beauty — центр красоты в Дананге (Вьетнам): аппаратная косметология, лазерная эпиляция, лифтинг и омоложение, уход за лицом и коррекция фигуры. Приём по записи, обслуживание на русском и английском языках."

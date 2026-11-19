@@ -37,6 +37,42 @@ home:
     - {slug: "smas-lifting", label: "SMAS-лифтинг", name: "Лицо"}
     - {slug: "esteticheskaya-kosmetologiya-i-uhod", label: "Уход за лицом", name: "HydraFacial"}
     - {slug: "fotoomolozhenie-m22", label: "Фотоомоложение M22", name: "Лицо + шея"}
+# Страница записи (/zapis/): ссылка «Записаться» для карточки Google Карт и профиля Instagram.
+# Только факты, уже опубликованные на сайте: запись в мессенджерах, приём по предварительной
+# записи, языки обслуживания, цены консультаций ({consultation_price} и
+# {dermatology_consultation_price} — из site.yml, дерматолог только в русском тексте), как добраться —
+# при записи. Адрес текстом не пишем: на странице есть кнопка карточки на Google Картах. Карточки
+# «Услуги и цены» и ссылки на Google Карты сборка берёт из таксономии, prices.json и site.yml
+# (business.maps_url, business.review_url).
+booking:
+  seo_title: "Записаться к косметологу в Дананге — Neva Beauty"
+  seo_desc: "Запись в центр красоты Neva Beauty в Дананге через WhatsApp, Telegram или Instagram: цены на процедуры и консультацию косметолога. Обслуживание на русском и английском."
+  title: "Запись в Neva Beauty в Дананге"
+  intro: "Neva Beauty — центр красоты в Дананге (Вьетнам). Приём ведётся по предварительной записи, обслуживание — на русском и английском языках. Напишите в WhatsApp, Telegram или Instagram — ответим в мессенджере и подберём удобное время."
+  consultation:
+    eyebrow: "Консультация"
+    title: "Консультация косметолога"
+    text: "Косметолог центра подбирает процедуры на консультации. Консультация косметолога стоит {consultation_price}, дерматолога — {dermatology_consultation_price}. Если вы делаете процедуру, консультация входит в её стоимость."
+  price_list:
+    eyebrow: "Цены"
+    title: "Услуги и цены"
+    lead: "Цены указаны во вьетнамских донгах (đ). Полный прайс каждой процедуры — на её странице."
+  reviews:
+    eyebrow: "Google Карты"
+    title: "Отзывы в Google"
+    maps: {label: "Мы на Google Картах"}
+    review: {label: "Оставить отзыв"}
+  faq_head:
+    title: "Частые вопросы о записи"
+  faq:
+    - q: "Как записаться в Neva Beauty в Дананге?"
+      a: 'Напишите в <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}" target="_blank" rel="noopener">Telegram</a> или <a href="{instagram}" target="_blank" rel="noopener">Instagram</a> — ответим в мессенджере и подберём удобное время. Приём в центре красоты Neva Beauty (Дананг) ведётся по предварительной записи.'
+    - q: "Нужно ли отдельно платить за консультацию?"
+      a: "Если вы делаете процедуру — нет: консультация входит в её стоимость. Отдельно консультация косметолога в Neva Beauty (Дананг) стоит {consultation_price}, дерматолога — {dermatology_consultation_price}."
+    - q: "Где находится Neva Beauty и как добраться?"
+      a: 'Neva Beauty — центр красоты в Дананге (Вьетнам). Центр есть на Google Картах, а как добраться, подскажем при записи в <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a> или <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>.'
+    - q: "На каких языках ведётся обслуживание?"
+      a: "Обслуживание в центре красоты Neva Beauty (Дананг) ведётся на русском и английском языках."
 # Ответ «Сколько стоит…» начинается с цены: {price} подставляет build.py из prices.json —
 # у услуги «от» её самой низкой цены, у направления — самой низкой среди его услуг или
 # только среди позиций из price_names (pricing.price_hint). Позицию прайса, к которой относится «от», ответ называет в скобках

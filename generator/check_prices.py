@@ -1,5 +1,6 @@
 """Парити-тест цен: сверяет data/prices.json (источник истины) с ценами в
-сгенерированном HTML (прайс-лист, карточки «Популярное», сравнительные таблицы)
+сгенерированном HTML (прайс-лист, карточки «Популярное», сравнительные таблицы,
+карточки «Услуги и цены» страницы записи)
 и в JSON-LD (OfferCatalog + AggregateOffer). Падает (exit 1)
 при любом расхождении — защищает требование 100% точности цен.
 Сверяются не только цифры, но и раздел прайса, описание позиции и валюта:
@@ -23,6 +24,7 @@ from bs4 import BeautifulSoup
 import locales
 import pricing
 import translation
+from routes import BOOKING
 
 ROOT = Path(__file__).resolve().parent
 NEW = ROOT.parent / "vn.neva.beauty"
@@ -35,6 +37,7 @@ PRICE_RE = re.compile(r"^\+?\d[\d ]*đ$")
 LOCALE_CODES = SITE.get("locales")
 HOME_FILE = "index.html"
 POPULAR_MISMATCH = "POPULAR MISMATCH «{key}»: ожидалось {expected!r}, на главной {rendered!r}"
+BOOKING_MISMATCH = "BOOKING MISMATCH {key}: ожидалось {expected!r}, на странице записи {rendered!r}"
 COMPARE_MISMATCH = "COMPARE MISMATCH {key}: prices.json={expected} на странице={rendered}"
 SECTIONS_MISMATCH = "SECTIONS MISMATCH {key}: prices.json={expected} JSON-LD={rendered}"
 COUNT_MISMATCH = "COUNT MISMATCH {key}: prices.json={expected} rendered={rendered}"
@@ -322,6 +325,30 @@ def rendered_popular(view):
             for card in soup.select(".popular-card")}
 
 
+# ---------- цены на карточках «Услуги и цены» (страница записи) ----------
+
+def expected_booking(view):
+    """Эталон карточек страницы записи: каждая услуга каждого раздела с ценой одной строкой
+    (price_hint): ключ — (раздел, услуга) на языке страницы."""
+    services = view.content["services"]
+    return {(clean(cat["title"]), clean(services[slug]["title"])):
+            price_hint(PRICES.get(slug, []), view)
+            for cat in view.content["categories"] for slug in cat["services"]}
+
+
+def card_price(card):
+    price = card.select_one(".popular-card__price")
+    return clean(price.get_text()) if price else None
+
+
+def rendered_booking(view):
+    """Факт — карточки «Услуги и цены» собранной страницы записи."""
+    soup = BeautifulSoup(view.page_file(BOOKING).read_text(encoding="utf-8"), "html.parser")
+    return {(clean(card.select_one(".popular-card__cat").get_text()),
+             clean(card.select_one(".popular-card__name").get_text())): card_price(card)
+            for card in soup.select(".popular-card")}
+
+
 # ---------- цены в сравнительных таблицах ----------
 
 def expected_compare(view):
@@ -410,6 +437,7 @@ def collect(view):
         offers=Pair(expected_offers(view), new_offers),
         descriptions=mismatched,
         popular=Pair(expected_popular(view), rendered_popular(view)),
+        booking=Pair(expected_booking(view), rendered_booking(view)),
         compare=Pair(expected_compare(view), rendered_compare(view)),
         sections=Pair(expected_section_titles(view), rendered_section_titles(view)),
         aggregates=Pair(expected_aggregates(), rendered_aggregates(view)),
@@ -439,6 +467,7 @@ def summary_line(view, facts):
     return (f"[{view.code}] html_items={sum(facts.html.rendered.values())} "
             f"jsonld_offers={sum(facts.offers.rendered.values())} "
             f"aggregates={len(facts.aggregates.rendered)} popular={len(facts.popular.rendered)} "
+            f"booking={len(facts.booking.rendered)} "
             f"compare_rows={sum(len(rows) for rows in facts.compare.rendered.values())} "
             f"currency={CURRENCY}")
 
@@ -450,6 +479,7 @@ def run(view):
     ok = report("HTML", *facts.html)
     ok &= report("JSON-LD", *facts.offers)
     ok &= report_mismatches(facts.popular, POPULAR_MISMATCH)
+    ok &= report_mismatches(facts.booking, BOOKING_MISMATCH)
     ok &= report_mismatches(facts.compare, COMPARE_MISMATCH)
     ok &= report_descriptions(facts.descriptions)
     ok &= report_mismatches(facts.sections, SECTIONS_MISMATCH)

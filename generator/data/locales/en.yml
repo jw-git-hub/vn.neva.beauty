@@ -26,6 +26,8 @@ slugs:
   korrekciya-figury: body-contouring
   lifting-i-omolozhenie: non-surgical-face-lift
   lazernye-procedury: laser-treatments
+  # Страница записи (2026-11-19).
+  zapis: booking
 
 ui:
   # Переключатель языка: строки из спеки, раздел 8.
@@ -40,6 +42,7 @@ ui:
     close_menu: "Close menu"
     drawer_label: "Mobile menu"
     breadcrumbs_label: "Breadcrumb"
+    booking: "Booking"
   cta:
     book: "Book now"
     services: "Services"
@@ -61,6 +64,7 @@ ui:
     contacts_title: "Contact"
     copyright: "© Neva Beauty — Da Nang, Vietnam"
     privacy: "Privacy Policy"
+    maps: "Google Maps"
   home:
     hero_alt: "Woman with smooth skin and makeup — Neva Beauty, a beauty center"
     services_eyebrow: "Services"

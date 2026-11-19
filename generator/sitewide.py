@@ -9,7 +9,7 @@ import rcssmin
 
 import pricing
 from locales import localized_site
-from routes import HOME, PRIVACY
+from routes import BOOKING, HOME, PRIVACY
 
 # Порядок каскада для единого bundle.min.css. Все CSS сайта склеиваются в один
 # минифицированный файл → один render-blocking запрос вместо шести, общий кэш на
@@ -43,12 +43,13 @@ def asset_url(out_dir, base_path, path):
 
 
 def sitemap_paths(content, routes, locale):
-    """Индексируемые страницы языка в порядке sitemap: главная, услуги, разделы.
+    """Индексируемые страницы языка в порядке sitemap: главная, услуги, разделы, запись.
     Политика и 404 закрыты от индексации и в sitemap не идут."""
     services = [routes.path(locale, service_id) for service_id in content["services"]]
     categories = [routes.path(locale, cat["page_id"])
                   for cat in content["categories"] if cat["is_page"]]
-    return [routes.path(locale, HOME)] + services + categories
+    return ([routes.path(locale, HOME)] + services + categories
+            + [routes.path(locale, BOOKING)])
 
 
 def previous_lastmods(path: Path) -> dict:
@@ -105,9 +106,21 @@ def _llms_pages_lines(locale, routes):
             f"- [{locale.t('footer.privacy')}]({routes.url(locale, PRIVACY)})"]
 
 
+def _llms_contact_lines(site, locale, routes):
+    """Контакты для llms.txt: страница записи, мессенджеры, соцсети и карточка на Google Картах."""
+    contacts, t = site["contacts"], locale.t
+    return [t("llms.contacts_title"),
+            f"- {t('nav.booking')}: {routes.url(locale, BOOKING)}",
+            f"- WhatsApp: {contacts['whatsapp_url']}",
+            f"- Telegram: {contacts['telegram_url']}",
+            f"- Instagram: {contacts['instagram_url']}",
+            f"- Facebook: {contacts['facebook_url']}",
+            f"- {t('footer.maps')}: {site['business']['maps_url']}", ""]
+
+
 def build_llms(site, content, prices, locale, routes):
     """llms.txt — краткая карта сайта для ИИ-ассистентов (llmstxt.org)."""
-    contacts, t = site["contacts"], locale.t
+    t = locale.t
     lines = [t("llms.heading", brand=site["brand"]), "", t("llms.summary"), "", t("llms.about_title")]
     lines += _llms_about_lines(site, t)
     lines += ["", t("llms.categories_title")]
@@ -116,11 +129,7 @@ def build_llms(site, content, prices, locale, routes):
     lines += ["", t("llms.services_title")]
     lines += _llms_service_lines(content, prices, locale, routes)
     lines += _llms_pages_lines(locale, routes)
-    lines += ["", t("llms.contacts_title"),
-              f"- WhatsApp: {contacts['whatsapp_url']}",
-              f"- Telegram: {contacts['telegram_url']}",
-              f"- Instagram: {contacts['instagram_url']}",
-              f"- Facebook: {contacts['facebook_url']}", ""]
+    lines += [""] + _llms_contact_lines(site, locale, routes)
     return "\n".join(lines)
 
 

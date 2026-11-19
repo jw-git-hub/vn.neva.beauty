@@ -52,6 +52,49 @@ home:
   - label: HIFU
   - label: Facials
   - label: M22 Photorejuvenation
+booking:
+  seo_title: Book an Aesthetician Appointment in Da Nang | Neva Beauty
+  seo_desc: 'Book at Neva Beauty, a beauty center in Da Nang, via WhatsApp, Telegram or Instagram: prices
+    for treatments and the aesthetician consultation. English and Russian spoken.'
+  title: Book an Appointment at Neva Beauty in Da Nang
+  intro: Neva Beauty is a beauty center in Da Nang, Vietnam. Visits are by appointment only, and service
+    is provided in Russian and English. Message us on WhatsApp, Telegram or Instagram, and we'll reply
+    there and find a time that works for you.
+  consultation:
+    eyebrow: Consultation
+    title: Aesthetician Consultation
+    text: At the consultation, the center's aesthetician chooses the treatments that suit you. A consultation
+      with the aesthetician costs {consultation_price}. If you have a treatment, the consultation is included
+      in the treatment price.
+  price_list:
+    eyebrow: Pricing
+    title: Services and Prices
+    lead: Prices are listed in Vietnamese dong (đ). The full price list for each treatment is on its own
+      page.
+  reviews:
+    eyebrow: Google Maps
+    title: Google Reviews
+    maps:
+      label: We're on Google Maps
+    review:
+      label: Leave a Review
+  faq_head:
+    title: Frequently Asked Questions about Booking
+  faq:
+  - q: How do I book an appointment at Neva Beauty in Da Nang?
+    a: Message us on <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>, <a href="{telegram}"
+      target="_blank" rel="noopener">Telegram</a> or <a href="{instagram}" target="_blank" rel="noopener">Instagram</a>,
+      and we'll reply there and find a time that works for you. Visits to Neva Beauty, a beauty center
+      in Da Nang, are by appointment only.
+  - q: Do I pay separately for the consultation?
+    a: 'Not if you have a treatment: the consultation is included in the treatment price. On its own, a
+      consultation with the aesthetician at Neva Beauty in Da Nang costs {consultation_price}.'
+  - q: Where is Neva Beauty, and how do I get there?
+    a: Neva Beauty is a beauty center in Da Nang, Vietnam. You can find the center on Google Maps, and
+      we'll tell you how to get there when you book via <a href="{whatsapp}" target="_blank" rel="noopener">WhatsApp</a>
+      or <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>.
+  - q: What languages do you offer service in?
+    a: At Neva Beauty, a beauty center in Da Nang, service is provided in Russian and English.
 categories:
 - title: Non-Surgical Body Contouring
   nav_label: Body

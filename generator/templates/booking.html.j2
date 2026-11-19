@@ -1,0 +1,59 @@
+{% extends "base.html.j2" %}
+{#- Страница записи: единая ссылка «Записаться» для карточки Google Карт и профиля
+   Instagram. Блоки собраны из готовых — первый экран раздела, кнопки блока записи,
+   карточки «Популярного», FAQ; своё у страницы одно — перенос цены в карточках услуг
+   на 560–680 px (popular-grid--services, home.css). #}
+{% block content %}
+<section class="section section--lead container">
+  <nav class="breadcrumbs breadcrumbs--lead" aria-label="{{ t('nav.breadcrumbs_label') }}">
+    <a href="{{ href('home') }}">{{ t('nav.home') }}</a>
+    <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+    <span aria-current="page">{{ t('nav.booking') }}</span>
+  </nav>
+  {#- Первый блок без data-reveal, как на странице раздела: он на первом экране. #}
+  <div class="section-head"><p class="eyebrow">{{ site.tagline }}</p><h1>{{ booking.title }}</h1><p>{{ booking.intro }}</p></div>
+  <div class="booking__actions">
+    <a class="btn btn--primary" {{ contact('whatsapp', 'booking-page', page) }}>{{ icon('message-circle') }} WhatsApp</a>
+    <a class="btn btn--ghost" {{ contact('telegram', 'booking-page', page) }}>{{ icon('send') }} Telegram</a>
+    <a class="btn btn--ghost" {{ contact('instagram', 'booking-page', page) }}>{{ icon('instagram') }} Instagram</a>
+  </div>
+</section>
+
+<section class="section pricelist-section">
+  <div class="container">
+    <div class="section-head" data-reveal><p class="eyebrow">{{ booking.consultation.eyebrow }}</p><h2>{{ booking.consultation.title }}</h2><p>{{ booking.consultation.text }}</p></div>
+    <div class="section-head" data-reveal><p class="eyebrow">{{ booking.price_list.eyebrow }}</p><h2>{{ booking.price_list.title }}</h2><p>{{ booking.price_list.lead }}</p></div>
+    <div class="popular-grid popular-grid--services" data-reveal-children>
+      {% for card in cards %}
+      <a class="popular-card card" href="{{ href(card.id) }}">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">{{ card.category }}</span>
+          <span class="popular-card__name">{{ card.title }}</span>
+        </span>
+        {% if card.price %}<span class="popular-card__price">{{ card.price }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-head" data-reveal><p class="eyebrow">{{ booking.reviews.eyebrow }}</p><h2>{{ booking.reviews.title }}</h2></div>
+  <div class="booking__actions">
+    <a class="btn btn--ghost" href="{{ site.business.maps_url }}" target="_blank" rel="noopener">{{ icon('map-pin') }} {{ booking.reviews.maps.label }}</a>
+    <a class="btn btn--ghost" href="{{ site.business.review_url }}" target="_blank" rel="noopener">{{ icon('star') }} {{ booking.reviews.review.label }}</a>
+  </div>
+</section>
+
+<section class="section container" id="faq">
+  <div class="section-head" data-reveal><p class="eyebrow">{{ t('faq.eyebrow') }}</p><h2>{{ booking.faq_head.title }}</h2></div>
+  <div class="faq" data-reveal-children>
+    {% for item in booking.faq %}
+    <details class="faq__item"{% if loop.first %} open{% endif %}>
+      <summary class="faq__q">{{ item.q }}</summary>
+      <p class="faq__a">{{ item.a | safe }}</p>
+    </details>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 Единый источник разметки бизнеса: один связный граф (@graph) с узлами
 Organization + <тип бизнеса> + WebSite, к которому страницы добавляют свои узлы
-(Service / FAQPage / BreadcrumbList). JSON собирается в Python, а не в шаблоне,
+(Service / FAQPage / BreadcrumbList / ContactPage). JSON собирается в Python, а не в шаблоне,
 чтобы не ломаться об autoescape Jinja и оставаться валидным.
 """
 import json
@@ -99,6 +99,8 @@ def business_nodes(site, languages):
         }
     if b.get("same_as"):
         business["sameAs"] = b["same_as"]
+    if b.get("maps_url"):
+        business["hasMap"] = b["maps_url"]
     if b.get("geo"):
         business["geo"] = {
             "@type": "GeoCoordinates",
@@ -149,6 +151,21 @@ def item_list_node(name, urls):
             {"@type": "ListItem", "position": i + 1, "item": url}
             for i, url in enumerate(urls)
         ],
+    }
+
+
+def contact_page_node(base_url, url, name, description):
+    """ContactPage — страница записи: часть сайта (узел WebSite) и рассказывает о салоне
+    (узел бизнеса). @id по адресу страницы, как у Service, — узел адресуем из графа.
+    Языка у узла нет: языки сайта называет WebSite.inLanguage, ключ на странице один."""
+    return {
+        "@type": "ContactPage",
+        "@id": url + "#webpage",
+        "url": url,
+        "name": name,
+        "description": _plain(description),
+        "isPartOf": {"@id": base_url + "/" + WEBSITE_ID},
+        "about": {"@id": base_url + "/" + BUSINESS_ID},
     }
 
 

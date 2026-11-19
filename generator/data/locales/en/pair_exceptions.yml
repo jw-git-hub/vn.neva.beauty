@@ -85,6 +85,14 @@ exceptions:
     check: placeholders
     placeholder: '{dermatology_consultation_price}'
     reason: *ru_only_dermatology
+  - path: booking.consultation.text
+    check: placeholders
+    placeholder: '{dermatology_consultation_price}'
+    reason: *ru_only_dermatology
+  - path: booking.faq[1].a
+    check: placeholders
+    placeholder: '{dermatology_consultation_price}'
+    reason: *ru_only_dermatology
   - path: services.smas-lifting.intro
     check: terms
     term: surgery
