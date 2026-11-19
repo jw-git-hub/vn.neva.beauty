@@ -24,6 +24,8 @@ SITE = ROOT.parent / "vn.neva.beauty"
 HEADING_RE = re.compile(r"^h[1-6]$")
 # Название страницы — текущий пункт хлебных крошек: то же title, что в меню и карточках.
 PAGE_NAME_SELECTOR = 'nav.breadcrumbs [aria-current="page"]'
+# Первый экран страницы услуги: только у услуги есть отдельное поле h1 (с городом).
+SERVICE_HERO_CLASS = "svc-hero"
 
 
 def pages():
@@ -61,11 +63,12 @@ def page_title(soup):
 
 
 def h1_name_error(name, soup):
-    """h1 не начинается с названия страницы из хлебных крошек — строка ошибки, иначе None.
-    Страница без крошек (главная, политика, 404) или без h1 здесь не проверяется: h1
+    """h1 услуги не начинается с её названия из хлебных крошек — строка ошибки, иначе None.
+    Правило — для поля h1 услуги, поэтому проверяется только h1 первого экрана услуги:
+    у разделов, страницы записи, главной, политики и 404 h1 своё. Страницу без h1
     считает check. Название должно стоять целым словом: «LPG-массажный» — не «LPG-массаж»."""
     title, heading = page_title(soup), soup.find("h1")
-    if title is None or heading is None:
+    if title is None or heading is None or not heading.find_parent(class_=SERVICE_HERO_CLASS):
         return None
     h1 = squeeze(heading.get_text())
     if h1 == title or h1.startswith(title + " "):

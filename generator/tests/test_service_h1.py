@@ -115,9 +115,9 @@ class H1TranslationTest(unittest.TestCase):
         self.assertIn("Da Nang", str(problems[0]))
 
 
-def crumbs_and_h1(name, h1):
+def crumbs_and_h1(name, h1, hero_class=check_headings.SERVICE_HERO_CLASS):
     return BeautifulSoup(f'<nav class="breadcrumbs"><span aria-current="page">{name}</span></nav>'
-                         f"<h1>{h1}</h1>", "html.parser")
+                         f'<section class="{hero_class}"><h1>{h1}</h1></section>', "html.parser")
 
 
 class H1NameRuleTest(unittest.TestCase):
@@ -138,6 +138,12 @@ class H1NameRuleTest(unittest.TestCase):
     def test_title_must_be_whole_words(self):
         self.assertIsNotNone(check_headings.h1_name_error(
             "page.html", crumbs_and_h1("LPG-массаж", "LPG-массажный курс")))
+
+    def test_page_other_than_service_is_skipped(self):
+        """Страница записи: крошка «Booking», h1 «Book an Appointment…» — своё, не поле услуги."""
+        soup = crumbs_and_h1("Booking", "Book an Appointment at Neva Beauty in Da Nang",
+                             hero_class="section--lead")
+        self.assertIsNone(check_headings.h1_name_error("en/booking/index.html", soup))
 
     def test_page_without_breadcrumbs_is_skipped(self):
         soup = BeautifulSoup("<h1>Центр красоты в Дананге</h1>", "html.parser")
