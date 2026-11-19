@@ -112,20 +112,14 @@
 .popular-card__name{font-weight:500;min-width:0}
 .popular-card__price{font-weight:700;color:var(--rose-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
 /* Название сжимается до нуля (min-width:0), и длинное слово («PHOTOREJUVENATION» капсом с
-   разрядкой) выступало из своей коробки под цену. Там, где слову не хватает места рядом
-   с ценой, цена уходит под название: коробка названия не уже самого длинного слова.
-   Узкие экраны — все языки; две колонки 560–680 px — только английский (русские подписи
-   там помещаются, и вид русской главной шире 350 px не меняется).
-   Диапазон 560–679.98 px подобран под подпись «M22 PHOTOREJUVENATION» и цену
-   8 500 000 đ; при смене названий или цен в «Популярном» check_layout.py покажет наезд. */
+   разрядкой) выступало из своей коробки под цену. Строка «название + цена» переносится сама:
+   коробка названия не уже самого длинного слова (min-width:auto), и если рядом с ценой
+   этому слову не хватает места, цена уходит под название. Правило не зависит ни от подписи,
+   ни от цены, ни от языка, ни от ширины. */
+.popular-card{flex-wrap:wrap;row-gap:var(--sp-2)}
+.popular-card__info{flex:1 1 0;min-width:auto}
 @media(max-width:349.98px){
-  .popular-card{flex-wrap:wrap;row-gap:var(--sp-2)}
-  .popular-card__info{flex:1 1 0;min-width:auto}
   /* Поля карточки 16 px вместо 20, как у карточек FAQ и прайса на узком экране:
      «PHOTOREJUVENATION» в строке раздела (161 px) на 250 px выходил на поле на 1 px. */
   .popular-card{padding-inline:var(--sp-4)}
-}
-@media(min-width:560px) and (max-width:679.98px){
-  :lang(en) .popular-card{flex-wrap:wrap;row-gap:var(--sp-2)}
-  :lang(en) .popular-card__info{flex:1 1 0;min-width:auto}
 }
