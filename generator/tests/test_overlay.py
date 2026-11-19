@@ -88,6 +88,6 @@ class SourceStringsTest(unittest.TestCase):
         self.assertEqual(strings["services.lpg-massazh.title"], "LPG-массаж")
         self.assertNotIn("home.popular[0].name", strings)
 
-    def test_real_master_has_392_fields(self):
+    def test_real_master_has_394_fields(self):
         import build
-        self.assertEqual(len(overlay.source_strings(build.load()[1])), 392)
+        self.assertEqual(len(overlay.source_strings(build.load()[1])), 394)

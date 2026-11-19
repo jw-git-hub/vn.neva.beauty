@@ -1,10 +1,12 @@
 """Проверка заголовков во всех собранных страницах. Падает (exit 1) при нарушении.
 
-Два правила. Первое — иерархия: ровно один h1, первый заголовок — h1, уровни идут
+Три правила. Первое — иерархия: ровно один h1, первый заголовок — h1, уровни идут
 без пропусков. Второе — уникальность h2 по сайту: один и тот же h2 на нескольких
 страницах не говорит ни клиенту, ни роботу, что именно под ним, и место в структуре
 страницы тратится впустую. Правило перенесено с th.neva.beauty
-(check_content.py, check_shared_headings).
+(check_content.py, check_shared_headings). Третье — h1 страницы с хлебными крошками
+начинается с её названия: поле h1 в content.yml удлиняет заголовок под запрос
+(«… в Дананге»), но не подменяет услугу, которую гость видит в меню и крошках.
 
 Зачем: пропуск уровня (h1 → h3) ломает навигацию скринридером по заголовкам и
 считается ошибкой у W3C, но внешне страница выглядит нормально — три страницы
@@ -20,6 +22,8 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parent
 SITE = ROOT.parent / "vn.neva.beauty"
 HEADING_RE = re.compile(r"^h[1-6]$")
+# Название страницы — текущий пункт хлебных крошек: то же title, что в меню и карточках.
+PAGE_NAME_SELECTOR = 'nav.breadcrumbs [aria-current="page"]'
 
 
 def pages():
@@ -39,10 +43,34 @@ def parse(page):
     return BeautifulSoup(page.read_text(encoding="utf-8"), "html.parser")
 
 
+def squeeze(text):
+    """Пробелы схлопнуты, края обрезаны: неразрывный пробел типографики — тот же пробел."""
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def headings(page):
     """Заголовки страницы в порядке документа: [(уровень, текст)]."""
-    return [(int(h.name[1]), re.sub(r"\s+", " ", h.get_text()).strip())
-            for h in parse(page).find_all(HEADING_RE)]
+    return [(int(h.name[1]), squeeze(h.get_text())) for h in parse(page).find_all(HEADING_RE)]
+
+
+def page_title(soup):
+    """Название страницы — текущий пункт хлебных крошек, или None: у главной, политики
+    и 404 крошек нет. По нему же check_contacts.py сверяет текст обращения."""
+    current = soup.select_one(PAGE_NAME_SELECTOR)
+    return squeeze(current.get_text()) if current else None
+
+
+def h1_name_error(name, soup):
+    """h1 не начинается с названия страницы из хлебных крошек — строка ошибки, иначе None.
+    Страница без крошек (главная, политика, 404) или без h1 здесь не проверяется: h1
+    считает check. Название должно стоять целым словом: «LPG-массажный» — не «LPG-массаж»."""
+    title, heading = page_title(soup), soup.find("h1")
+    if title is None or heading is None:
+        return None
+    h1 = squeeze(heading.get_text())
+    if h1 == title or h1.startswith(title + " "):
+        return None
+    return f"{name}: h1 «{h1}» не начинается с названия страницы «{title}» из хлебных крошек"
 
 
 def check(page, found):
@@ -83,7 +111,7 @@ KNOWN_SHARED_H2 = {
 def main_h2(page):
     """h2 внутри <main>. Подвал не в счёт: «Услуги» и «Контакты» стоят там на
     каждой странице по определению, и это не дубли-заголовки, а навигация."""
-    return [re.sub(r"\s+", " ", h.get_text()).strip() for h in parse(page).select("main h2")]
+    return [squeeze(h.get_text()) for h in parse(page).select("main h2")]
 
 
 def page_lang(page):
@@ -111,10 +139,19 @@ def shared_h2(pages_):
     return errors
 
 
-all_headings = [(page, headings(page)) for page in pages()]
-errors = [error for page, found in all_headings for error in check(page, found)]
-errors += shared_h2([page for page, _ in all_headings])
-print(f"страниц проверено: {len(all_headings)}, "
-      f"известных дублей в исключениях: {sum(len(known) for known in KNOWN_SHARED_H2.values())}")
-print("\n".join(errors) if errors else "HEADINGS OK — иерархия без пропусков, h2 не повторяются")
-sys.exit(1 if errors else 0)
+def main():
+    all_pages = pages()
+    errors = [error for page in all_pages for error in check(page, headings(page))]
+    errors += [error for page in all_pages
+               if (error := h1_name_error(page_name(page), parse(page)))]
+    errors += shared_h2(all_pages)
+    print(f"страниц проверено: {len(all_pages)}, "
+          f"известных дублей в исключениях: {sum(len(known) for known in KNOWN_SHARED_H2.values())}")
+    print("\n".join(errors) if errors else
+          "HEADINGS OK — иерархия без пропусков, h1 начинается с названия страницы, "
+          "h2 не повторяются")
+    sys.exit(1 if errors else 0)
+
+
+if __name__ == "__main__":
+    main()

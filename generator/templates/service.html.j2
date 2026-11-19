@@ -15,7 +15,10 @@
     <div class="svc-hero__inner">
       <div class="svc-hero__text">
         <p class="eyebrow">{{ svc.category }}</p>
-        <h1>{{ svc.title }}</h1>
+        {#- h1 из content.yml — заголовок страницы под запрос («… в Дананге»); где его нет,
+           заголовок — название услуги. Меню, крошки, карточки и текст обращения
+           в мессенджер всегда берут короткое title. #}
+        <h1>{{ svc.h1 or svc.title }}</h1>
         <p class="svc-hero__intro">{{ svc.intro }}</p>
         {% if price_line %}<p class="svc-hero__price">{{ price_line }}</p>{% endif %}
         <a class="btn btn--primary" {{ contact('whatsapp', 'hero', page) }}>{{ t('cta.book') }}</a>

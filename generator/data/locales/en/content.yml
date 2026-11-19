@@ -598,6 +598,7 @@ services:
         only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   lazernaya-epilyaciya:
     title: Laser Hair Removal
+    h1: Laser Hair Removal in Da Nang
     category: Hair Removal
     booking_title: Book Laser Hair Removal in Da Nang
     seo_title: 'Laser Hair Removal in Da Nang: Prices by Area | Neva Beauty'
@@ -643,6 +644,7 @@ services:
         only, and service is provided in Russian and English. A consultation with the aesthetician costs {consultation_price}; if you have a treatment, the consultation is included in the treatment price.
   udalenie-tatuirovok-lazerom:
     title: Laser Tattoo Removal
+    h1: Laser Tattoo Removal in Da Nang
     category: Device-Based Treatments
     booking_title: Book Laser Tattoo Removal
     seo_title: 'Laser Tattoo Removal in Da Nang: Price by Size | Neva Beauty'

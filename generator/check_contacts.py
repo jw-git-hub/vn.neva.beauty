@@ -6,13 +6,13 @@
 руками, выглядит на странице так же, но выпадает из статистики, а в чат приходит
 без названия услуги — глазом это не заметить.
 Запуск: python generator/check_contacts.py"""
-import re
 import sys
 import urllib.parse
 
 from bs4 import BeautifulSoup
 
 import build
+import check_headings
 import contacts
 import taxonomy
 from locales import localized_site
@@ -34,12 +34,6 @@ def channel_of(href):
     return contacts.channel_of_url(href)
 
 
-def squeeze(text):
-    """Пробелы схлопнуты, края обрезаны: h1 на странице и название в адресе — один текст,
-    даже если в данных неразрывный или двойной пробел."""
-    return re.sub(r"\s+", " ", text).strip()
-
-
 def text_of(href):
     query = urllib.parse.parse_qs(urllib.parse.urlsplit(href).query)
     return query.get(contacts.PREFILL_PARAM, [None])[0]
@@ -49,7 +43,10 @@ def text_error(href, channel, site_contacts, expected_message):
     text = text_of(href)
     if channel not in contacts.prefill_channels(site_contacts):
         return f"у {channel} не должно быть текста, а он есть: {text!r}" if text else None
-    if text is None or squeeze(text) != squeeze(expected_message):
+    # Пробелы схлопнуты: название на странице и в адресе — один текст, даже если
+    # в данных неразрывный или двойной пробел.
+    if text is None or (check_headings.squeeze(text)
+                        != check_headings.squeeze(expected_message)):
         return f"текст {channel}: {text!r}, ожидался {expected_message!r}"
     return None
 
@@ -86,21 +83,24 @@ def link_errors(soup, name, site_contacts, expected_message):
     return errors
 
 
-def h1_text(soup, name):
-    """Текст h1 страницы. Страница услуги или раздела без h1 — ошибка с именем файла."""
-    heading = soup.find("h1")
-    if heading is None:
-        raise ValueError(f"{name}: на странице нет заголовка h1, нужно для текста обращения")
-    return squeeze(heading.get_text())
+def page_title(soup, name):
+    """Название страницы из хлебных крошек — то же title, что в меню и карточках. Не h1:
+    он бывает длиннее («… в Дананге», поле h1 в content.yml), а текст обращения называет
+    услугу коротко. Страница услуги или раздела без названия — ошибка с именем файла."""
+    title = check_headings.page_title(soup)
+    if title is None:
+        raise ValueError(f"{name}: на странице нет названия в хлебных крошках, "
+                         f"нужно для текста обращения")
+    return title
 
 
 def expected_message(soup, name, page_id, locale):
-    title = None if page_id in GENERIC_PAGES else h1_text(soup, name)
+    title = None if page_id in GENERIC_PAGES else page_title(soup, name)
     return contacts.contact_message(locale, title)
 
 
 def page_errors(path, page_id, locale, site, name):
-    """Нарушения одной собранной страницы; страница без h1 даёт одну строку с её именем."""
+    """Нарушения одной собранной страницы; страница без названия даёт одну строку с её именем."""
     soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
     site_contacts = localized_site(site, locale)["contacts"]
     try:

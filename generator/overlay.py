@@ -8,7 +8,7 @@
 import copy
 
 TRANSLATABLE_FIELDS = frozenset({
-    "seo_title", "seo_desc", "title", "nav_label", "intro", "booking_title",
+    "seo_title", "seo_desc", "title", "h1", "nav_label", "intro", "booking_title",
     "hero_kicker", "hero_title_lines", "hero_sub", "about_lead", "q", "a", "text",
     "benefits_eyebrow", "benefits_title", "price_title", "price_lead", "label",
     "eyebrow", "lead", "caption", "task", "category",

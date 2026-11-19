@@ -59,8 +59,8 @@ class LinkErrorsTest(unittest.TestCase):
         self.assertEqual(errors(body), [])
 
     def test_whitespace_differences_are_not_errors(self):
-        """Ожидаемый текст строится по h1, где пробелы схлопнуты; в адресе — исходное
-        название с неразрывным или двойным пробелом. Это один и тот же текст."""
+        """Ожидаемый текст строится по названию страницы, где пробелы схлопнуты; в адресе —
+        исходное название с неразрывным или двойным пробелом. Это один и тот же текст."""
         raw = "?text=" + urllib.parse.quote("Хочу на: M\xa022  лифтинг\n")
         soup = BeautifulSoup(f'<a href="https://wa.me/100{raw}" data-contact="whatsapp" '
                              'data-place="hero">W</a>', "html.parser")
@@ -90,12 +90,13 @@ class ChannelOfTest(unittest.TestCase):
         self.assertTrue(errors('<a href="https://api.whatsapp.com/send?phone=100">W</a>'))
 
 
-class H1TextTest(unittest.TestCase):
-    def test_page_without_h1_names_its_file(self):
-        soup = BeautifulSoup("<html><body><p>нет заголовка</p></body></html>", "html.parser")
+class PageTitleTest(unittest.TestCase):
+    def test_page_without_name_in_breadcrumbs_names_its_file(self):
+        soup = BeautifulSoup("<html><body><h1>LPG-массаж</h1></body></html>", "html.parser")
         with self.assertRaisesRegex(ValueError, "lpg/index.html"):
-            check_contacts.h1_text(soup, "lpg/index.html")
+            check_contacts.page_title(soup, "lpg/index.html")
 
-    def test_whitespace_of_heading_is_squeezed(self):
-        soup = BeautifulSoup("<h1>LPG \n массаж</h1>", "html.parser")
-        self.assertEqual(check_contacts.h1_text(soup, "x.html"), "LPG массаж")
+    def test_whitespace_of_name_is_squeezed(self):
+        soup = BeautifulSoup('<nav class="breadcrumbs"><span aria-current="page">LPG \n массаж'
+                             '</span></nav>', "html.parser")
+        self.assertEqual(check_contacts.page_title(soup, "x.html"), "LPG массаж")
