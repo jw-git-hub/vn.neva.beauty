@@ -161,7 +161,8 @@ the right site instead of closing the tab.
 | **Laser procedures** | laser hair removal · tattoo removal · permanent makeup removal · carbon laser peel |
 | **Skincare & cosmetology** | aesthetic cosmetology and facial care |
 
-**Each language has 15 pages**: the home page, three category pages and 11 services. The
+**Each language has 16 pages**: the home page, three category pages, 11 services and a booking
+page (`/zapis/`, `/en/booking/`) — one "Book" link for the Google Maps listing and Instagram. The
 fourth category, "Skincare & cosmetology", consists of a single service and has no page
 of its own: in the menu it leads straight to that service. On top of that, each language
 has a privacy policy and a 404 page. English URLs live under `/en/` and are written in
