@@ -380,6 +380,7 @@ flowchart LR
 │  │  ├─ site.yml             #   бизнес, контакты, конфиг, языки, IndexNow
 │  │  ├─ content.yml          #   тексты, FAQ, таксономия
 │  │  ├─ prices.json          #   эталон цен (источник истины)
+│  │  ├─ README.md            #   где ещё стоят цены (Google, Instagram, Telegram)
 │  │  └─ locales/             #   ru.yml · en.yml (интерфейс, слаги) и en/ (накладка
 │  │                          #   content.yml, prices.yml, glossary.yml,
 │  │                          #   pair_exceptions.yml, privacy.html)

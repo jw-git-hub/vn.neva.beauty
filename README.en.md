@@ -389,6 +389,7 @@ flowchart LR
 │  │  ├─ site.yml             #   business, contacts, config, languages, IndexNow
 │  │  ├─ content.yml          #   copy, FAQ, taxonomy
 │  │  ├─ prices.json          #   price reference (source of truth)
+│  │  ├─ README.md            #   where else prices appear (Google, Instagram, Telegram)
 │  │  └─ locales/             #   ru.yml · en.yml (interface, slugs) and en/ (overlay
 │  │                          #   content.yml, prices.yml, glossary.yml,
 │  │                          #   pair_exceptions.yml, privacy.html)
