@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<script>
+(function (C) {
+  function stored(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function hasPage(code) { return Object.prototype.hasOwnProperty.call(C.pairs, code); }
+  function isInternal(referrer) {
+    try { return !!referrer && new URL(referrer).host === location.host; } catch (e) { return true; }
+  }
+  function prefersGroup(languages, group) {
+    return languages.some(function (tag) {
+      return group.indexOf(String(tag).toLowerCase().split("-")[0]) !== -1;
+    });
+  }
+  function choose(languages) {
+    var saved = stored(C.storageKey);
+    if (saved && hasPage(saved)) return saved;
+    for (var i = 0; i < C.groups.length; i++) {
+      if (prefersGroup(languages, C.groups[i][1])) return C.groups[i][0];
+    }
+    return C.fallback;
+  }
+  if (new RegExp(C.bots, "i").test(navigator.userAgent) || isInternal(document.referrer)) return;
+  var languages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
+  var target = choose(languages);
+  if (target === C.current || !hasPage(target)) return;
+  try { sessionStorage.setItem(C.sourceKey, document.referrer); sessionStorage.setItem(C.sourceTargetKey, JSON.stringify({path: C.pairs[target], at: Date.now()})); } catch (e) {}
+  location.replace(C.pairs[target] + location.search + location.hash);
+})({"bots": "bot|crawl|spider|slurp|lighthouse|pagespeed|preview|google|facebookexternalhit|whatsapp|headless", "current": "en", "fallback": "en", "groups": [["ru", ["ru", "uk", "be", "kk"]]], "pairs": {"en": "/en/booking/", "ru": "/zapis/"}, "sourceKey": "neva.source", "sourceTargetKey": "neva.source.target", "storageKey": "neva.lang"});
+</script>
+  <script>
+(function (STORAGE_KEY) {
+  document.addEventListener("click", function (event) {
+    var link = event.target.closest && event.target.closest("[data-lang]");
+    if (!link) return;
+    try { localStorage.setItem(STORAGE_KEY, link.getAttribute("data-lang")); } catch (e) {}
+  });
+})("neva.lang");
+</script>
+  
+  <link rel="stylesheet" href="/assets/css/bundle.min.css?v=bd2b913d">
+  
+  
+  
+  
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/manrope-var.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/cormorant-600.woff2" crossorigin>
+  
+  <script>
+  (function () {
+    var REVEAL_WAIT_MS = 2500;
+    var root = document.documentElement;
+
+    root.classList.add('js');
+    window.showWithoutReveal = function () { root.classList.remove('js'); };
+    setTimeout(function () {
+      if (!root.classList.contains('reveal-ready')) window.showWithoutReveal();
+    }, REVEAL_WAIT_MS);
+  })();
+  </script>
+  
+  <script>
+  (function () {
+    var DELAYS = [800, 2500, 6000];
+
+    function rememberSource(img) {
+      img.dataset.imgSrc = img.src;
+      img.addEventListener('load', function () { delete img.dataset.imgError; }, { once: true });
+    }
+
+    function reloadLater(img) {
+      var attempt = Number(img.dataset.imgRetry || 0);
+      if (attempt >= DELAYS.length) return;
+      if (!img.dataset.imgSrc) rememberSource(img);
+      img.dataset.imgRetry = attempt + 1;
+      var src = img.dataset.imgSrc;
+      setTimeout(function () {
+        img.src = src + (src.indexOf('?') < 0 ? '?' : '&') + 'retry=' + (attempt + 1);
+      }, DELAYS[attempt]);
+    }
+
+    addEventListener('error', function (event) {
+      var img = event.target;
+      if (!img || img.tagName !== 'IMG') return;
+      img.dataset.imgError = '';
+      reloadLater(img);
+    }, true);
+  })();
+  </script>
+  <title>Book an Aesthetician Appointment in Da Nang | Neva Beauty</title>
+  <meta name="description" content="Book at Neva Beauty, a beauty center in Da Nang, via WhatsApp, Telegram or Instagram: prices for treatments and the aesthetician consultation. English and Russian spoken.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://vn.neva.beauty/en/booking/">
+  <link rel="alternate" hreflang="ru" href="https://vn.neva.beauty/zapis/">
+  <link rel="alternate" hreflang="en" href="https://vn.neva.beauty/en/booking/">
+  <link rel="alternate" hreflang="x-default" href="https://vn.neva.beauty/en/booking/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Neva Beauty">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ru_RU">
+  <meta property="og:title" content="Book an Aesthetician Appointment in Da Nang | Neva Beauty">
+  <meta property="og:description" content="Book at Neva Beauty, a beauty center in Da Nang, via WhatsApp, Telegram or Instagram: prices for treatments and the aesthetician consultation. English and Russian spoken.">
+  <meta property="og:url" content="https://vn.neva.beauty/en/booking/">
+  
+  
+  <meta property="og:image" content="https://vn.neva.beauty/assets/img/og-default-en.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Neva Beauty — Da Nang">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Book an Aesthetician Appointment in Da Nang | Neva Beauty">
+  <meta name="twitter:description" content="Book at Neva Beauty, a beauty center in Da Nang, via WhatsApp, Telegram or Instagram: prices for treatments and the aesthetician consultation. English and Russian spoken.">
+  <meta name="twitter:image" content="https://vn.neva.beauty/assets/img/og-default-en.jpg">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://vn.neva.beauty/#organization",
+      "name": "Neva Beauty",
+      "url": "https://vn.neva.beauty/",
+      "logo": "https://vn.neva.beauty/assets/img/logo-neva-beauty.png",
+      "sameAs": [
+        "https://www.instagram.com/vn.neva.beauty/",
+        "https://t.me/doctor_cosmetolog_pro_channel",
+        "https://www.facebook.com/vn.neva.beauty"
+      ]
+    },
+    {
+      "@type": "BeautySalon",
+      "@id": "https://vn.neva.beauty/#business",
+      "name": "Neva Beauty",
+      "url": "https://vn.neva.beauty/",
+      "image": "https://vn.neva.beauty/assets/img/hero.webp",
+      "logo": "https://vn.neva.beauty/assets/img/logo-neva-beauty.png",
+      "telephone": "+84357132621",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Da Nang",
+        "addressCountry": "VN"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Da Nang"
+      },
+      "parentOrganization": {
+        "@id": "https://vn.neva.beauty/#organization"
+      },
+      "description": "Neva Beauty is a beauty center in Da Nang, Vietnam, offering device-based treatments, laser hair removal, non-surgical lifting and rejuvenation, facials and non-surgical body contouring. Visits are by appointment only, and service is provided in Russian and English.",
+      "priceRange": "$$",
+      "currenciesAccepted": "VND",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+84357132621",
+        "availableLanguage": [
+          "Russian",
+          "English"
+        ]
+      },
+      "sameAs": [
+        "https://www.instagram.com/vn.neva.beauty/",
+        "https://t.me/doctor_cosmetolog_pro_channel",
+        "https://www.facebook.com/vn.neva.beauty"
+      ],
+      "hasMap": "https://maps.google.com/?cid=16150397359579650785"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://vn.neva.beauty/#website",
+      "url": "https://vn.neva.beauty/",
+      "name": "Neva Beauty",
+      "inLanguage": [
+        "ru",
+        "en"
+      ],
+      "publisher": {
+        "@id": "https://vn.neva.beauty/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://vn.neva.beauty/en/",
+          "url": "https://vn.neva.beauty/en/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Booking",
+          "item": "https://vn.neva.beauty/en/booking/",
+          "url": "https://vn.neva.beauty/en/booking/"
+        }
+      ]
+    },
+    {
+      "@type": "ContactPage",
+      "@id": "https://vn.neva.beauty/en/booking/#webpage",
+      "url": "https://vn.neva.beauty/en/booking/",
+      "name": "Book an Appointment at Neva Beauty in Da Nang",
+      "description": "Book at Neva Beauty, a beauty center in Da Nang, via WhatsApp, Telegram or Instagram: prices for treatments and the aesthetician consultation. English and Russian spoken.",
+      "isPartOf": {
+        "@id": "https://vn.neva.beauty/#website"
+      },
+      "about": {
+        "@id": "https://vn.neva.beauty/#business"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I book an appointment at Neva Beauty in Da Nang?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Message us on WhatsApp, Telegram or Instagram, and we'll reply there and find a time that works for you. Visits to Neva Beauty, a beauty center in Da Nang, are by appointment only."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I pay separately for the consultation?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not if you have a treatment: the consultation is included in the treatment price. On its own, a consultation with the aesthetician at Neva Beauty in Da Nang costs 500 000 đ."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where is Neva Beauty, and how do I get there?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Neva Beauty is a beauty center in Da Nang, Vietnam. You can find the center on Google Maps, and we'll tell you how to get there when you book via WhatsApp or Telegram."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What languages do you offer service in?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "At Neva Beauty, a beauty center in Da Nang, service is provided in Russian and English."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/en/site.webmanifest">
+  <meta name="theme-color" content="#FBF4F0">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+  <span class="aurora__blob" style="--x:12%;--y:8%;--size:48vw;--tint:var(--rose-soft);--op:.62;--dur:34s;--delay:0s;--dx:6vw;--dy:4vh"></span>
+  <span class="aurora__blob" style="--x:78%;--y:2%;--size:42vw;--tint:#F1D3C5;--op:.66;--dur:42s;--delay:-9s;--dx:-5vw;--dy:5vh"></span>
+  <span class="aurora__blob" style="--x:62%;--y:52%;--size:54vw;--tint:var(--rose);--op:.40;--dur:46s;--delay:-18s;--dx:-7vw;--dy:-5vh"></span>
+  <span class="aurora__blob" style="--x:4%;--y:60%;--size:44vw;--tint:var(--taupe);--op:.44;--dur:38s;--delay:-5s;--dx:6vw;--dy:-6vh"></span>
+  <span class="aurora__blob" style="--x:40%;--y:82%;--size:46vw;--tint:var(--rose-soft);--op:.54;--dur:40s;--delay:-22s;--dx:4vw;--dy:4vh"></span>
+</div>
+  
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    
+    <div class="brand-mark site-header__logo loc" data-loc>
+  <svg class="brand-mark__flower"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="332 279.5 336 323"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(-62 500 586.14)"/>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(62 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(-38 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(38 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(-17 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(17 500 586.14)"/>
+  <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" transform="rotate(0 500 586.14)"/>
+</svg>
+
+  <span class="brand-mark__text">
+    <a class="brand-mark__name" href="/en/">Neva Beauty</a>
+    <button class="brand-mark__loc loc__toggle" data-loc-toggle aria-expanded="false" aria-haspopup="true">Da Nang<svg class="loc__chev" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  </span>
+  <div class="loc__menu">
+    <p class="loc__lead">Our Locations</p>
+    
+    <a class="loc__item" href="https://th.neva.beauty" hreflang="ru" rel="noopener">
+      <svg class="loc__pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+      <span class="loc__place"><span class="loc__city">Koh Samui</span><span class="loc__country">Thailand · site in Russian</span></span>
+    </a>
+    
+    <a class="loc__item is-active" href="/en/" aria-current="page">
+      <svg class="loc__pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+      <span class="loc__place"><span class="loc__city">Da Nang</span><span class="loc__country">Vietnam</span></span>
+    </a>
+    
+  </div>
+</div>
+    <nav class="nav" aria-label="Main navigation">
+      
+        
+        <a class="nav__link" href="/en/">Home</a>
+        
+      
+        
+        <div class="nav__group">
+          <button class="nav__link nav__toggle" aria-expanded="false">Body<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="nav__menu">
+            <a class="nav__lead" href="/en/body-contouring/"><span>Non-Surgical Body Contouring</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            <a class="nav__sub" href="/en/lpg-massage/">LPG Massage</a><a class="nav__sub" href="/en/endosphere-therapy/">Endosphere Therapy</a><a class="nav__sub" href="/en/ultrasonic-cavitation/">Ultrasonic Cavitation</a>
+          </div>
+        </div>
+        
+      
+        
+        <div class="nav__group">
+          <button class="nav__link nav__toggle" aria-expanded="false">Rejuvenation<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="nav__menu">
+            <a class="nav__lead" href="/en/non-surgical-face-lift/"><span>Non-Surgical Face Lift &amp; Rejuvenation</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            <a class="nav__sub" href="/en/hifu-treatment/">HIFU Treatment</a><a class="nav__sub" href="/en/morpheus8-rf-microneedling/">Morpheus8 RF Microneedling</a><a class="nav__sub" href="/en/m22-photorejuvenation/">M22 Photorejuvenation</a>
+          </div>
+        </div>
+        
+      
+        
+        <div class="nav__group">
+          <button class="nav__link nav__toggle" aria-expanded="false">Laser<svg class="nav__chev" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="nav__menu">
+            <a class="nav__lead" href="/en/laser-treatments/"><span>Laser Treatments</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+            <a class="nav__sub" href="/en/laser-hair-removal/">Laser Hair Removal</a><a class="nav__sub" href="/en/laser-tattoo-removal/">Laser Tattoo Removal</a><a class="nav__sub" href="/en/permanent-makeup-removal/">Permanent Makeup Removal</a><a class="nav__sub" href="/en/carbon-laser-peel/">Carbon Laser Peel</a>
+          </div>
+        </div>
+        
+      
+        
+        <a class="nav__link" href="/en/facial-treatments/">Facials</a>
+        
+      
+    </nav>
+    <a class="lang-pill" href="/zapis/" hreflang="ru" lang="ru" aria-label="RU — русская версия" data-lang="ru">RU</a>
+    <a class="btn btn--primary site-header__cta" href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="header">Book now</a>
+    <button class="burger" data-drawer-open aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+  
+  
+<div class="overlay" data-overlay data-drawer-close aria-hidden="true"></div>
+<aside class="drawer" data-drawer role="dialog" aria-modal="true" aria-label="Mobile menu">
+  <div class="drawer__top">
+    <span class="drawer__brand brand-mark"><svg class="brand-mark__flower"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="332 279.5 336 323"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(-62 500 586.14)"/>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(62 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(-38 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(38 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(-17 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(17 500 586.14)"/>
+  <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" transform="rotate(0 500 586.14)"/>
+</svg>
+
+<span class="brand-mark__text">
+  <span class="brand-mark__name">Neva Beauty</span>
+  <span class="brand-mark__loc">Da Nang</span>
+</span></span>
+    <button class="drawer__close" data-drawer-close aria-label="Close menu">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <nav class="drawer__nav">
+    
+      
+      <div class="drawer__home-row" style="--i:1">
+        <a class="drawer__link" href="/en/">Home</a>
+        <a class="lang-pill" href="/zapis/" hreflang="ru" lang="ru" aria-label="RU — русская версия" data-lang="ru">RU</a>
+      </div>
+      
+    
+      
+      <div class="drawer__group" style="--i:2">
+        <a class="drawer__group-label" href="/en/body-contouring/">Non-Surgical Body Contouring<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+        <a class="drawer__sub" href="/en/lpg-massage/">LPG Massage</a><a class="drawer__sub" href="/en/endosphere-therapy/">Endosphere Therapy</a><a class="drawer__sub" href="/en/ultrasonic-cavitation/">Ultrasonic Cavitation</a>
+      </div>
+      
+    
+      
+      <div class="drawer__group" style="--i:3">
+        <a class="drawer__group-label" href="/en/non-surgical-face-lift/">Non-Surgical Face Lift &amp; Rejuvenation<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+        <a class="drawer__sub" href="/en/hifu-treatment/">HIFU Treatment</a><a class="drawer__sub" href="/en/morpheus8-rf-microneedling/">Morpheus8 RF Microneedling</a><a class="drawer__sub" href="/en/m22-photorejuvenation/">M22 Photorejuvenation</a>
+      </div>
+      
+    
+      
+      <div class="drawer__group" style="--i:4">
+        <a class="drawer__group-label" href="/en/laser-treatments/">Laser Treatments<svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg></a>
+        <a class="drawer__sub" href="/en/laser-hair-removal/">Laser Hair Removal</a><a class="drawer__sub" href="/en/laser-tattoo-removal/">Laser Tattoo Removal</a><a class="drawer__sub" href="/en/permanent-makeup-removal/">Permanent Makeup Removal</a><a class="drawer__sub" href="/en/carbon-laser-peel/">Carbon Laser Peel</a>
+      </div>
+      
+    
+      
+      <a class="drawer__link" href="/en/facial-treatments/" style="--i:5">Facials</a>
+      
+    
+  </nav>
+  <div class="drawer__footer">
+    <a class="btn btn--primary drawer__cta" href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="drawer">Book now</a>
+    <div class="drawer__socials">
+      <a href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="drawer" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 1.8a8.2 8.2 0 0 1 6.9 12.6l.7 2.5-2.6-.7A8.2 8.2 0 1 1 12 3.8zm-3 3.6c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.3s1 2.6 1.1 2.8c.1.2 2 3.1 4.9 4.2 2.4 1 2.9.8 3.4.8.5-.1 1.6-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3-.3-.2-1.6-.8-1.9-.9-.2-.1-.4-.1-.6.1-.2.3-.6.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.8-.1-.3 0-.4.1-.5l.4-.5c.2-.1.2-.3.3-.4.1-.2 0-.3 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4z"/></svg>
+        <span>WhatsApp</span>
+      </a>
+      <a href="https://t.me/doctor_cosmetolog_pro?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="telegram" data-place="drawer" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.7.8l-4.6-3.4-2.2 2.1c-.3.3-.5.5-1 .5l.3-4.7L18 5.7c.4-.3-.1-.5-.6-.2L7 11.7l-4.5-1.4c-1-.3-1-1 .2-1.4l17.6-6.8c.8-.3 1.5.2 1.2 1.6z"/></svg>
+        <span>Telegram</span>
+      </a>
+      <a href="https://instagram.com/vn.neva.beauty" target="_blank" rel="noopener" data-contact="instagram" data-place="drawer" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        <span>Instagram</span>
+      </a>
+    </div>
+  </div>
+</aside>
+  <main id="main">
+<section class="section section--lead container">
+  <nav class="breadcrumbs breadcrumbs--lead" aria-label="Breadcrumb">
+    <a href="/en/">Home</a>
+    <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+    <span aria-current="page">Booking</span>
+  </nav>
+  <div class="section-head"><p class="eyebrow">Beauty Center · Da Nang</p><h1>Book an Appointment at Neva Beauty in Da Nang</h1><p>Neva Beauty is a beauty center in Da Nang, Vietnam. Visits are by appointment only, and service is provided in Russian and English. Message us on WhatsApp, Telegram or Instagram, and we&#39;ll reply there and find a time that works for you.</p></div>
+  <div class="booking__actions">
+    <a class="btn btn--primary" href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="booking-page"><svg class="icon"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
+</svg>
+ WhatsApp</a>
+    <a class="btn btn--ghost" href="https://t.me/doctor_cosmetolog_pro?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="telegram" data-place="booking-page"><svg class="icon"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+  <path d="m21.854 2.147-10.94 10.939" />
+</svg>
+ Telegram</a>
+    <a class="btn btn--ghost" href="https://instagram.com/vn.neva.beauty" target="_blank" rel="noopener" data-contact="instagram" data-place="booking-page"><svg class="icon"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+</svg>
+ Instagram</a>
+  </div>
+</section>
+
+<section class="section pricelist-section">
+  <div class="container">
+    <div class="section-head" data-reveal><p class="eyebrow">Consultation</p><h2>Aesthetician Consultation</h2><p>At the consultation, the center&#39;s aesthetician chooses the treatments that suit you. A consultation with the aesthetician costs 500 000 đ. If you have a treatment, the consultation is included in the treatment price.</p></div>
+    <div class="section-head" data-reveal><p class="eyebrow">Pricing</p><h2>Services and Prices</h2><p>Prices are listed in Vietnamese dong (đ). The full price list for each treatment is on its own page.</p></div>
+    <div class="popular-grid popular-grid--services" data-reveal-children>
+      
+      <a class="popular-card card" href="/en/lpg-massage/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Non-Surgical Body Contouring</span>
+          <span class="popular-card__name">LPG Massage</span>
+        </span>
+        <span class="popular-card__price">from 700 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/endosphere-therapy/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Non-Surgical Body Contouring</span>
+          <span class="popular-card__name">Endosphere Therapy</span>
+        </span>
+        <span class="popular-card__price">from 600 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/ultrasonic-cavitation/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Non-Surgical Body Contouring</span>
+          <span class="popular-card__name">Ultrasonic Cavitation</span>
+        </span>
+        <span class="popular-card__price">from 800 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/hifu-treatment/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Non-Surgical Face Lift &amp; Rejuvenation</span>
+          <span class="popular-card__name">HIFU Treatment</span>
+        </span>
+        <span class="popular-card__price">from 5 000 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/morpheus8-rf-microneedling/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Non-Surgical Face Lift &amp; Rejuvenation</span>
+          <span class="popular-card__name">Morpheus8 RF Microneedling</span>
+        </span>
+        <span class="popular-card__price">from 1 500 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/m22-photorejuvenation/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Non-Surgical Face Lift &amp; Rejuvenation</span>
+          <span class="popular-card__name">M22 Photorejuvenation</span>
+        </span>
+        <span class="popular-card__price">from 3 000 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/laser-hair-removal/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Laser Treatments</span>
+          <span class="popular-card__name">Laser Hair Removal</span>
+        </span>
+        <span class="popular-card__price">from 150 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/laser-tattoo-removal/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Laser Treatments</span>
+          <span class="popular-card__name">Laser Tattoo Removal</span>
+        </span>
+        <span class="popular-card__price">from 500 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/permanent-makeup-removal/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Laser Treatments</span>
+          <span class="popular-card__name">Permanent Makeup Removal</span>
+        </span>
+        <span class="popular-card__price">from 1 000 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/carbon-laser-peel/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Laser Treatments</span>
+          <span class="popular-card__name">Carbon Laser Peel</span>
+        </span>
+        <span class="popular-card__price">1 100 000 đ</span>
+      </a>
+      
+      <a class="popular-card card" href="/en/facial-treatments/">
+        <span class="popular-card__info">
+          <span class="popular-card__cat">Facials</span>
+          <span class="popular-card__name">Facial Treatments</span>
+        </span>
+        <span class="popular-card__price">from 500 000 đ</span>
+      </a>
+      
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-head" data-reveal><p class="eyebrow">Google Maps</p><h2>Google Reviews</h2></div>
+  <div class="booking__actions">
+    <a class="btn btn--ghost" href="https://maps.google.com/?cid=16150397359579650785" target="_blank" rel="noopener"><svg class="icon"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+ We&#39;re on Google Maps</a>
+    <a class="btn btn--ghost" href="https://g.page/r/CeHaJn_UvCHgEBM/review" target="_blank" rel="noopener"><svg class="icon"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+</svg>
+ Leave a Review</a>
+  </div>
+</section>
+
+<section class="section container" id="faq">
+  <div class="section-head" data-reveal><p class="eyebrow">Questions &amp; Answers</p><h2>Frequently Asked Questions about Booking</h2></div>
+  <div class="faq" data-reveal-children>
+    
+    <details class="faq__item" open>
+      <summary class="faq__q">How do I book an appointment at Neva Beauty in Da Nang?</summary>
+      <p class="faq__a">Message us on <a href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" data-contact="whatsapp" data-place="faq" target="_blank" rel="noopener">WhatsApp</a>, <a href="https://t.me/doctor_cosmetolog_pro?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" data-contact="telegram" data-place="faq" target="_blank" rel="noopener">Telegram</a> or <a href="https://instagram.com/vn.neva.beauty" data-contact="instagram" data-place="faq" target="_blank" rel="noopener">Instagram</a>, and we'll reply there and find a time that works for you. Visits to Neva Beauty, a beauty center in Da Nang, are by appointment only.</p>
+    </details>
+    
+    <details class="faq__item">
+      <summary class="faq__q">Do I pay separately for the consultation?</summary>
+      <p class="faq__a">Not if you have a treatment: the consultation is included in the treatment price. On its own, a consultation with the aesthetician at Neva Beauty in Da Nang costs 500 000 đ.</p>
+    </details>
+    
+    <details class="faq__item">
+      <summary class="faq__q">Where is Neva Beauty, and how do I get there?</summary>
+      <p class="faq__a">Neva Beauty is a beauty center in Da Nang, Vietnam. You can find the center on Google Maps, and we'll tell you how to get there when you book via <a href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" data-contact="whatsapp" data-place="faq" target="_blank" rel="noopener">WhatsApp</a> or <a href="https://t.me/doctor_cosmetolog_pro?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" data-contact="telegram" data-place="faq" target="_blank" rel="noopener">Telegram</a>.</p>
+    </details>
+    
+    <details class="faq__item">
+      <summary class="faq__q">What languages do you offer service in?</summary>
+      <p class="faq__a">At Neva Beauty, a beauty center in Da Nang, service is provided in Russian and English.</p>
+    </details>
+    
+  </div>
+</section>
+</main>
+  
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__col site-footer__brand">
+      <span class="site-footer__logo brand-mark"><svg class="brand-mark__flower"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="332 279.5 336 323"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(-62 500 586.14)"/>
+  <path d="M500 586.14C591.8 514.05 556.92 438.16 500 396.42C443.08 438.16 408.2 514.05 500 586.14Z" fill="#CE9B91" opacity=".55" transform="rotate(62 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(-38 500 586.14)"/>
+  <path d="M500 586.14C582.62 490.79 551.22 390.42 500 335.22C448.78 390.42 417.38 490.79 500 586.14Z" fill="#CE9B91" opacity=".85" transform="rotate(38 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(-17 500 586.14)"/>
+  <path d="M500 586.14C573.44 478 545.53 364.17 500 301.56C454.47 364.17 426.56 478 500 586.14Z" fill="#92655E" opacity=".92" transform="rotate(17 500 586.14)"/>
+  <path d="M500 586.14C570.38 469.86 543.64 347.46 500 280.14C456.36 347.46 429.62 469.86 500 586.14Z" fill="#92655E" transform="rotate(0 500 586.14)"/>
+</svg>
+
+<span class="brand-mark__text">
+  <span class="brand-mark__name">Neva Beauty</span>
+  <span class="brand-mark__loc">Da Nang</span>
+</span></span>
+      <div class="site-footer__places">
+  <h2 class="site-footer__title">Our Locations</h2>
+  
+  <a class="site-footer__place" href="https://th.neva.beauty" hreflang="ru" rel="noopener">
+    <svg class="site-footer__place-pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+    <span>Koh Samui, Thailand · site in Russian</span><svg class="lead-arrow" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9"/><path d="m8.5 4 4 4-4 4"/></svg>
+  </a>
+  
+  <a class="site-footer__place is-current" href="/en/" aria-current="page">
+    <svg class="site-footer__place-pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" />
+</svg>
+
+    <span>Da Nang, Vietnam</span><span class="site-footer__place-here">you are here</span>
+  </a>
+  
+</div>
+    </div>
+    <nav class="site-footer__col" aria-label="Services">
+      <h2 class="site-footer__title">Services</h2>
+      
+        
+      
+        <a class="site-footer__link" href="/en/lpg-massage/">LPG Massage</a><a class="site-footer__link" href="/en/endosphere-therapy/">Endosphere Therapy</a><a class="site-footer__link" href="/en/ultrasonic-cavitation/">Ultrasonic Cavitation</a>
+        
+      
+        <a class="site-footer__link" href="/en/hifu-treatment/">HIFU Treatment</a><a class="site-footer__link" href="/en/morpheus8-rf-microneedling/">Morpheus8 RF Microneedling</a><a class="site-footer__link" href="/en/m22-photorejuvenation/">M22 Photorejuvenation</a>
+        
+      
+        <a class="site-footer__link" href="/en/laser-hair-removal/">Laser Hair Removal</a><a class="site-footer__link" href="/en/laser-tattoo-removal/">Laser Tattoo Removal</a><a class="site-footer__link" href="/en/permanent-makeup-removal/">Permanent Makeup Removal</a><a class="site-footer__link" href="/en/carbon-laser-peel/">Carbon Laser Peel</a>
+        
+      
+        <a class="site-footer__link" href="/en/facial-treatments/">Facials</a>
+        
+      
+    </nav>
+    <div class="site-footer__col">
+      <h2 class="site-footer__title">Contact</h2>
+      <a class="site-footer__link" href="/en/booking/">Booking</a>
+      <a class="site-footer__link" href="https://wa.me/84357132621?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="whatsapp" data-place="footer">WhatsApp</a>
+      <a class="site-footer__link" href="https://t.me/doctor_cosmetolog_pro?text=Hello%21%20I%27d%20like%20to%20book%20an%20appointment" target="_blank" rel="noopener" data-contact="telegram" data-place="footer">Telegram</a>
+      <a class="site-footer__link" href="https://instagram.com/vn.neva.beauty" target="_blank" rel="noopener" data-contact="instagram" data-place="footer">Instagram</a>
+      <a class="site-footer__link" href="https://maps.google.com/?cid=16150397359579650785" target="_blank" rel="noopener">Google Maps</a>
+    </div>
+  </div>
+  <div class="site-footer__bottom container">
+    <span>© Neva Beauty — Da Nang, Vietnam</span>
+    <a href="/en/privacy/">Privacy Policy</a>
+    <p class="lang-line site-footer__langs"><a href="/zapis/" hreflang="ru" lang="ru" data-lang="ru">Русский</a><span class="lang-line__sep" aria-hidden="true"> · </span><span class="lang-line__current" lang="en" aria-current="true">English</span></p>
+  </div>
+</footer>
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/reveal.js" onerror="showWithoutReveal()"></script>
+  
+  <script>
+(function (SOURCE_KEY, TARGET_KEY, TTL_MS) {
+  function readHandoff() {
+    try { return JSON.parse(sessionStorage.getItem(TARGET_KEY)); } catch (e) { return null; }
+  }
+  function isFresh(handoff) {
+    if (!handoff || handoff.path !== location.pathname) return false;
+    var age = Date.now() - handoff.at;
+    return age >= 0 && age < TTL_MS;
+  }
+  try {
+    var accepted = isFresh(readHandoff());
+    sessionStorage.removeItem(TARGET_KEY);
+    if (!accepted) sessionStorage.removeItem(SOURCE_KEY);
+  } catch (e) {}
+})("neva.source", "neva.source.target", 60000);
+</script>
+  
+<!-- Yandex.Metrika counter --><script>
+(function (w, d) {
+  w.ym = w.ym || function () { (w.ym.a = w.ym.a || []).push(arguments) };
+  w.ym.l = 1 * new Date();
+  try {
+    var source = sessionStorage.getItem("neva.source");
+    if (source !== null) {
+      sessionStorage.removeItem("neva.source");
+      Object.defineProperty(d, "referrer", {get: function () { return source; }});
+    }
+  } catch (e) {}
+  var COUNTER = 106778458;
+  ym(COUNTER, "init", {
+       clickmap:true,
+       trackLinks:true,
+       accurateTrackBounce:true,
+       webvisor:false
+  });
+  var PAGE = "zapis";
+  var PAGE_URL = "/en/booking/";
+  var CONTACTS_BY_PAGE = "contacts by page";
+  var EXITS_BY_PAGE = "exits by page";
+  var SCHEME_NAMES = {"mailto:": "e-mail", "tel:": "phone"};
+  var WEB_SCHEMES = ["http:", "https:"];
+  var MIDDLE_BUTTON = 1;
+
+  function nest(keys, leaf) {
+    return keys.reduceRight(function (inner, key) {
+      var level = {};
+      level[key] = inner;
+      return level;
+    }, leaf);
+  }
+
+  function reportContact(link) {
+    var channel = link.getAttribute("data-contact");
+    var place = link.getAttribute("data-place");
+    var params = {channel: channel, lang: d.documentElement.lang, page: PAGE, place: place};
+    params[CONTACTS_BY_PAGE] = nest([PAGE_URL, channel], place);
+    ym(COUNTER, "reachGoal", "contact", params);
+  }
+
+  function destinationOf(link) {
+    if (WEB_SCHEMES.indexOf(link.protocol) === -1) return SCHEME_NAMES[link.protocol] || null;
+    return link.hostname === location.hostname ? null : link.hostname;
+  }
+
+  function reportExit(link) {
+    var destination = destinationOf(link);
+    if (destination === null) return;
+    var params = {};
+    params[EXITS_BY_PAGE] = nest([PAGE_URL], destination);
+    ym(COUNTER, "params", params);
+  }
+
+  function reportLinkClick(event) {
+    if (event.type === "auxclick" && event.button !== MIDDLE_BUTTON) return;
+    var link = event.target.closest && event.target.closest("a[href]");
+    if (!link) return;
+    if (link.hasAttribute("data-contact")) reportContact(link);
+    else reportExit(link);
+  }
+  d.addEventListener("click", reportLinkClick);
+  d.addEventListener("auxclick", reportLinkClick);
+
+  var SRC = "https://mc.yandex.ru/metrika/tag.js";
+  var started = false;
+
+  function start() {
+    if (started) return;
+    started = true;
+    for (var i = 0; i < d.scripts.length; i++) if (d.scripts[i].src === SRC) return;
+    var s = d.createElement("script");
+    s.async = 1;
+    s.src = SRC;
+    d.head.appendChild(s);
+  }
+
+  ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (name) {
+    addEventListener(name, start, { once: true, passive: true });
+  });
+
+  function afterLoad() { setTimeout(start, 1200); }
+  if (d.readyState === "complete") afterLoad();
+  else addEventListener("load", afterLoad, { once: true });
+})(window, document);
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/106778458" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+</body>
+</html>
