@@ -2,6 +2,8 @@
 import re
 from dataclasses import dataclass
 
+from markupsafe import Markup, escape
+
 import contacts
 import pricing
 import schema
@@ -268,6 +270,37 @@ def build_booking(ctx):
         site=ctx.site, page=page, booking=booking, cards=_booking_cards(ctx))
 
 
+# Контакты оператора в тексте политики (data/locales/<код>/privacy.html). Плейсхолдер —
+# имя поля contacts из site.yml в фигурных скобках; {telegram_handle} и {instagram_handle} —
+# имя аккаунта из адреса канала. Ссылки остаются голыми адресами, без текста обращения
+# и меток Метрики: это контакты для вопросов о данных, а не кнопки записи
+# (check_contacts.LEGAL_TEXT_CLASS).
+PRIVACY_CONTACT_FIELDS = ("whatsapp_url", "whatsapp_phone", "telegram_url", "instagram_url",
+                          "privacy_email")
+PRIVACY_HANDLE_FIELDS = {"telegram_handle": "telegram_url", "instagram_handle": "instagram_url"}
+PRIVACY_PLACEHOLDER_RE = re.compile(r"\{[a-z_]+\}")
+
+
+def privacy_tokens(site_contacts):
+    """Плейсхолдеры политики: {плейсхолдер: значение} из contacts файла site.yml."""
+    tokens = {f"{{{field}}}": site_contacts[field] for field in PRIVACY_CONTACT_FIELDS}
+    tokens.update({f"{{{handle}}}": contacts.account_handle(site_contacts[url_field])
+                   for handle, url_field in PRIVACY_HANDLE_FIELDS.items()})
+    return tokens
+
+
+def fill_privacy(privacy_body, site_contacts):
+    """Текст политики с контактами оператора из site.yml. Нераскрытый плейсхолдер — ошибка
+    сборки: иначе фигурная скобка уезжает в текст политики и её видит посетитель."""
+    text = str(privacy_body)
+    for token, value in privacy_tokens(site_contacts).items():
+        text = text.replace(token, str(escape(value)))
+    leftover = PRIVACY_PLACEHOLDER_RE.search(text)
+    if leftover:
+        raise ValueError(f"Нераскрытый плейсхолдер в тексте политики: {leftover.group(0)}")
+    return Markup(text)
+
+
 def _noindex_page(ctx, page_id, title_key):
     """Служебная страница: закрыта от индексации, разметка — только общий граф бизнеса."""
     return {"id": page_id, "url": ctx.path(page_id), "seo_title": ctx.t(title_key),
@@ -277,7 +310,8 @@ def _noindex_page(ctx, page_id, title_key):
 def build_privacy(ctx, privacy_body):
     page = _noindex_page(ctx, PRIVACY, "privacy.seo_title")
     return ctx.env.get_template("privacy.html.j2").render(
-        site=ctx.site, page=page, privacy_body=privacy_body)
+        site=ctx.site, page=page,
+        privacy_body=fill_privacy(privacy_body, ctx.site["contacts"]))
 
 
 def build_not_found(ctx):

@@ -27,10 +27,17 @@ TELEGRAM_PREFILL_KEY = "telegram_prefill"
 CHANNEL_URL_KEY = "{channel}_url"  # ключ адреса канала в contacts site.yml
 PAGE_TITLE_KEY = "contact_title"  # название страницы в её данных для текста обращения
 PREFILL_PARAM = "text"  # параметр адреса, в котором мессенджер получает текст обращения
+HANDLE_MARK = "@"  # имя аккаунта в тексте: @doctor_cosmetolog_pro
 
 
 def channel_url_key(channel):
     return CHANNEL_URL_KEY.format(channel=channel)
+
+
+def account_handle(url):
+    """Имя аккаунта канала из его адреса: https://t.me/salon → @salon. Косая черта
+    в конце адреса (instagram.com/salon/) имени не меняет."""
+    return HANDLE_MARK + urllib.parse.urlsplit(url).path.strip("/")
 
 
 def channel_of_url(url):

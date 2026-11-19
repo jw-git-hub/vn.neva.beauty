@@ -60,6 +60,12 @@ contacts:
   # Страница в Facebook: видимых ссылок на сайте нет, адрес идёт только в разметку
   # (business.same_as) и в раздел контактов llms.txt.
   facebook_url: "https://www.facebook.com/vn.neva.beauty"
+  # Только для контактов оператора в тексте политики конфиденциальности
+  # (data/locales/<код>/privacy.html, плейсхолдеры {whatsapp_phone} и {privacy_email},
+  # pages.privacy_tokens): номер WhatsApp так, как он написан в тексте, и адрес для вопросов
+  # о персональных данных. В тексте остальных страниц email и номера телефона нет.
+  whatsapp_phone: "+84 357 132 621"
+  privacy_email: "vaarootman@gmail.com"
 
 # Консультации (ответ владельца 2026-10-26). Цены сборка подставляет в ответы о записи вместо
 # {consultation_price} (косметолог, price) и {dermatology_consultation_price} (дерматолог,
